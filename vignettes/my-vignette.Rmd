@@ -1,0 +1,66 @@
+---
+title: "cnvgeaRs package."
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{cnvgeaRs package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+## Introduction ##
+
+The cnvgeaRs package aims to implement an interactive and extensible framework for the analysis 
+of Copy Number Variation calling and/or segmentation results, typically from multiple pipelines or 
+algorithms, regardless the initial raw data type. At the moment Illumina SNPs array and any 
+type of NGS data are supported, provided that at least the raw log2R value, or 
+any related measure is accessible for each sample. The package is particularly suited for 
+the analysis of family based studies, being originally developed for the CNV characterization 
+of the Italian Autism Network Collection (ITAN, cita paper(s???)), however, the more vast 
+majority of the functions are of general purpose and useful for any CNVs study.
+The typical main steps of such analysis using cnvgeaRs are:
+
+* Load the cohort minimal metadata in the form of PED file;
+* Load the markers file (i.e. genomic location of each marker, SNP in case of array, interval/bin
+  in case of NGS data);
+* Read and pre-process the results for all samples from the individual algorithms/pipelines, in particular 
+  adjacent calls with equal genotype (i.e. deletions/duplications) can be merged if closer than 
+  user-specified distances;
+* Read and pre-process the "raw data" (in particular the log2R for each marker for all samples);
+* Explore the sample's summary statistics, identify groups of unwanted events (e.g. smaller 
+  then 5 kbp or consisting of less than 5 points) and possible over-segmented samples;
+* Filter the results based on several parameters and blacklist (both provided by the package and 
+  user-generated), such as immunoglobulin and telomeric/centromeric regions. Also more extreme 
+  intra-results merging can be performed if one or more methods appear to over-segment. 
+* Detect CNVs inheritance pattern, if families structure is given;
+* Visually inspect the good de novo CNVs candidate raw data (LRR/log2R in particular, also BAF if available);
+* Merge the various methods results in a single object, keep only the call made by N (one or more)
+  algorithms/pipelines if desired;
+* Annotate genomic locus of the calls and search for CNVs in known disease-linked loci (e.g. 
+  in studies on ASD or schizophrenia). Annotate genic content of selected CNVs;
+* Compute CNV regions (CNVRs); 
+* Extract high confidence rare events based on CNVRs and/or DGV; 
+* Export desired data as BED (e.g. for being viewed in IGV) or VCF (e.g. for being processed with Annovar)
+  , as well as TSV.
+
+## Setup ## 
+
+First load the package.
+
+```{r setup}
+library(CNVgears)
+```
+All the major functions uses \code{data.table} package, especially in the more intensive steps.
+The package uses by default half the CPU threads available, this can be changed with the function
+\code{data.table::setDTthreads}. For example to use the 75% of available threads:
+
+``` {r DT threads}
+data.table::setDTthreads(percent=75)
+```
+
+

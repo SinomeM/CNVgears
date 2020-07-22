@@ -1,0 +1,28 @@
+Package: CNVgears
+Type: Package
+Title: A Framework of Functions to Combine, Analize and Interpret CNVs Calling Results 
+Version: 0.3.0
+Author: Simone Montalbano
+Maintainer: Simone Montalbano <simone.montalbano@protonmail.com>
+Description: This package contains a set of functions that to perform several type of processing 
+    and analysis on CNVs calling pipelines/algorithms results in an inegrated manner and regardless
+    of the raw data type (SNPs array or NGS).
+Depends: R (>= 3.5.0)
+Imports: 
+	data.table,
+	ggplot2,
+	cowplot,
+	R.utils,
+Suggests:
+	VariantAnnotation,
+	DelayedArray,
+	dplyr, 
+  knitr,
+  biomaRt,
+  evobiR,
+  rmarkdown
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+VignetteBuilder: knitr
