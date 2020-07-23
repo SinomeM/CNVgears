@@ -7,7 +7,11 @@
 inter_res_merge(res_list, sample_list, g_arms, prop = 0.3, inner_outer = NA)
 }
 \arguments{
-\item{g_arms}{}
+\item{res_list}{aaa}
+
+\item{sample_list}{aaa}
+
+\item{g_arms}{aaa}
 }
 \value{
 

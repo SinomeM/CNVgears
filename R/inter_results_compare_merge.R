@@ -1,14 +1,13 @@
 
 #' Combine the results from multiple methods in a single object
 #'
-#' @param res_list
-#' @param sample_list
-#' @param g_arms
+#' @param res_list aaa
+#' @param sample_list aaa
+#' @param g_arms aaa
 #'
 #' @return
 #' @export
 #'
-#' @examples
 
 # Best option should be to load all the results in a list, rbind together
 # all the elements of the list and then, iterating per each chromosomes

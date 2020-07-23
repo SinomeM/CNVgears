@@ -4,7 +4,7 @@
 #'  typically the results of \code{\link{inter_res_merge}}.
 #' @param g_arms, a data.table containing the genomic location of the genomic
 #'  arms. For the assemblies hg38 and hg19 it is provided by the package.
-#' @param prop, reciprocal overlap proportion, default 0.3 (30%).
+#' @param prop, reciprocal overlap proportion, default 0.3 (30\%).
 #' @param inner_outer, specify whether inner or outer start/end should be used. If
 #' NA the function assume the "start" "end" columns are present.
 #'

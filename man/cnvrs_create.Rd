@@ -10,7 +10,7 @@ cnvrs_create(cnvs, g_arms, prop = 0.3)
 \item{g_arms, }{a data.table containing the genomic location of the genomic
 arms. For the assemblies hg38 and hg19 it is provided by the package.}
 
-\item{prop, }{reciprocal overlap proportion, default 0.3 (30%).}
+\item{prop, }{reciprocal overlap proportion, default 0.3 (30\%).}
 
 \item{cnv, }{a data.table like the one produced by\code{\link{read_results}},
 typically the results of \code{\link{inter_res_merge}}.}
