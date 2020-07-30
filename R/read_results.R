@@ -189,17 +189,21 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
     for (i in 1:nrow(sample_list)) {
       sid <- sample_list$sample_ID[i]
       sex <- sample_list$sex[i]
-      tmp <- DT_uniform_internal(DT_in = DT[sample_ID == sid, ],
-                                 markers = markers, sex = sex)
-      # merge segments
-      if (do_merge == 1)
-        tmp <- merge_calls(tmp, thresh = merge_thresh)
-      if (do_merge == 2)
-        tmp <- merge_calls2(tmp, thresh = merge_thresh)
 
-      # add seg_ID for this sample
-      tmp[, seg_ID := 1:nrow(tmp)]
-      DT_out <- rbind(DT_out, tmp)
+      if (nrow(DT[sample_ID == sid, ]) > 0) {
+        # HERE if DT_in = DT[sample_ID == sid, ] has no row there is an error
+        tmp <- DT_uniform_internal(DT_in = DT[sample_ID == sid, ],
+                                   markers = markers, sex = sex)
+        # merge segments
+        if (do_merge == 1)
+          tmp <- merge_calls(tmp, thresh = merge_thresh)
+        if (do_merge == 2)
+          tmp <- merge_calls2(tmp, thresh = merge_thresh)
+
+        # add seg_ID for this sample
+        tmp[, seg_ID := 1:nrow(tmp)]
+        DT_out <- rbind(DT_out, tmp)
+      }
     }
   }
 

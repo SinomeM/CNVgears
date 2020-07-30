@@ -126,14 +126,14 @@ merge_calls2 <- function(DT_in, thresh = 0.3) {
   # similarly to the old version, an infinite while run until necessary
   k <- 1
   while(1 == 1) {
-    cat("\nRound:", k, "\n")
+    # cat("\nRound:", k, "\n")
     setorder(DT_in, chr, start)
     DT_out <- data.table()
 
     # preceed per chr
     for (cc in unique(DT_in$chr)) {
       DT_tmp <- DT_in[chr == cc, ]
-      cat("\nchr:", cc, "\n")
+      # cat("\nchr:", cc, "\n")
       skippi <- "heck"
       if (nrow(DT_tmp) == 0) next
 
@@ -194,7 +194,7 @@ merge_calls2 <- function(DT_in, thresh = 0.3) {
       }
     }
     k <- k+1
-    cat("\n", nrow(DT_in), nrow(DT_out), "\n")
+    # cat("\n", nrow(DT_in), nrow(DT_out), "\n")
     if (nrow(DT_out) > nrow(DT_in)) stop("OUCH, somethig's really wrong here!")
     if (nrow(DT_out) == nrow(DT_in)) break
     else DT_in <- DT_out
