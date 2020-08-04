@@ -59,7 +59,7 @@ cleaning_filter <- function(results, min_len = 5000, min_NP = 5, telom_centrom =
 
   # min_len min_NP
   if (!is.na(min_len)) DT <- DT[len >= min_len, ]
-  if (!is.na(min_NP)) DT <- DT[len >= min_NP, ]
+  if (!is.na(min_NP)) DT <- DT[NP >= min_NP, ]
 
   filter_region <- function(DT, bl) {
     bl[, `:=` (start = as.integer(start), end = as.integer(end))]

@@ -81,6 +81,8 @@ The package uses by default half the CPU threads available, this can be changed 
 data.table::setDTthreads(percent=75)
 ```
 
+See the relative man pages for details on each function used. 
+
 ## Data Load 
 
 The first two objects we need to load are the cohort and markers information. The
@@ -152,22 +154,25 @@ ipn <-  read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_ipn.txt",
 
 # raw data
 library("data.table", quietly = T)
-dir.create("tmp_raw")
-file.copy(system.file("extdata", "NA12878.txt", package = "CNVgears"), "tmp_raw/NA12878.txt")
-file.copy(system.file("extdata", "NA12891.txt", package = "CNVgears"), "tmp_raw/NA12891.txt")
-file.copy(system.file("extdata", "NA12892.txt", package = "CNVgears"), "tmp_raw/NA12892.txt")
 
+dir.create(file.path("tmp_raw"))
+file.copy(system.file("extdata", "NA12878.txt", package = "CNVgears"), 
+          file.path("tmp_raw","NA12878.txt"))
+file.copy(system.file("extdata", "NA12891.txt", package = "CNVgears"), 
+          file.path("tmp_raw","NA12891.txt"))
+file.copy(system.file("extdata", "NA12892.txt", package = "CNVgears"), 
+          file.path("tmp_raw","NA12892.txt"))
 
-library("data.table", quietly = T)
-read_finalreport_raw(DT_path = "tmp_raw", pref = NA, suff = ".txt", 
-                     rds_path = "tmp_RDS",  
+read_finalreport_raw(DT_path = file.path("tmp_raw"), pref = NA, suff = ".txt", 
+                     rds_path = file.path("tmp_RDS"),  
                      markers = SNP_markers, results = penn,
-                     sample_list = cohort[sample_ID %in% c("NA12878", "NA12891", "NA12892")])
+                     sample_list = cohort[fam_ID == "1463", ])
 
-file.remove(c("tmp_raw/NA12878.txt", "tmp_raw/NA12891.txt", 
-              "tmp_raw/NA12892.txt", "tmp_raw"))
-
+file.remove(c(file.path("tmp_raw","NA12878.txt"), file.path("tmp_raw/NA12891.txt"), 
+              file.path("tmp_raw","NA12892.txt"), file.path("tmp_raw")))
 ```
+Note that when loading the raw data only the trio is used as cohort. The samples
+object is subset using a `data.table` query.
 
 Now the initial step of data load and normalization is completed and all a series 
 of integration and analysis steps can take place.    
@@ -184,14 +189,14 @@ out undesired and/or noisy/unreliable calls. This package provide the means to d
 so in an integrated an standardized manner using two functions: `summary_stats` 
 and `cleaning_filter`. The first produces several summary statistics and exploratory 
 plot on the results, both cohort-wise and samples-wise. They are designed for 
-interactive use, also more then one time if desired. See the relative man pages 
-details.    
+interactive use, also more then one time if desired.
 An example for one of the callers results. 
 
 ```{r summary stats, eval = FALSE}
 # not run 
 sstatPenn <- summary_stats(results = penn, sample_list = cohort,
-                           markers = SNP_markers, plots_path = "tmp/sstatPenn")
+                           markers = SNP_markers, 
+                           plots_path = file.path("tmp","sstatPenn"))
 ```
 
 Exploring these summary statistics can provide important insights on the cohort 
@@ -200,8 +205,69 @@ process is completely optional, and we provide default values for the filtering
 function based on literature and our experience. 
 
 ```{r filtering}
-penn_filtered <- cleaning_filter(results = penn)
+penn_filtered <- cleaning_filter(results = penn, min_NP = 10)
 quanti_filtered <- cleaning_filter(quanti)
 ipn_filtered <- cleaning_filter(ipn)
+```
+
+It is also possible to filter calls based on blacklists, e.g. immunoglobulin regions 
+or telomers. In our package we provide two fucntions to generate immunoglobulin,
+telomeric and centromeric regions for the hg18, hg19 and hg38 genome assemblies. 
+The user can specify the number of minimum consecutive immuno genes to create a 
+region and the desired telomers and centromers blacklists width. Here we create 
+those blacklists in hg19 as an example. 
+
+```{r blacklists }
+hg19telom <- telom_centrom(hg19_start_end_centromeres, centrom = FALSE)
+hg19centrom <- telom_centrom(hg19_start_end_centromeres, telom = FALSE, region = 25000)
+
+ensembl37 <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL", 
+                              host = "grch37.ensembl.org", 
+                              dataset="hsapiens_gene_ensembl")
+hg19_immuno <- immuno_regions(n_genes = 10, mart = ensembl37)
+rm(ensembl37)
+```
+
+### Inheritance pattern detection 
+
+**this could need to be revised**
+
+In family-based cohort studies, CNV inheritance detection is possible. However, 
+because the process of CNVs calling tends to be imprecise, both false positive and 
+false negative are present in the results. This is in part solved with the filtering
+process and can be solved combining more than one methods results. 
+
+Here, to identify good *de-novo* candidates hits as well as inherited events we 
+use the function `cnvs_inheritance` that integrates three screening steps, 
+both at segment-level and at marker-level. The first step, for every CNVs in an 
+offspring, searches compatible CNVs in both parents (i.e. with 30% reciprocal 
+overlap, by default). If an hit is found the CNVs is inherited, if not it is 
+considered a putative *de-novo* ad undergoes the successive marker-level screenings. 
+At this point the CopyRatio values for all the markers in the region are considered 
+in the trio. A first screening consider as potentially inherited all the putative 
+*de-novo* events of the offspring for witch a parent have more than 75% compatible 
+markers points in the regions, i.e. markers with a CopyRatio < 0.75 if the CNV is 
+a deletion or a CopyRatio > 1.25 if the CNV is a duplication. This step is mostly 
+needed to speed up the function and will be made optional in near future.
+
+For autosomal chromosomes 
+$$LRR = log2R = log2(CopyRatio) = log2(numeric_{CN}/2)$$
+
+The putative *de-novo* events that survive undergo the final screening. This can 
+be performed in several way, at the moment the suggested and most supported is the 
+following. In brief for both pairs parent-offspring the mean of the CopyRatio values 
+are compared using a Wilcox test. Under the null hypothesis that the difference of 
+the two means is zero, we test if a difference is statistically significant, i.e. 
+if the resulting p-value is lower than a user-defined alpha (default value is 0.05). 
+If the test has a positive outcome for both parents than the CNV is defined as a 
+good ne-novo candidate. The two p-values from each comparison are stored in the 
+dataset and, when all the individual comparison are done, two additional columns 
+containing the adjusted p-values are computed, leaving to the user the choice of 
+which sets of p-value use.
+
+```{r}
+penn_inheritance <- 
+  cnvs_inheritance(results = penn_filtered, sample_list =  cohort[fam_ID == "1463", ], 
+                   markers = SNP_markers, raw_path = file.path("tmp_RDS"))
 ```
 
