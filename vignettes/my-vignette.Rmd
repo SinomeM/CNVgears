@@ -1,6 +1,6 @@
 ---
 title: "cnvgeaRs package."
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{cnvgeaRs package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -25,6 +25,8 @@ of the Italian Autism Network Collection (ITAN, cita paper(s???)), however, the 
 majority of the functions are of general purpose and useful for any CNVs study.
 The typical main steps of such analysis using cnvgeaRs are:
 
+**This list needs to be revised at some point** 
+
 * Load the cohort minimal metadata in the form of PED file;
 * Load the markers file (i.e. genomic location of each marker, SNP in case of array, interval/bin
   in case of NGS data);
@@ -47,20 +49,159 @@ The typical main steps of such analysis using cnvgeaRs are:
 * Extract high confidence rare events based on CNVRs and/or DGV; 
 * Export desired data as BED (e.g. for being viewed in IGV) or VCF (e.g. for being processed with Annovar)
   , as well as TSV.
+  
+Here we show most of the package features using CNVs calling results on a subset
+of the 1000 Genomes cohort. We created the subset using samples that creates full
+trios and have both SNP array and WGS data available. However at the moment only 
+the arrays are used here. CNVs calling was performed using a modified minimal 
+version of EnsembleCNV.
 
 ## Setup ## 
 
-First load the package.
+### Install 
+To install the package via GitHub repository
 
-```{r setup}
+```{r install git hub, eval = F}
+devtools::install_github()
+```
+
+### Load library
+To load the package.
+
+```{r library}
 library(CNVgears)
 ```
-All the major functions uses \code{data.table} package, especially in the more intensive steps.
-The package uses by default half the CPU threads available, this can be changed with the function
-\code{data.table::setDTthreads}. For example to use the 75% of available threads:
 
-``` {r DT threads}
+### Set data.table threads
+All the major functions uses `data.table` package, especially in the more intensive steps.
+The package uses by default half the CPU threads available, this can be changed with the function
+`data.table::setDTthreads`. For example to use the 75% of available threads:
+
+``` {r DT threads, eval = F}
 data.table::setDTthreads(percent=75)
 ```
 
+## Data Load 
+
+The first two objects we need to load are the cohort and markers information. The
+first object is loaded from a PED file from with the following columns are extracted:
+Sample ID, Family ID, sex and role (proband/sibling/mother/father). Role information
+needs to be present only if CNV inheritance detection is a desired step. The second 
+object contains the genomic location of the markers used for CNV calling, thus the 
+SNPs in case of DNA chip and genomic intervals if WES/WGS. The following columns are 
+needed: SNP ID (only for DNA chips), chromosome, start, end. One of these objects 
+is needed for each data type used for calling. Here we used only SNP arrays so only 
+one markers object is needed.   
+In the package are bundled CNV calling results of three different algorithms for
+chromosomes 14 and 22 of 24 samples from the 1000 Genomes project, as well as a PED 
+file of the cohort and the markers-level raw data for a single trio (within the 
+24 samples).  
+
+```{r PED PFB}
+# cohort data
+cohort <- read_metadt(DT_path = system.file("extdata", "cohort.ped", package = "CNVgears"),
+                      sample_ID_col = "Individual ID", fam_ID_col = "Family ID",
+                      sex_col = "Gender", role_col = "Role")
+
+# markers location
+SNP_markers <- read_finalreport_snps(system.file("extdata", "SNP.pfb", 
+                                                 package = "CNVgears"),
+                                     mark_ID_col = "Name", chr_col = "Chr", 
+                                     pos_col = "Position")
+```
+
+Then we load the actual results and the marker-level raw data. The results are 
+loaded in the session, while the raw data are processed and stored as RDS one 
+chromosome at the time. The RDS files will be loaded only when necessary in order 
+to reduce the RAM requirements of processing results from very large cohorts 
+and/or from several methods.   
+In this scenario the raw data consist of the SNP array only, thus we can process
+them one single time and use them for all the three callers results.    
+Note that during the importing of the results an intra-method CNV merging step is 
+performed, i.e. adjacent call are merged into a single one if requirements are met.
+
+**CHANGE do_merge WHEN THE FUNCTION WILL BE UPDATED**
+
+**Also remove the parameter "results" from read_finalreport_raw in the future**
+
+```{r results + raw, message=FALSE}
+# CNV calling results
+penn <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_penn.txt", 
+                                           package = "CNVgears"), 
+                     res_type = "file", DT_type = "TSV/CSV", 
+                     chr_col = "chr", start_col = "posStart", end_col = "posEnd",
+                     CN_col = "CN", samp_ID_col = "Sample_ID",
+                     sample_list = cohort, markers = SNP_markers, 
+                     do_merge = 2, method_ID = "P")
+
+quanti <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_quanti.txt", 
+                                            package = "CNVgears"), 
+                      res_type = "file", DT_type = "TSV/CSV", 
+                      chr_col = "chr", start_col = "posStart", end_col = "posEnd",
+                      CN_col = "CN", samp_ID_col = "Sample_ID",
+                      sample_list = cohort, markers = SNP_markers, 
+                      do_merge = 2, method_ID = "Q")
+
+ipn <-  read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_ipn.txt", 
+                                           package = "CNVgears"), 
+                     res_type = "file", DT_type = "TSV/CSV", 
+                     chr_col = "chr", start_col = "posStart", end_col = "posEnd",
+                     CN_col = "CN", samp_ID_col = "Sample_ID",
+                     sample_list = cohort, markers = SNP_markers, 
+                     do_merge = 2, method_ID = "I")
+
+# raw data
+library("data.table", quietly = T)
+dir.create("tmp_raw")
+file.copy(system.file("extdata", "NA12878.txt", package = "CNVgears"), "tmp_raw/NA12878.txt")
+file.copy(system.file("extdata", "NA12891.txt", package = "CNVgears"), "tmp_raw/NA12891.txt")
+file.copy(system.file("extdata", "NA12892.txt", package = "CNVgears"), "tmp_raw/NA12892.txt")
+
+
+library("data.table", quietly = T)
+read_finalreport_raw(DT_path = "tmp_raw", pref = NA, suff = ".txt", 
+                     rds_path = "tmp_RDS",  
+                     markers = SNP_markers, results = penn,
+                     sample_list = cohort[sample_ID %in% c("NA12878", "NA12891", "NA12892")])
+
+file.remove(c("tmp_raw/NA12878.txt", "tmp_raw/NA12891.txt", 
+              "tmp_raw/NA12892.txt", "tmp_raw"))
+
+```
+
+Now the initial step of data load and normalization is completed and all a series 
+of integration and analysis steps can take place.    
+Obviously, if more methods are used this initial step is longer, in particular if 
+also WGS and/or high density SNPs array data is used (because of the very high 
+number of markers). More examples will be added in future version of this vignette. 
+
+## Data integration and processing
+
+### Results exploration and filtering 
+
+When analyzing CNVs calling or segmentation results, an important step is to filter 
+out undesired and/or noisy/unreliable calls. This package provide the means to do 
+so in an integrated an standardized manner using two functions: `summary_stats` 
+and `cleaning_filter`. The first produces several summary statistics and exploratory 
+plot on the results, both cohort-wise and samples-wise. They are designed for 
+interactive use, also more then one time if desired. See the relative man pages 
+details.    
+An example for one of the callers results. 
+
+```{r summary stats, eval = FALSE}
+# not run 
+sstatPenn <- summary_stats(results = penn, sample_list = cohort,
+                           markers = SNP_markers, plots_path = "tmp/sstatPenn")
+```
+
+Exploring these summary statistics can provide important insights on the cohort 
+composition and on the differences between the individual callers. Obviously, the 
+process is completely optional, and we provide default values for the filtering 
+function based on literature and our experience. 
+
+```{r filtering}
+penn_filtered <- cleaning_filter(results = penn)
+quanti_filtered <- cleaning_filter(quanti)
+ipn_filtered <- cleaning_filter(ipn)
+```
 

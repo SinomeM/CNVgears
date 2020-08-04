@@ -1,24 +1,24 @@
-Individual ID,Family ID,Paternal ID,Maternal ID,Gender,Phenotype,Population,Relationship,Replicate,Broad,Sanger,batch
-NA12878,1463,NA12891,NA12892,2,0,CEU,mother; child,"",5434246082_R03C01,,broad
-NA12891,1463,0,0,1,0,CEU,mat grandfather; father,"",5460461047_R02C01,,broad
-NA12892,1463,0,0,2,0,CEU,mat grandmother; mother,1000G_Kids_OMNI2.5M_05_A05_NA12892_5550917035_R01C01,5557107038_R01C01,,broad
-NA11840,1349,0,0,2,0,CEU,mat grandmother,"",5434078063_R03C01,,broad
-NA11843,1349,0,0,1,0,CEU,pat grandfather,"",5443767030_R02C01,,broad
-NA11881,1347,0,0,1,0,CEU,mat grandfather,"",5434246045_R04C01,,broad
-NA11892,1377,0,0,2,0,CEU,pat grandmother,"",5460461118_R02C01,,broad
-NA11893,1377,0,0,1,0,CEU,mat grandfather,"",5434203045_R01C01,,broad
-NA11894,1377,0,0,2,0,CEU,mat grandmother,"",5460461184_R04C01,,broad
-NA11918,1423,0,0,2,0,CEU,pat grandmother,"",5426529120_R04C01,,broad
-NA11919,1423,0,0,1,0,CEU,mat grandfather,"",5443767083_R02C01,,broad
-NA11920,1423,0,0,2,0,CEU,mat grandmother,"",5426529111_R03C01,,broad
-NA11930,1424,0,0,1,0,CEU,pat grandfather,"",5443767137_R01C01,,broad
-NA11931,1424,0,0,2,0,CEU,pat grandmother,"",5434246100_R02C01,,broad
-NA11992,1362,0,0,1,0,CEU,pat grandfather,"",5426511078_R04C01,,broad
-NA11993,1362,0,0,2,0,CEU,pat grandmother,"",5443767124_R01C01,,broad
-NA11994,1362,0,0,1,0,CEU,mat grandfather,"",5426529010_R02C01,,broad
-NA11995,1362,0,0,2,0,CEU,mat grandmother,"",5473229014_R03C01,,broad
-NA12003,1420,0,0,1,0,CEU,pat grandfather,"",5528550088_R04C01,,broad
-NA12004,1420,0,0,2,0,CEU,pat grandmother,"",5460461169_R04C01,,broad
-NA12005,1420,0,0,1,0,CEU,mat grandfather,"",5443767142_R04C01,,broad
-NA12006,1420,0,0,2,0,CEU,mat grandmother,"",5434246045_R01C01,,broad
-NA12043,1346,0,0,1,0,CEU,pat grandfather,"",5443767013_R03C01,,broad
+Individual ID,Family ID,Paternal ID,Maternal ID,Gender,Phenotype,Population,Role,Relationship,Broad,Sanger,batch
+NA12878,1463,NA12891,NA12892,2,0,CEU,Sibling,mother; child,5434246082_R03C01,,broad
+NA12891,1463,0,0,1,0,CEU,Father ,mat grandfather; father,5460461047_R02C01,,broad
+NA12892,1463,0,0,2,0,CEU,Mother ,mat grandmother; mother,5557107038_R01C01,,broad
+NA11840,1349,0,0,2,0,CEU,Mother ,mat grandmother,5434078063_R03C01,,broad
+NA11843,1349,0,0,1,0,CEU,Father ,pat grandfather,5443767030_R02C01,,broad
+NA11881,1347,0,0,1,0,CEU,Father ,mat grandfather,5434246045_R04C01,,broad
+NA11892,1377,0,0,2,0,CEU,Mother ,pat grandmother,5460461118_R02C01,,broad
+NA11893,1377,0,0,1,0,CEU,Father ,mat grandfather,5434203045_R01C01,,broad
+NA11894,1377,0,0,2,0,CEU,Mother ,mat grandmother,5460461184_R04C01,,broad
+NA11918,1423,0,0,2,0,CEU,Mother ,pat grandmother,5426529120_R04C01,,broad
+NA11919,1423,0,0,1,0,CEU,Father ,mat grandfather,5443767083_R02C01,,broad
+NA11920,1423,0,0,2,0,CEU,Mother ,mat grandmother,5426529111_R03C01,,broad
+NA11930,1424,0,0,1,0,CEU,Father ,pat grandfather,5443767137_R01C01,,broad
+NA11931,1424,0,0,2,0,CEU,Mother ,pat grandmother,5434246100_R02C01,,broad
+NA11992,1362,0,0,1,0,CEU,Father ,pat grandfather,5426511078_R04C01,,broad
+NA11993,1362,0,0,2,0,CEU,Mother ,pat grandmother,5443767124_R01C01,,broad
+NA11994,1362,0,0,1,0,CEU,Father ,mat grandfather,5426529010_R02C01,,broad
+NA11995,1362,0,0,2,0,CEU,Mother ,mat grandmother,5473229014_R03C01,,broad
+NA12003,1420,0,0,1,0,CEU,Father ,pat grandfather,5528550088_R04C01,,broad
+NA12004,1420,0,0,2,0,CEU,Mother ,pat grandmother,5460461169_R04C01,,broad
+NA12005,1420,0,0,1,0,CEU,Father ,mat grandfather,5443767142_R04C01,,broad
+NA12006,1420,0,0,2,0,CEU,Mother ,mat grandmother,5434246045_R01C01,,broad
+NA12043,1346,0,0,1,0,CEU,Father ,pat grandfather,5443767013_R03C01,,broad
