@@ -41,7 +41,7 @@
 # that at the moment is still missing from the results)
 
 
-cleaning_filter <- function(results, min_len = 5000, min_NP = 5, telom_centrom = NA,
+cleaning_filter <- function(results, min_len = 10000, min_NP = 10, telom_centrom = NA,
                             blacklist_region = NA, blacklist_samples = NA,
                             IG_region = NA, blacklist_chrs = NA) {
   if (!(is.data.table(results) | is.data.table(telom_centrom) |
