@@ -77,7 +77,7 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
     }
 
     for (samp in sample_list$sample_ID) {
-      cat("Sample :", samp, "...\n")
+      # cat("Sample :", samp, "...\n")
 
       # subset compatible cnvs
       tmp <- res[sample_ID == samp & (chr == a_chr &
