@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+
 ## Introduction ##
 
 The cnvgeaRs package aims to implement an interactive and extensible framework for the analysis 
@@ -56,6 +58,7 @@ trios and have both SNP array and WGS data available. However at the moment only
 the arrays are used here. CNVs calling was performed using a modified minimal 
 version of EnsembleCNV.
 
+
 ## Setup ## 
 
 ### Install 
@@ -82,6 +85,7 @@ data.table::setDTthreads(percent=75)
 ```
 
 See the relative man pages for details on each function used. 
+
 
 ## Data Load 
 
@@ -180,6 +184,7 @@ Obviously, if more methods are used this initial step is longer, in particular i
 also WGS and/or high density SNPs array data is used (because of the very high 
 number of markers). More examples will be added in future version of this vignette. 
 
+
 ## Data integration and processing
 
 ### Results exploration and filtering 
@@ -215,7 +220,7 @@ or telomers. In our package we provide two fucntions to generate immunoglobulin,
 telomeric and centromeric regions for the hg18, hg19 and hg38 genome assemblies. 
 The user can specify the number of minimum consecutive immuno genes to create a 
 region and the desired telomers and centromers blacklists width. Here we create 
-those blacklists in hg19 as an example. 
+those blacklists in hg19 as an example.
 
 ```{r blacklists }
 hg19telom <- telom_centrom(hg19_start_end_centromeres, centrom = FALSE)
@@ -265,9 +270,74 @@ dataset and, when all the individual comparison are done, two additional columns
 containing the adjusted p-values are computed, leaving to the user the choice of 
 which sets of p-value use.
 
-```{r}
+```{r inheritance}
 penn_inheritance <- 
   cnvs_inheritance(results = penn_filtered, sample_list =  cohort[fam_ID == "1463", ], 
                    markers = SNP_markers, raw_path = file.path("tmp_RDS"))
+quanti_inheritance <- 
+  cnvs_inheritance(results = quanti_filtered, sample_list =  cohort[fam_ID == "1463", ], 
+                   markers = SNP_markers, raw_path = file.path("tmp_RDS"))
+ipn_inheritance <- 
+  cnvs_inheritance(results = ipn_filtered, sample_list =  cohort[fam_ID == "1463", ], 
+                   markers = SNP_markers, raw_path = file.path("tmp_RDS"))
+
+penn_denovo <- penn_inheritance[inheritance == "denovo", ]
+quanti_denovo <- quanti_inheritance[inheritance == "denovo", ]
+ipn_denovo <- ipn_inheritance[inheritance == "denovo", ]
 ```
 
+Note that inheritance detection is performed separately for each method, in this 
+way it is possible to use marker-level raw data. However, when all the results use 
+the same raw data (as in in this vignette, at the moment), it is also possible to
+first combine the results (see next section) an only then perform inheritance 
+detection. 
+
+### Inter-methods merging
+
+At this point we can integrate the multiple methods results into a single object.
+As exemplification of a real pipeline we also process the *de-novo* calls.
+
+```{r inter merge, message=FALSE, results="hide"}
+ipq_filtered <- 
+  inter_res_merge(res_list = list(penn_filtered, quanti_filtered, ipn_filtered),
+                  sample_list = cohort, g_arms = hg19_chr_arms, 
+                  inner_outer = "outer")
+
+ipq_denovo <- 
+  inter_res_merge(res_list = list(penn_denovo, quanti_denovo, ipn_denovo),
+                  sample_list = cohort, g_arms = hg19_chr_arms, 
+                  inner_outer = "outer")
+```
+
+At this point it is possible to perform a second filtering step based on the number 
+of calling methods, e.g. filter out all the calls made by one single algorithm. 
+
+### CNVRs computation
+
+We also provide a method to compute Copy Number Variable Regions, starting from 
+the integrated object created in the previous step 
+
+```{r cnvrs, results="hide"}
+cnvrs <- cnvrs_create(cnvs = ipq_filtered, g_arms = hg19_chr_arms)
+```
+
+CNVRs can also be used for filtering purposes, as an example a user can be more 
+interested in rare events and use CNVRs frequency to achieve this internally.
+
+### De-novo CNVs visual confirmation 
+
+In the package it is also implemented a function to visually inspect the de-novo 
+candidates. We use as an example the two calls detected by both PennCNV and QantiSNP.
+
+```{r denovo plot, warning=FALSE}
+lrr_trio_plot(cnv = ipq_denovo[4], raw_path =  file.path("tmp_RDS"), 
+              sample_list = cohort, results = ipn_filtered)
+lrr_trio_plot(cnv = ipq_denovo[5], raw_path =  file.path("tmp_RDS"), 
+              sample_list = cohort, results = ipn_filtered)
+```
+
+Note that the two calls are quite close. 
+
+## Annotation
+
+We provide 
