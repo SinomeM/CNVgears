@@ -1,0 +1,16 @@
+citHeader("To cite CNVgears in publications use:")
+
+citEntry(
+  entry    = "Website",
+  title    = "CNVgears",
+  author   = ,
+  journal  = ,
+  year     = ,
+  volume   = ,
+  number   = ,
+  pages    = ,
+  url      = "https://github.com/SinomeM/CNVgears",
+  textVersion = paste(
+
+  )
+)
