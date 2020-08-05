@@ -6,8 +6,8 @@
 \usage{
 cleaning_filter(
   results,
-  min_len = 5000,
-  min_NP = 5,
+  min_len = 10000,
+  min_NP = 10,
   telom_centrom = NA,
   blacklist_region = NA,
   blacklist_samples = NA,

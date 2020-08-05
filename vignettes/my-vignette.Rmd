@@ -1,5 +1,5 @@
 ---
-title: "cnvgeaRs package."
+title: "CNVgears package."
 output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{cnvgeaRs package}
@@ -17,15 +17,16 @@ knitr::opts_chunk$set(
 
 ## Introduction ##
 
-The cnvgeaRs package aims to implement an interactive and extensible framework for the analysis 
-of Copy Number Variation calling and/or segmentation results, typically from multiple pipelines or 
-algorithms, regardless the initial raw data type. At the moment Illumina SNPs array and any 
-type of NGS data are supported, provided that at least the raw log2R value, or 
-any related measure is accessible for each sample. The package is particularly suited for 
-the analysis of family based studies, being originally developed for the CNV characterization 
-of the Italian Autism Network Collection (ITAN, cita paper(s???)), however, the more vast 
-majority of the functions are of general purpose and useful for any CNVs study.
-The typical main steps of such analysis using cnvgeaRs are:
+The cnvgeaRs package aims to implement an interactive and extensible framework for 
+the analysis of Copy Number Variation calling and/or segmentation results, typically 
+from multiple pipelines or algorithms, regardless the initial raw data type. At 
+the moment Illumina SNPs array and any type of NGS data are supported, provided 
+that at least the raw log2R value, or any related measure is accessible for each 
+sample. The package is particularly suited for the analysis of family based studies, 
+being originally developed for the CNV characterization of the Italian Autism Network 
+Collection (ITAN). However, the more vast majority of the functions are of general 
+purpose and useful for any CNVs study. The typical main steps of such analysis using 
+CNVgears are:
 
 **This list needs to be revised at some point** 
 
@@ -42,16 +43,23 @@ The typical main steps of such analysis using cnvgeaRs are:
   user-generated), such as immunoglobulin and telomeric/centromeric regions. Also more extreme 
   intra-results merging can be performed if one or more methods appear to over-segment. 
 * Detect CNVs inheritance pattern, if families structure is given;
-* Visually inspect the good de novo CNVs candidate raw data (LRR/log2R in particular, also BAF if available);
+* Visually inspect the good de novo CNVs candidate raw data (LRR/log2R in particular);
 * Merge the various methods results in a single object, keep only the call made by N (one or more)
   algorithms/pipelines if desired;
 * Annotate genomic locus of the calls and search for CNVs in known disease-linked loci (e.g. 
   in studies on ASD or schizophrenia). Annotate genic content of selected CNVs;
 * Compute CNV regions (CNVRs); 
-* Extract high confidence rare events based on CNVRs and/or DGV; 
+* Extract high confidence rare events based on CNVRs; 
 * Export desired data as BED (e.g. for being viewed in IGV) or VCF (e.g. for being processed with Annovar)
   , as well as TSV.
   
+Depending on user needs and cohort composition (e.g. family based or not) it is 
+possible to perform all or only a fraction of these steps. As an example, if the 
+cohort is not family based, if CNVs inheritance pattern is not a desired information 
+or if the markers-level raw data is not available, the raw data load step can be 
+easily skip. The package can be used also only to combine the results of different 
+methods in a uniform format and export the output to be processed in other programs. 
+
 Here we show most of the package features using CNVs calling results on a subset
 of the 1000 Genomes cohort. We created the subset using samples that creates full
 trios and have both SNP array and WGS data available. However at the moment only 
@@ -65,10 +73,11 @@ version of EnsembleCNV.
 To install the package via GitHub repository
 
 ```{r install git hub, eval = F}
-devtools::install_github()
+devtools::install_github("SinomeM/CNVgears")
 ```
 
 ### Load library
+
 To load the package.
 
 ```{r library}
@@ -76,6 +85,7 @@ library(CNVgears)
 ```
 
 ### Set data.table threads
+
 All the major functions uses `data.table` package, especially in the more intensive steps.
 The package uses by default half the CPU threads available, this can be changed with the function
 `data.table::setDTthreads`. For example to use the 75% of available threads:
@@ -87,7 +97,7 @@ data.table::setDTthreads(percent=75)
 See the relative man pages for details on each function used. 
 
 
-## Data Load 
+## Data Load ##
 
 The first two objects we need to load are the cohort and markers information. The
 first object is loaded from a PED file from with the following columns are extracted:
@@ -185,7 +195,7 @@ also WGS and/or high density SNPs array data is used (because of the very high
 number of markers). More examples will be added in future version of this vignette. 
 
 
-## Data integration and processing
+## Data integration and processing ##
 
 ### Results exploration and filtering 
 
@@ -220,7 +230,10 @@ or telomers. In our package we provide two fucntions to generate immunoglobulin,
 telomeric and centromeric regions for the hg18, hg19 and hg38 genome assemblies. 
 The user can specify the number of minimum consecutive immuno genes to create a 
 region and the desired telomers and centromers blacklists width. Here we create 
-those blacklists in hg19 as an example.
+those blacklists in hg19 as an example.    
+Note that the fucntion `immuno_regions` uses internally the package `biomaRt` that 
+work with the hg38 genome assembly by default. To work with older assemblies we 
+need to pass a custom `mart` object, as exemplified here. 
 
 ```{r blacklists }
 hg19telom <- telom_centrom(hg19_start_end_centromeres, centrom = FALSE)
@@ -338,6 +351,32 @@ lrr_trio_plot(cnv = ipq_denovo[5], raw_path =  file.path("tmp_RDS"),
 
 Note that the two calls are quite close. 
 
-## Annotation
+## Annotation ##
 
-We provide 
+The package include also some annotation functions, for extracting both the CNVs 
+locus and affected genes. At the moment the affected genes are listed using "-" 
+separated Ensemble IDs.   
+As `immuno_regions`, the function `genic_load` uses `biomaRt` internally, thus a 
+custom mart is needed to work in hg19. 
+
+```{r annotation}
+# locus 
+ipq_denovo_locus <- genomic_locus(DT_in = ipq_denovo, keep_str_end = F)
+
+# genes 
+ensembl37 <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL", 
+                              host = "grch37.ensembl.org", 
+                              dataset="hsapiens_gene_ensembl")
+
+ipq_denovo_genes <- genic_load(DT_in = ipq_denovo, mart = ensembl37)
+
+rm(ensembl37)
+```
+
+## Visualization ##
+
+**Integration with IGVR asap**
+ 
+## Data export ##
+
+[...]
