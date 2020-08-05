@@ -20,7 +20,6 @@
 #' @import data.table
 
 
-
 cnvs_inheritance <- function(sample_list, markers, results, raw_path,
                              mmethod = 1, alfa = 0.05, min_NP = 10,
                              pre_fine_screen = TRUE, adjust_pval = T,
@@ -107,30 +106,6 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             }
           }
         }
-        # if (nrow(moth_tmp) != 0){
-        #   for (n in 1:nrow(moth_tmp)) {
-        #     m_points <- moth_tmp$first_P[n]:moth_tmp$last_P[n]
-        #     overl <- length(all(cnv_points %in% m_points)[
-        #                       all(cnv_points %in% m_points) == T])
-        #     # 30% point reciprocal overlap
-        #     if (any(overl >= th*length(cnv_points) & overl >= th*length(m_points))) {
-        #       m <- 1
-        #       break
-        #     }
-        #   }
-        # }
-        # if (nrow(fath_tmp) != 0){
-        #   for (n in 1:nrow(fath_tmp)) {
-        #     f_points <- fath_tmp$first_P[n]:fath_tmp$last_P[n]
-        #     overl <- length(all(cnv_points %in% f_points)[
-        #                       all(cnv_points %in% f_points) == T])
-        #     # 30% point reciprocal overlap
-        #     if (any(overl >= th*length(cnv_points) & overl >= th*length(f_points))) {
-        #       p <- 1
-        #       break
-        #     }
-        #   }
-        # }
 
         # return result
         if (m == 1 & p == 0) inh <- "maternal"
@@ -174,12 +149,12 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
       fath_ints <- readRDS(file.path(raw_path, paste0(fath, "_chr", cc, ".rds")))
       moth_ints <- readRDS(file.path(raw_path, paste0(moth, "_chr", cc, ".rds")))
 
-      # REMOVE THIS LATER
-      if (!"copyratio" %in% colnames(off_ints)) {
-        off_ints[, copyratio := 2^log2R]
-        fath_ints[, copyratio := 2^log2R]
-        moth_ints[, copyratio := 2^log2R]
-      } ## I forgot to compute this in read_finalreport_raw and I'm testing on SPARK
+      # # REMOVE THIS LATER
+      # if (!"copyratio" %in% colnames(off_ints)) {
+      #   off_ints[, copyratio := 2^log2R]
+      #   fath_ints[, copyratio := 2^log2R]
+      #   moth_ints[, copyratio := 2^log2R]
+      # } ## I forgot to compute this in read_finalreport_raw and I'm testing on SPARK
 
       for (i in 1:nrow(off_tmp)) {
         # st_tmp <- off_tmp$start[i]
@@ -193,9 +168,6 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
         off_ints_tmp <- off_ints[P_ID >= f_P & P_ID <= l_P, copyratio]
         fath_ints_tmp <- fath_ints[P_ID >= f_P & P_ID <= l_P, copyratio]
         moth_ints_tmp <- moth_ints[P_ID >= f_P & P_ID <= l_P, copyratio]
-        # off_ints_tmp <- off_ints[start >= f_P & end <= l_P, copyratio]
-        # fath_ints_tmp <- fath_ints[start >= f_P & end <= l_P, copyratio]
-        # moth_ints_tmp <- moth_ints[start >= f_P & end <= l_P, copyratio]
 
         # Initial screening: count the number of points with a GT (from the
         # copyratios) compatible with the offspring CNV, the presence of a
@@ -253,10 +225,6 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
 
         # Possibilities: 1. compare the two means, 2. count the points in the
         # off that are outside the region mean+/-2*SD, 3. ...
-        # Also checking if the distribution are normal-like could be useful, if
-        # a in the parent there is no call but the distribution is not well
-        # centered in 1 (for copyratios) it could indicate that there is
-        # something in the data
 
         # Approach 1, compare the two means
         if (mmethod == 1) {
@@ -270,19 +238,11 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
 
           if (gt == 1) {
             # test if the mean is lower in the offspring
-            # mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp,
-            #                      alternative = "less", exact = F)$p.value
-            # fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp,
-            #                      alternative = "less", exact = F)$p.value
             mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = F)$p.value
             fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = F)$p.value
           }
           if (gt == 2) {
             # test if the mean is greater in the offspring
-            # mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp,
-            #                      alternative = "greater", exact = F)$p.value
-            # fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp,
-            #                      alternative = "greater", exact = F)$p.value
             mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = F)$p.value
             fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = F)$p.value
           }
@@ -320,12 +280,6 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             next
           }
 
-          # I'm not completely sure but I think that here it is assumed the
-          # normality of the data. This is not always the case. It could be
-          # tested and, in any case there are more formal way to obtain the
-          # borders we are interested in (i.e. 95% confidence interval if I
-          # remember correctly)
-
           # It is possible that this method it too stringent, two entire
           # standard deviations are a lot (in particular for events with a low
           # number of points)
@@ -337,10 +291,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
           fmean <- mean(fath_ints_tmp)
           fsd <- sd(fath_ints_tmp)
 
-          # here a sort of "two side comparison" is made, it could be more
-          # appropriate to look only in the specific CNV direction (i.e. lower
-          # if deletion, upper if duplication) here i recycle the name mlen and
-          # flen but they are different objects
+          # here i recycle the name mlen and flen but they are different objects
           mlen <- length(off_ints_tmp[off_ints_tmp >= mmean - 2*msd |
                                         off_ints_tmp <= mmean + 2*msd])
           flen <- length(off_ints_tmp[off_ints_tmp >= fmean - 2*fsd |
@@ -366,7 +317,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
         }
 
         # Approach 2 BIS (only on SD)
-        if (mmethod == 2.5) {
+        if (mmethod == 2.1) {
           if (off_tmp$NP[i] < 10) {
             DT[sample_ID == samp & seg_ID == sid,
                     `:=` (inheritance = "too_small")]

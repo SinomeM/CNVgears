@@ -135,6 +135,8 @@ In this scenario the raw data consist of the SNP array only, thus we can process
 them one single time and use them for all the three callers results.    
 Note that during the importing of the results an intra-method CNV merging step is 
 performed, i.e. adjacent call are merged into a single one if requirements are met.
+This step is performed by default but can be avoided by setting `do_merge` parameter 
+to `FALSE`. 
 
 **CHANGE do_merge WHEN THE FUNCTION WILL BE UPDATED**
 
@@ -147,24 +149,21 @@ penn <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_penn.txt"
                      res_type = "file", DT_type = "TSV/CSV", 
                      chr_col = "chr", start_col = "posStart", end_col = "posEnd",
                      CN_col = "CN", samp_ID_col = "Sample_ID",
-                     sample_list = cohort, markers = SNP_markers, 
-                     do_merge = 2, method_ID = "P")
+                     sample_list = cohort, markers = SNP_markers, method_ID = "P")
 
 quanti <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_quanti.txt", 
                                             package = "CNVgears"), 
                       res_type = "file", DT_type = "TSV/CSV", 
                       chr_col = "chr", start_col = "posStart", end_col = "posEnd",
                       CN_col = "CN", samp_ID_col = "Sample_ID",
-                      sample_list = cohort, markers = SNP_markers, 
-                      do_merge = 2, method_ID = "Q")
+                      sample_list = cohort, markers = SNP_markers, method_ID = "Q")
 
 ipn <-  read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_ipn.txt", 
                                            package = "CNVgears"), 
                      res_type = "file", DT_type = "TSV/CSV", 
                      chr_col = "chr", start_col = "posStart", end_col = "posEnd",
                      CN_col = "CN", samp_ID_col = "Sample_ID",
-                     sample_list = cohort, markers = SNP_markers, 
-                     do_merge = 2, method_ID = "I")
+                     sample_list = cohort, markers = SNP_markers, method_ID = "I")
 
 # raw data
 library("data.table", quietly = T)

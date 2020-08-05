@@ -230,10 +230,8 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
         DT <- DT_uniform_internal(DT_in = DT, markers = markers,
                                   sex = sample_list$sex[i])
         # merge segments
-        if (do_merge == 1)
+        if (do_merge)
           DT <- merge_calls(DT, thresh = merge_thresh)
-        if (do_merge == 2)
-          DT <- merge_calls2(DT, thresh = merge_thresh)
 
         # add seg_ID for this sample
         DT[, seg_ID := 1:nrow(DT)]
