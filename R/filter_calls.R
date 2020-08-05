@@ -23,9 +23,9 @@
 #'   Default is 5000.
 #' @param min_NP, minimum CNVs points, any shorter event will be filtered out.
 #'   Default is 5.
-#' @param telom_centrom,IG_region,blacklist_region, blacklist, a
-#'   \code{data.table} containing at least the following columns: "chr",
-#'   "start", "end". Any event in a blacklists' region will be filtered out.
+#' @param blacklists, blacklist, a list of \code{data.table} containing at least
+#'   the following columns: "chr", "start", "end". Any event in a blacklists'
+#'   region will be filtered out.
 #' @param blacklist_samples, character vector containing samples ID to filter
 #'   out.
 #' @param blacklist_chrs, character vector containing chromosomes names in the
@@ -33,28 +33,24 @@
 #'
 #' @export
 
-# probably only the results data.table is needed here
-# results, telom_centrom and the two blacklist_region are data.table
-# blacklist_samples is a character vector
-
-# add also the possibility to filter based on the number of calling algorithms (on the column
-# that at the moment is still missing from the results)
+# add also the possibility to filter based on the number of calling algorithms
 
 
-cleaning_filter <- function(results, min_len = 10000, min_NP = 10, telom_centrom = NA,
-                            blacklist_region = NA, blacklist_samples = NA,
-                            IG_region = NA, blacklist_chrs = NA) {
-  if (!(is.data.table(results) | is.data.table(telom_centrom) |
-        is.data.table(blacklist_region)))
-    stop("Inputs must be a 'data.table'!\n")
+cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
+                            blacklists = NULL, blacklist_samples = NULL,
+                            blacklist_chrs = NULL) {
+  if (!is.data.table(results))
+    stop("Input must be a 'data.table'!\n")
+  if (!is.list(blacklists))
+    stop("blacklists must be a list object!\n")
 
   # create a local copy
   DT <- results
 
   # blacklist_samples and blacklist_chrs
-  if (!is.na(blacklist_samples))
+  if (length(blacklist_samples) != 0)
     DT <- DT[!sample_ID %in% blacklist_samples, ]
-  if (!is.na(blacklist_chrs))
+  if (length(blacklist_chrs) != 0)
     DT <- DT[!chr %in% blacklist_chrs, ]
 
   # min_len min_NP
@@ -77,17 +73,11 @@ cleaning_filter <- function(results, min_len = 10000, min_NP = 10, telom_centrom
   # user should be careful using these region-based filters, they can remove
   # biologically relevant CNVs
 
-  # blacklist_region
-  if (!is.na(blacklist_region))
-    DT <- filter_region(DT, blacklist_region)
-
-  # telom_centrom
-  if (!is.na(telom_centrom))
-    DT <- filter_region(DT, telom_centrom)
-
-  # IG_region
-  if (!is.na(IG_region))
-    DT <- filter_region(DT, IG_region)
+  # blacklists
+  if (length(blacklists) = 0) {
+    for (i in 1:length(blacklists))
+      DT <- filter_region(DT, blacklists[[i]])
+  }
 
   return(DT)
 }
