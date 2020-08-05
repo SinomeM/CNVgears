@@ -1,16 +1,12 @@
 citHeader("To cite CNVgears in publications use:")
 
 citEntry(
-  entry    = "Website",
+  entry    = "Unpublished",
   title    = "CNVgears",
-  author   = ,
-  journal  = ,
-  year     = ,
-  volume   = ,
-  number   = ,
-  pages    = ,
+  author   = "Simone Montalbano",
+  note     = "At the moment unpublished package available at Github.",
   url      = "https://github.com/SinomeM/CNVgears",
-  textVersion = paste(
-
+  textVersion = paste0("CNVgears, Simone Montalbano,",
+                       " https://github.com/SinomeM/CNVgears, 2020"
   )
 )

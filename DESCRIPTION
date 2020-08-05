@@ -10,7 +10,9 @@ Description: This package contains a set of functions to perform several type of
 Depends: R (>= 3.5.0)
 Imports: 
 	data.table,
-	R.utils
+	R.utils,
+	ggplot2,
+	cowplot
 Suggests:
 	VariantAnnotation,
 	DelayedArray,
@@ -19,11 +21,11 @@ Suggests:
   biomaRt,
   evobiR,
   rmarkdown,
-  devtools,
-	ggplot2,
-	cowplot
+  devtools
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+biocViews: Software
+BugReports: https://github.com/SinomeM/CNVgears/issues
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
