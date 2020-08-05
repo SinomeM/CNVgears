@@ -24,7 +24,7 @@
 # try to change the functions in that it does require SOME columns,
 # not ONLY SOME columns, maybe avoiding the use of rbind for some vectors.
 
-merge_calls <- function(DT_in, thresh = 0.5) {
+merge_calls_old <- function(DT_in, thresh = 0.5) {
   # check if multiple samples are present
   if (length(unique(DT_in$sample_ID)) != 1)
     stop(paste0("Multiple samples detected! Intra results merging require ",
@@ -112,7 +112,7 @@ merge_calls <- function(DT_in, thresh = 0.5) {
   return(DT_in)
 }
 
-merge_calls2 <- function(DT_in, thresh = 0.3) {
+merge_calls <- function(DT_in, thresh = 0.3) {
   # check if multiple samples are present
   if (length(unique(DT_in$sample_ID)) != 1)
     stop(paste0("Multiple samples detected! Intra results merging require ",

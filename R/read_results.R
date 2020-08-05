@@ -73,7 +73,7 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
                          chr_col, start_col, end_col, CN_col, samp_ID_col,
                          markers, header_col = T, DT_type,
                          end_vcf = "END", CN_vcf = "CN",
-                         do_merge = 1, merge_thresh = 0.5, method_ID) {
+                         do_merge = TRUE, merge_thresh = 0.5, method_ID) {
   # check parameters
   if (missing(DT_path) | missing(res_type) | missing(DT_type))
     stop("Missing inputs!\n")
@@ -85,7 +85,7 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
     stop("res_type set to 'directory' but no 'pref' | 'suff' specified!\n")
   if (DT_type == "TSV/CSV" & (missing(chr_col) | missing(start_col) |
       missing(end_col))) stop("Missing parameters for DT_type == 'TSV/CSV'!\n")
-  if (!do_merge %in% c(0,1,2))
+  if (!is.logical(do_merge))
     stop("Wrong 'do_merge' format!\n")
   if (missing(method_ID))
     stop("Please specify an Id for this method. One letter code is encouraged!\n")
@@ -195,10 +195,8 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
         tmp <- DT_uniform_internal(DT_in = DT[sample_ID == sid, ],
                                    markers = markers, sex = sex)
         # merge segments
-        if (do_merge == 1)
+        if (do_merge)
           tmp <- merge_calls(tmp, thresh = merge_thresh)
-        if (do_merge == 2)
-          tmp <- merge_calls2(tmp, thresh = merge_thresh)
 
         # add seg_ID for this sample
         tmp[, seg_ID := 1:nrow(tmp)]
