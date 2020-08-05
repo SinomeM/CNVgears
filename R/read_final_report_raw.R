@@ -54,6 +54,9 @@ read_finalreport_raw <- function(DT_path, rds_path, pref, suff,
     if (sex == 2) DT <- DT[chr %in% as.character(1:23)]
     # standardize
     DT[, `:=` (start = as.integer(start), end = as.integer(start), log2R = as.numeric(log2R))]
+    # col order
+    DT <- DT[, .(chr, start, end, log2R, BAF)]
+
     # sort
     setorder(DT, chr, start)
     # compute and add these columns: P_ID (match from markers), P_CN, seg_ID, copyratio  ..?
@@ -62,17 +65,18 @@ read_finalreport_raw <- function(DT_path, rds_path, pref, suff,
                                                    markers[chr == cc, start]), P_ID]]
     }
     DT[, `:=` (P_CN = round((2^log2R)*2), copyratio = 2^log2R)]
-    # add seg_ID GT etc
-    sids <- results[sample_ID == sample_list$sample_ID[i], seg_ID]
-    for (sid in sids) {
-      res_line <- results[sample_ID == sample_list$sample_ID[i] & seg_ID == sid]
-      last_P <- res_line[, last_P]
-      first_P <- res_line[, first_P]
-      # GT <- res_line[, GT]
-      # CN <- res_line[, CN]
-      # DT[P_ID >= first_P & P_ID <= last_P, `:=` (seg_ID = sid, seg_GT = GT, seg_CN = CN)]
-      DT[P_ID >= first_P & P_ID <= last_P, seg_ID := sid]
-    }
+
+    # # add seg_ID GT etc
+    # sids <- results[sample_ID == sample_list$sample_ID[i], seg_ID]
+    # for (sid in sids) {
+    #   res_line <- results[sample_ID == sample_list$sample_ID[i] & seg_ID == sid]
+    #   last_P <- res_line[, last_P]
+    #   first_P <- res_line[, first_P]
+    #   # GT <- res_line[, GT]
+    #   # CN <- res_line[, CN]
+    #   # DT[P_ID >= first_P & P_ID <= last_P, `:=` (seg_ID = sid, seg_GT = GT, seg_CN = CN)]
+    #   DT[P_ID >= first_P & P_ID <= last_P, seg_ID := sid]
+    # }
 
     # save in RDS one chromosome at time in the specified path
     if (sex == 1) chrs <- as.character(1:24)

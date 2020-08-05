@@ -121,16 +121,16 @@ read_NGS_raw <- function(DT_path, rds_path, pref, suff,
     }
     DT[, P_CN := round((2^log2R)*2)]
 
-    # probably slow here
-    sids <- results[sample_ID == sample_list$sample_ID[i], seg_ID]
-    for (sid in sids) {
-      res_line <- results[sample_ID == sample_list$sample_ID[i] & seg_ID == sid]
-      last_P <- res_line[, last_P]
-      first_P <- res_line[, first_P]
-      GT <- res_line[, GT]
-      CN <- res_line[, CN]
-      DT[P_ID >= first_P & P_ID <= last_P, `:=` (seg_ID = sid, seg_GT = GT, seg_CN = CN)]
-    }
+    # # probably slow here
+    # sids <- results[sample_ID == sample_list$sample_ID[i], seg_ID]
+    # for (sid in sids) {
+    #   res_line <- results[sample_ID == sample_list$sample_ID[i] & seg_ID == sid]
+    #   last_P <- res_line[, last_P]
+    #   first_P <- res_line[, first_P]
+    #   GT <- res_line[, GT]
+    #   CN <- res_line[, CN]
+    #   DT[P_ID >= first_P & P_ID <= last_P, `:=` (seg_ID = sid, seg_GT = GT, seg_CN = CN)]
+    # }
 
     # # probably vary slow here
     # # TEST CHANGES HERE
