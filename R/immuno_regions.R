@@ -29,10 +29,10 @@
 # returns a list, the first element can be passed to filter_calls.R and both can be
 # written as BED for IGV visualization
 
-immuno_regions <- function(biotype = NA,
-                           n_genes = 5, mart = NA) {
+immuno_regions <- function(biotype = NULL,
+                           n_genes = 5, mart = NULL) {
 
-  if (is.na(biotype))
+  if (length(biotype) == 0)
     biotype <- c("IG_C_gene", "IG_D_gene", "IG_J_gene", "IG_LV_gene",
                  "IG_V_gene", "TR_C_gene", "TR_J_gene", "TR_V_gene",
                  "TR_D_gene", "IG_pseudogene", "IG_C_pseudogene",
@@ -40,7 +40,7 @@ immuno_regions <- function(biotype = NA,
                  "TR_V_pseudogene", "TR_J_pseudogene")
 
   # retrive IG genes and standardize chr
-  if (is.na(mart)) ensembl <- biomaRt::useMart("ensembl",
+  if (length(mart) == 0) ensembl <- biomaRt::useMart("ensembl",
                                                dataset="hsapiens_gene_ensembl")
   else ensembl <- mart
 
