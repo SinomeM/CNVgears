@@ -1,13 +1,13 @@
-Changes in version 0.2.0 (2020-07-01)
+Changes in version 0.4.0 (2020-08-10)
 
-+ This is the first fully functional version of the package. 
+- Several improvements in functions usability 
+- Some code semplification 
+- Bug fixes
 
 Changes in version 0.3.0 (2020-07-15)
 
-+ Bug fixes
+- Bug fixes
 
-Changes in version 0.4.0 (2020-08-10)
+Changes in version 0.2.0 (2020-07-01)
 
-+ Several improvements in functions usability 
-+ Some code semplification 
-+ Bug fixes
+- This is the first fully functional version of the package. 
