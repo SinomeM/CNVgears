@@ -19,7 +19,7 @@
 #'
 #' @import data.table
 
-genic_load <- function(DT_in, biotypes = "protein_coding", mart = NA) {
+genic_load <- function(DT_in, biotypes = "protein_coding", mart = NULL) {
   if (!is.data.table(DT_in))
     stop("DT_in must be a data.table!")
 
@@ -28,7 +28,7 @@ genic_load <- function(DT_in, biotypes = "protein_coding", mart = NA) {
   DT <- DT_in
   rm(DT_in)
 
-  if (is.na(mart))
+  if (length(mart) == 0)
   mart <- biomaRt::useMart("ensembl",
                            dataset="hsapiens_gene_ensembl")
 
