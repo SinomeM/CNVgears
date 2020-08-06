@@ -173,8 +173,7 @@ file.copy(system.file("extdata", "NA12892.txt", package = "CNVgears"),
           file.path("tmp_raw","NA12892.txt"))
 
 read_finalreport_raw(DT_path = file.path("tmp_raw"), pref = NA, suff = ".txt", 
-                     rds_path = file.path("tmp_RDS"),  
-                     markers = SNP_markers, results = penn,
+                     rds_path = file.path("tmp_RDS"), markers = SNP_markers, 
                      sample_list = cohort[fam_ID == "1463", ])
 
 file.remove(c(file.path("tmp_raw","NA12878.txt"), file.path("tmp_raw/NA12891.txt"), 

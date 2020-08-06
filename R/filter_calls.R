@@ -41,8 +41,6 @@ cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
                             blacklist_chrs = NULL) {
   if (!is.data.table(results))
     stop("Input must be a 'data.table'!\n")
-  if (!is.list(blacklists))
-    stop("blacklists must be a list object!\n")
 
   # create a local copy
   DT <- results
