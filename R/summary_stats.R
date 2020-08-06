@@ -33,7 +33,9 @@
 
 # add the option to save as RDS and PNG!
 
-summary_stats <- function(results, sample_list, markers, plots_path = NA) {
+# change results to x in the params
+
+summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
   # check input
   if (!is.data.table(results) | !is.data.table(sample_list) |
       !is.data.table(markers))

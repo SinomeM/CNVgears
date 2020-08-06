@@ -25,10 +25,29 @@ that at least the raw log2R value, or any related measure is accessible for each
 sample. The package is particularly suited for the analysis of family based studies, 
 being originally developed for the CNV characterization of the Italian Autism Network 
 Collection (ITAN). However, the more vast majority of the functions are of general 
-purpose and useful for any CNVs study. The typical main steps of such analysis using 
+purpose and useful for any CNVs study. Next session illustrate the pipeline main 
+steps. 
+  
+Depending on user needs and cohort composition (e.g. family based or not) it is 
+possible to perform all or only a fraction of these steps. As an example, if the 
+cohort is not family based, if CNVs inheritance pattern is not a desired information 
+or if the markers-level raw data is not available, the raw data load step can be 
+easily skip. The package can be used also only to combine the results of different 
+methods in a uniform format and export the output to be processed in other programs. 
+
+Here we show most of the package features using CNVs calling results on a subset
+of the 1000 Genomes cohort. We created the subset using samples that creates full
+trios and have both SNP array and WGS data available. However at the moment only 
+the arrays are used here. CNVs calling was performed using a modified minimal 
+version of EnsembleCNV.
+
+## Main Steps ## 
+
+The typical main steps of such analysis using 
 CNVgears are:
 
-**This list needs to be revised at some point** 
+**This list needs to be revised at some point**    
+*[aggiungi required/optional/etc, lista numerica]*
 
 * Load the cohort minimal metadata in the form of PED file;
 * Load the markers file (i.e. genomic location of each marker, SNP in case of array, interval/bin
@@ -52,19 +71,6 @@ CNVgears are:
 * Extract high confidence rare events based on CNVRs; 
 * Export desired data as BED (e.g. for being viewed in IGV) or VCF (e.g. for being processed with Annovar)
   , as well as TSV.
-  
-Depending on user needs and cohort composition (e.g. family based or not) it is 
-possible to perform all or only a fraction of these steps. As an example, if the 
-cohort is not family based, if CNVs inheritance pattern is not a desired information 
-or if the markers-level raw data is not available, the raw data load step can be 
-easily skip. The package can be used also only to combine the results of different 
-methods in a uniform format and export the output to be processed in other programs. 
-
-Here we show most of the package features using CNVs calling results on a subset
-of the 1000 Genomes cohort. We created the subset using samples that creates full
-trios and have both SNP array and WGS data available. However at the moment only 
-the arrays are used here. CNVs calling was performed using a modified minimal 
-version of EnsembleCNV.
 
 
 ## Setup ## 
@@ -94,6 +100,7 @@ The package uses by default half the CPU threads available, this can be changed 
 data.table::setDTthreads(percent=75)
 ```
 
+*[aggiungi frase su numero di cores ideale]*     
 See the relative man pages for details on each function used. 
 
 
@@ -115,8 +122,10 @@ file of the cohort and the markers-level raw data for a single trio (within the
 
 ```{r PED PFB}
 # cohort data
-cohort <- read_metadt(DT_path = system.file("extdata", "cohort.ped", package = "CNVgears"),
-                      sample_ID_col = "Individual ID", fam_ID_col = "Family ID",
+cohort <- read_metadt(DT_path = system.file("extdata", "cohort.ped", 
+                                            package = "CNVgears"),
+                      sample_ID_col = "Individual ID", 
+                      fam_ID_col = "Family ID",
                       sex_col = "Gender", role_col = "Role")
 
 # markers location
@@ -140,45 +149,59 @@ to `FALSE`.
 
 ```{r results + raw, message=FALSE}
 # CNV calling results
-penn <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_penn.txt", 
+penn <- read_results(DT_path = system.file("extdata", 
+                                           "chrs_14_22_cnvs_penn.txt", 
                                            package = "CNVgears"), 
                      res_type = "file", DT_type = "TSV/CSV", 
-                     chr_col = "chr", start_col = "posStart", end_col = "posEnd",
-                     CN_col = "CN", samp_ID_col = "Sample_ID",
-                     sample_list = cohort, markers = SNP_markers, method_ID = "P")
+                     chr_col = "chr", start_col = "posStart", 
+                     end_col = "posEnd", CN_col = "CN", 
+                     samp_ID_col = "Sample_ID", sample_list = cohort, 
+                     markers = SNP_markers, method_ID = "P")
 
-quanti <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_quanti.txt", 
-                                            package = "CNVgears"), 
+quanti <- read_results(DT_path = system.file("extdata", 
+                                             "chrs_14_22_cnvs_quanti.txt", 
+                                             package = "CNVgears"), 
                       res_type = "file", DT_type = "TSV/CSV", 
-                      chr_col = "chr", start_col = "posStart", end_col = "posEnd",
-                      CN_col = "CN", samp_ID_col = "Sample_ID",
-                      sample_list = cohort, markers = SNP_markers, method_ID = "Q")
+                      chr_col = "chr", start_col = "posStart", 
+                      end_col = "posEnd", CN_col = "CN", 
+                      samp_ID_col = "Sample_ID", sample_list = cohort, 
+                      markers = SNP_markers, method_ID = "Q")
 
-ipn <-  read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_ipn.txt", 
+ipn <-  read_results(DT_path = system.file("extdata", 
+                                           "chrs_14_22_cnvs_ipn.txt", 
                                            package = "CNVgears"), 
                      res_type = "file", DT_type = "TSV/CSV", 
-                     chr_col = "chr", start_col = "posStart", end_col = "posEnd",
-                     CN_col = "CN", samp_ID_col = "Sample_ID",
-                     sample_list = cohort, markers = SNP_markers, method_ID = "I")
+                     chr_col = "chr", start_col = "posStart", 
+                     end_col = "posEnd", CN_col = "CN", 
+                     samp_ID_col = "Sample_ID", sample_list = cohort, 
+                     markers = SNP_markers, method_ID = "I")
 
 # raw data
 library("data.table", quietly = T)
 
-dir.create(file.path("tmp_raw"))
-file.copy(system.file("extdata", "NA12878.txt", package = "CNVgears"), 
-          file.path("tmp_raw","NA12878.txt"))
-file.copy(system.file("extdata", "NA12891.txt", package = "CNVgears"), 
-          file.path("tmp_raw","NA12891.txt"))
-file.copy(system.file("extdata", "NA12892.txt", package = "CNVgears"), 
-          file.path("tmp_raw","NA12892.txt"))
+# dir.create(file.path("tmp_raw"))
+# file.copy(system.file("extdata", "NA12878.txt", package = "CNVgears"), 
+#           file.path("tmp_raw","NA12878.txt"))
+# file.copy(system.file("extdata", "NA12891.txt", package = "CNVgears"), 
+#           file.path("tmp_raw","NA12891.txt"))
+# file.copy(system.file("extdata", "NA12892.txt", package = "CNVgears"), 
+#           file.path("tmp_raw","NA12892.txt"))
+# 
+# read_finalreport_raw(DT_path = file.path("tmp_raw"), pref = NA, suff = ".txt", 
+#                      rds_path = file.path("tmp_RDS"), markers = SNP_markers, 
+#                      sample_list = cohort[fam_ID == "1463", ])
 
-read_finalreport_raw(DT_path = file.path("tmp_raw"), pref = NA, suff = ".txt", 
-                     rds_path = file.path("tmp_RDS"), markers = SNP_markers, 
+read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"), 
+                     pref = NA, suff = ".txt", 
+                     rds_path = file.path("tmp_RDS"), 
+                     markers = SNP_markers, 
                      sample_list = cohort[fam_ID == "1463", ])
 
-file.remove(c(file.path("tmp_raw","NA12878.txt"), file.path("tmp_raw/NA12891.txt"), 
-              file.path("tmp_raw","NA12892.txt"), file.path("tmp_raw")))
+# file.remove(c(file.path("tmp_raw","NA12878.txt"), 
+#               file.path("tmp_raw/NA12891.txt"), 
+#               file.path("tmp_raw","NA12892.txt"), file.path("tmp_raw")))
 ```
+
 Note that when loading the raw data only the trio is used as cohort. The samples
 object is subset using a `data.table` query.
 
@@ -203,9 +226,13 @@ An example for one of the callers results.
 
 ```{r summary stats, eval = FALSE}
 # not run 
-sstatPenn <- summary_stats(results = penn, sample_list = cohort,
-                           markers = SNP_markers, 
-                           plots_path = file.path("tmp","sstatPenn"))
+
+sstatPenn <- summary(results = penn, sample_list = cohort,
+                     markers = SNP_markers)
+# also saves plots
+sstatPenn <- summary(results = penn, sample_list = cohort,
+                     markers = SNP_markers, 
+                     plots_path = file.path("tmp","sstatPenn"))
 ```
 
 Exploring these summary statistics can provide important insights on the cohort 
@@ -214,7 +241,7 @@ process is completely optional, and we provide default values for the filtering
 function based on literature and our experience. 
 
 ```{r filtering}
-penn_filtered <- cleaning_filter(results = penn, min_NP = 10)
+penn_filtered <- cleaning_filter(results = penn, min_len = 10000, min_NP = 10)
 quanti_filtered <- cleaning_filter(quanti)
 ipn_filtered <- cleaning_filter(ipn)
 ```
@@ -229,7 +256,7 @@ Note that the fucntion `immuno_regions` uses internally the package `biomaRt` th
 work with the hg38 genome assembly by default. To work with older assemblies we 
 need to pass a custom `mart` object, as exemplified here. 
 
-```{r blacklists }
+```{r blacklists , echo=-5}
 hg19telom <- telom_centrom(hg19_start_end_centromeres, centrom = FALSE)
 hg19centrom <- telom_centrom(hg19_start_end_centromeres, telom = FALSE, region = 25000)
 
@@ -319,10 +346,11 @@ ipq_denovo <-
 At this point it is possible to perform a second filtering step based on the number 
 of calling methods, e.g. filter out all the calls made by one single algorithm. 
 
-### CNVRs computation
+### CNV Regions Computation
 
-We also provide a method to compute Copy Number Variable Regions, starting from 
-the integrated object created in the previous step 
+*[aggungi qualche frase di descrizione su CNVR e possibili utilizzi]*    
+We also provide a method to compute Copy Number Variable Regions (CNVRs), starting 
+from the integrated object created in the previous step
 
 ```{r cnvrs, results="hide"}
 cnvrs <- cnvrs_create(cnvs = ipq_filtered, g_arms = hg19_chr_arms)
@@ -353,7 +381,7 @@ separated Ensemble IDs.
 As `immuno_regions`, the function `genic_load` uses `biomaRt` internally, thus a 
 custom mart is needed to work in hg19. 
 
-```{r annotation}
+```{r annotation, echo=c(-2,-4)}
 # locus 
 ipq_denovo_locus <- genomic_locus(DT_in = ipq_denovo, keep_str_end = F)
 

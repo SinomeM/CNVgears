@@ -242,5 +242,6 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
   # finally add the method_ID column
   DT_out[, meth_ID := as.character(method_ID)]
   # return
+  class(DT_out) <- c("CNVresults", class(DT_out))
   return(DT_out)
 }
