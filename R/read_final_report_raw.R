@@ -29,9 +29,9 @@
 #' @export
 
 read_finalreport_raw <- function(DT_path, rds_path, pref, suff,
-                                 sample_list, markers, results,
-                                 chr_col = "Chr", pos_col = "Position",
-                                 LRR_col = "Log R Ratio", BAF_col = "B Allele Freq") {
+                                 sample_list, markers, chr_col = "Chr",
+                                 pos_col = "Position", LRR_col = "Log R Ratio",
+                                 BAF_col = "B Allele Freq") {
   # check inputs
   if (!dir.exists(DT_path)) stop("File do not exist, typo(s)?\n")
 

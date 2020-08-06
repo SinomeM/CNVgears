@@ -138,10 +138,6 @@ performed, i.e. adjacent call are merged into a single one if requirements are m
 This step is performed by default but can be avoided by setting `do_merge` parameter 
 to `FALSE`. 
 
-**CHANGE do_merge WHEN THE FUNCTION WILL BE UPDATED**
-
-**Also remove the parameter "results" from read_finalreport_raw in the future**
-
 ```{r results + raw, message=FALSE}
 # CNV calling results
 penn <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_penn.txt", 

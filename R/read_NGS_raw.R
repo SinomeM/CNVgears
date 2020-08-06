@@ -26,8 +26,6 @@
 #' @param markers, a \code{data.table}, the output of
 #'   \code{\link{read_NGS_intervals}} or \code{\link{read_finalreport_snps}},
 #'   depending on the initial data type.
-#' @param results, a \code{data.table}, the output of
-#'   \code{\link{read_results}}.
 #' @param rds_path, path to the directory where RDS should be stored.
 #' @param raw_col, name of the column containing the marker-level raw data in
 #'   the input file.
@@ -59,11 +57,11 @@
 read_NGS_raw <- function(DT_path, rds_path, pref, suff,
                          chr_col, start_col, end_col,
                          raw_col, raw_type,
-                         sample_list, markers,results) {
+                         sample_list, markers) {
   # check input
   if (missing(DT_path) | missing(chr_col) | missing(start_col) | missing(end_col) |
       missing(raw_col) | missing(raw_type) | missing(sample_list) | missing(rds_path) |
-      missing(pref) | missing(suff) | missing(markers) | missing(results))
+      missing(pref) | missing(suff) | missing(markers))
     stop("Missing parameters!\n")
   if (!raw_type %in% c("log2", "copyratio", "numeric_CN"))
     stop("Wrong 'raw_type' format!\n")
