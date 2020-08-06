@@ -4,7 +4,7 @@
 \alias{immuno_regions}
 \title{Retrieve genomic regions of consecutive immunoglobulin genes}
 \usage{
-immuno_regions(biotype = NA, n_genes = 5, mart = NA)
+immuno_regions(biotype = NULL, n_genes = 5, mart = NULL)
 }
 \arguments{
 \item{biotype, }{vector of character, is used to filter the genes based on

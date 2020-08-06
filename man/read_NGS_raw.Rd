@@ -15,8 +15,7 @@ read_NGS_raw(
   raw_col,
   raw_type,
   sample_list,
-  markers,
-  results
+  markers
 )
 }
 \arguments{
@@ -49,9 +48,6 @@ description.}
 \item{markers, }{a \code{data.table}, the output of
 \code{\link{read_NGS_intervals}} or \code{\link{read_finalreport_snps}},
 depending on the initial data type.}
-
-\item{results, }{a \code{data.table}, the output of
-\code{\link{read_results}}.}
 }
 \description{
 \code{read_NGS_raw}

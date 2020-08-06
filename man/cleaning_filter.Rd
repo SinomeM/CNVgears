@@ -8,11 +8,9 @@ cleaning_filter(
   results,
   min_len = 10000,
   min_NP = 10,
-  telom_centrom = NA,
-  blacklist_region = NA,
-  blacklist_samples = NA,
-  IG_region = NA,
-  blacklist_chrs = NA
+  blacklists = NULL,
+  blacklist_samples = NULL,
+  blacklist_chrs = NULL
 )
 }
 \arguments{
@@ -25,9 +23,9 @@ Default is 5000.}
 \item{min_NP, }{minimum CNVs points, any shorter event will be filtered out.
 Default is 5.}
 
-\item{telom_centrom, IG_region, blacklist_region, }{blacklist, a
-\code{data.table} containing at least the following columns: "chr",
-"start", "end". Any event in a blacklists' region will be filtered out.}
+\item{blacklists, }{blacklist, a list of \code{data.table} containing at least
+the following columns: "chr", "start", "end". Any event in a blacklists'
+region will be filtered out.}
 
 \item{blacklist_samples, }{character vector containing samples ID to filter
 out.}

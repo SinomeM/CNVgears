@@ -4,7 +4,7 @@
 \alias{merge_calls}
 \title{Merge adjacent CNV with equal Copy Number}
 \usage{
-merge_calls(DT_in, thresh = 0.5)
+merge_calls(DT_in, thresh = 0.3)
 }
 \arguments{
 \item{DT_in, }{a \code{data.table} in the format of

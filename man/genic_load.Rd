@@ -4,7 +4,7 @@
 \alias{genic_load}
 \title{Annotate genic load}
 \usage{
-genic_load(DT_in, biotypes = "protein_coding", mart = NA)
+genic_load(DT_in, biotypes = "protein_coding", mart = NULL)
 }
 \arguments{
 \item{DT_in, }{a \code{data.table} consisting of CNVs calling results.}

@@ -20,7 +20,7 @@ read_results(
   DT_type,
   end_vcf = "END",
   CN_vcf = "CN",
-  do_merge = 1,
+  do_merge = TRUE,
   merge_thresh = 0.5,
   method_ID
 )

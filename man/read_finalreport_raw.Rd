@@ -11,7 +11,6 @@ read_finalreport_raw(
   suff,
   sample_list,
   markers,
-  results,
   chr_col = "Chr",
   pos_col = "Position",
   LRR_col = "Log R Ratio",

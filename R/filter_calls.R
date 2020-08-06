@@ -74,7 +74,7 @@ cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
   # biologically relevant CNVs
 
   # blacklists
-  if (length(blacklists) = 0) {
+  if (length(blacklists) == 0) {
     for (i in 1:length(blacklists))
       DT <- filter_region(DT, blacklists[[i]])
   }
