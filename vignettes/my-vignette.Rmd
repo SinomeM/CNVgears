@@ -346,6 +346,18 @@ ipq_denovo <-
 At this point it is possible to perform a second filtering step based on the number 
 of calling methods, e.g. filter out all the calls made by one single algorithm. 
 
+Note how the merge perform *reciprocal* overlap comparison in order to merge two 
+calls. Candidate events should thus not only overlap but must also be of comparable 
+size. This is clear in the de-novo merge object, at lines 4:6, the event at line
+6 overlap the two at line 4 and 5 but is too large to be merged. However it is 
+possible that the "true call" is the larger event and that the two Hidden Markov 
+Model (HMM) based algorithms over-segmented it. 
+
+```{r}
+ipq_denovo[4:6,]
+```
+
+
 ### CNV Regions Computation
 
 *[aggungi qualche frase di descrizione su CNVR e possibili utilizzi]*    
@@ -362,12 +374,15 @@ interested in rare events and use CNVRs frequency to achieve this internally.
 ### De-novo CNVs visual confirmation 
 
 In the package it is also implemented a function to visually inspect the de-novo 
-candidates. We use as an example the two calls detected by both PennCNV and QantiSNP.
+candidates. We use as an example the two calls detected by both PennCNV and 
+QantiSNP and the larger one made by IPattern.
 
 ```{r denovo plot, warning=FALSE}
 lrr_trio_plot(cnv = ipq_denovo[4], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
 lrr_trio_plot(cnv = ipq_denovo[5], raw_path =  file.path("tmp_RDS"), 
+              sample_list = cohort, results = ipn_filtered)
+lrr_trio_plot(cnv = ipq_denovo[6], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
 ```
 
@@ -402,3 +417,29 @@ rm(ensembl37)
 ## Data export ##
 
 [...]
+
+## Notes on Parallelization ## 
+
+As already mentioned, this package use 'data.table' whenever is possible to handle 
+the big tables that working with large cohorts produces and 'data.table' is internally 
+parallelized. As a consequence, most of the function already use more than one 
+thread an should be run serially on system with a low number of CPU cores. On more 
+CPU and RAM equipped systems however, the user may want to parallelize the longer
+steps. This can be done easily on two particularly long steps, i.e. the results and 
+the markers-level raw data load. The suggested way for 'read_results' is to split 
+the 'sample_list' object in two or more batches, run 'read_results' in parallel 
+on those batches, and finally combine the objects into a final one. The raw data 
+processing do not produce any object, as it stores all its results into 'RDS' files 
+named after the individual samples, so it can be run as parallel as the user desire, 
+again by simply generating subsets of the 'sample_list' object. Ideally, the entire 
+pipeline (excluding for obvious reasons CNVRs creation) can be run in parallel on 
+more than one cohort subsets, as long as families are kept together. However, in 
+order to have a better view on the cohort summary statistics and the filtering 
+procedure effect, it is recommended to perform at least those steps on the entire 
+dataset. While parallelizing the user should always keep in mind that 'data.table' 
+uses more than one thread by default, so 'data.table::setDTthreads()' should always 
+be set appropriately.   
+Empirically we found that the optimal number of threads is between 2 and 6 depending 
+on the number of total accessible threads and the amount of formal, external 
+parallelization desired, as more tend to increase the process speed rather than 
+increasing it. 
