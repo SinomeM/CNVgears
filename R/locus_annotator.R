@@ -40,8 +40,8 @@ genomic_locus <- function(DT_in, remote_cytobands = T, bands, assembly = "hg19",
   # check also colnames?
 
   # data.table "set" and ":=" functions act by reference, I create a copy to
-  # avoid modifying the original object (perhaps there is a better option?)
-  DT <- DT_in
+  # avoid modifying the original object
+  DT <- copy(DT_in)
   rm(DT_in)
 
   # load cytobands

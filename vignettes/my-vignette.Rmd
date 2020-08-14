@@ -336,13 +336,11 @@ As exemplification of a real pipeline we also process the *de-novo* calls.
 ```{r inter merge, message=FALSE, results="hide"}
 ipq_filtered <- 
   inter_res_merge(res_list = list(penn_filtered, quanti_filtered, ipn_filtered),
-                  sample_list = cohort, g_arms = hg19_chr_arms, 
-                  inner_outer = "outer")
+                  sample_list = cohort, g_arms = hg19_chr_arms)
 
 ipq_denovo <- 
   inter_res_merge(res_list = list(penn_denovo, quanti_denovo, ipn_denovo),
-                  sample_list = cohort, g_arms = hg19_chr_arms, 
-                  inner_outer = "outer")
+                  sample_list = cohort, g_arms = hg19_chr_arms)
 ```
 
 At this point it is possible to perform a second filtering step based on the number 

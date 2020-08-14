@@ -25,7 +25,7 @@ genic_load <- function(DT_in, biotypes = "protein_coding", mart = NULL) {
 
   # data.table "set" and ":=" functions act by reference, I create a copy to
   # avoid modifying the original object (perhaps there is a better option?)
-  DT <- DT_in
+  DT <- copy(DT_in)
   rm(DT_in)
 
   if (length(mart) == 0)
