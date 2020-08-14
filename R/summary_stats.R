@@ -1,12 +1,12 @@
 #' Explore CNV calling results prior filtering
 #'
+#' @param object, a \code{data.table}, the output of
+#'   \code{\link{read_results}}.
 #' @param sample_list, a \code{data.table}, the output of
 #'   \code{\link{read_metadt}}.
 #' @param markers, a \code{data.table}, the output of
 #'   \code{\link{read_NGS_intervals}} or \code{\link{read_finalreport_snps}},
 #'   depending on the initial data type.
-#' @param results, a \code{data.table}, the output of
-#'   \code{\link{read_results}}.
 #' @param plots_path, path where the plots should be saved, if \code{NA} no plot is
 #'   produced.
 #'
@@ -29,20 +29,16 @@
 # per sample cab be used to decide if a sample is oversegmented and need to be
 # excluded (some lines already printed int the console)
 
-# if plots_path == NA no plots are computed
-
 # add the option to save as RDS and PNG!
 
-# change results to x in the params
-
-summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
+summary.CNVresults <- function(object, sample_list, markers, plots_path = NA) {
   # check input
-  if (!is.data.table(results) | !is.data.table(sample_list) |
+  if (!is.data.table(object) | !is.data.table(sample_list) |
       !is.data.table(markers))
     stop("Inputs must be a 'data.table'!\n")
-  if (length(unique(results$sample_ID)) != length(unique(sample_list$sample_ID)))
+  if (length(unique(object$sample_ID)) != length(unique(sample_list$sample_ID)))
     cat("WARNING: number of samples in sample list and results differ!\n")
-  if (!all(unique(sample_list$sample_ID) %in% unique(results$sample_ID)))
+  if (!all(unique(sample_list$sample_ID) %in% unique(object$sample_ID)))
     cat("WARNING: not all the samples in sample_list are present in results.\n")
 
   # Very basic summary stats
@@ -50,28 +46,28 @@ summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
       "\n# samples:", nrow(sample_list),
       "\n# families:", length(unique(sample_list$fam_ID)),
       "\n# probands:", length(sample_list[role == "proband", sample_ID]),
-      "\n# segments (normal genotype, deletions, duplications):", nrow(results),
-      "\n# CNVs (deletions, duplications):", nrow(results[GT != 0, ]),
-      "\n# deletions:", nrow(results[GT == 1, ]),
-      "\n# duplications:", nrow(results[GT == 2, ]),
+      "\n# segments (normal genotype, deletions, duplications):", nrow(object),
+      "\n# CNVs (deletions, duplications):", nrow(object[GT != 0, ]),
+      "\n# deletions:", nrow(object[GT == 1, ]),
+      "\n# duplications:", nrow(object[GT == 2, ]),
       "\n# CNVs per sample:",
-      round(nrow(results[GT != 0, ]) / nrow(sample_list), 1), "\n")
+      round(nrow(object[GT != 0, ]) / nrow(sample_list), 1), "\n")
 
   # Summary len & NP
   cat("\nSummary of CNVs length, len, and number of points (SNPs or intervals),",
       "NP in the results.\n", "\nCNVs length\n")
-  print(summary(results[GT != 0, len]))
+  print(summary(object[GT != 0, len]))
   cat("\nDeletions length\n")
-  print(summary(results[GT == 1, len]))
+  print(summary(object[GT == 1, len]))
   cat("\nDuplications length\n")
-  print(summary(results[GT == 2, len]))
-  if ("NP" %in% colnames(results)) {
+  print(summary(object[GT == 2, len]))
+  if ("NP" %in% colnames(object)) {
     cat("\nCNVs NP\n")
-    print(summary(results[GT != 0, NP]))
+    print(summary(object[GT != 0, NP]))
     cat("\nDeletions NP\n")
-    print(summary(results[GT == 1, NP]))
+    print(summary(object[GT == 1, NP]))
     cat("\nDuplications NP\n")
-    print(summary(results[GT == 2, NP]))
+    print(summary(object[GT == 2, NP]))
   }
 
   if (!is.na(plots_path)) {
@@ -89,7 +85,7 @@ summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
     pdf(file = file.path(plots_path, "nSeg_per_chr.pdf"), paper = "a4r")
     print(
     cowplot::plot_grid(
-      ggplot( data = results, aes(x = reorder(as.character(chr), as.integer(chr)),
+      ggplot( data = object, aes(x = reorder(as.character(chr), as.integer(chr)),
                                   fill = as.character(CN)) ) +
         geom_bar(colour = "black") +
         theme_bw() +
@@ -99,7 +95,7 @@ summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
               axis.title = element_text(size = 8), legend.text = element_text(size = 6),
               legend.title = element_text(size = 8), legend.key.size = unit(.5, "cm")),
 
-      ggplot( data = results[GT != 0, ], aes(x = reorder(as.character(chr), as.integer(chr)),
+      ggplot( data = object[GT != 0, ], aes(x = reorder(as.character(chr), as.integer(chr)),
                                              fill = as.character(CN))) +
         geom_bar(colour = "black") +
         theme_bw() +
@@ -112,7 +108,7 @@ summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
       nrow = 2)
     )
     dev.off()
-    if ("NP" %in% colnames(results)) {
+    if ("NP" %in% colnames(object)) {
       # Points per chr (from intervals/markers)
       pdf(file = file.path(plots_path, "nMarkers_per_chr.pdf"), paper = "a4r")
       print(
@@ -133,7 +129,7 @@ summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
     pdf(file = file.path(plots_path, "lengths_and_NP_distributions.pdf"), paper = "a4r")
     print(
     cowplot::plot_grid(
-      ggplot( results, aes(log10(len)) ) +
+      ggplot( object, aes(log10(len)) ) +
         geom_histogram(bins = 50, colour="black", aes(fill=as.character(CN))) +
         labs(x = "log10(length)", y = "# segments",
              title = "Length distribution of all segments") +
@@ -141,7 +137,7 @@ summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
         theme(plot.title = element_text(size=10), axis.text = element_text(size = 6),
               axis.title = element_text(size = 8), legend.text = element_text(size = 6),
               legend.title = element_text(size = 8), legend.key.size = unit(.5, "cm")),
-      ggplot( results, aes(log10(NP)) ) +
+      ggplot( object, aes(log10(NP)) ) +
         geom_histogram(bins = 50, colour="black", aes(fill=as.character(CN))) +
         labs(x = "log10(NP)", y = "# segments",
              title = "NP (number of points) distribution in all segments") +
@@ -160,12 +156,12 @@ summary.CNVresults <- function(results, sample_list, markers, plots_path = NA) {
       "identifig over-segmented samples.",
       "\nFirst and last 10 lines (most segmented samples first)...\n")
 
-  if ("NP" %in% colnames(results))
-    sstat <- results[GT != 0, .(n_cnvs = .N, mean_NP = mean(NP, na.rm = T),
-                                mean_len = mean(len, na.rm = T)),
+  if ("NP" %in% colnames(object))
+    sstat <- object[GT != 0, .(n_cnvs = .N, mean_NP = mean(NP, na.rm = TRUE),
+                                mean_len = mean(len, na.rm = TRUE)),
                      by = sample_ID]
   else
-    sstat <- results[GT != 0, .(n_cnvs = .N, mean_len = mean(len, na.rm = T)),
+    sstat <- object[GT != 0, .(n_cnvs = .N, mean_len = mean(len, na.rm = TRUE)),
                      by = sample_ID]
 
   setorder(sstat, -n_cnvs)
