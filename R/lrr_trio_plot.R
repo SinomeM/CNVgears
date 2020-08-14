@@ -1,5 +1,4 @@
 
-
 #' Plot markers raw data in a CNV region for a trio
 #'
 #' @param cnv, a \code{data.table} containig one single line of CNVs calling
@@ -29,6 +28,7 @@ lrr_trio_plot <- function(cnv, raw_path, sample_list, results) {
   if (nrow(cnv) != 1)
     stop("Please provide a single CNV (one line data.table)\n")
 
+  # CNV infos
   off <- cnv$sample_ID
   st <- cnv$start
   en <- cnv$end
@@ -36,24 +36,20 @@ lrr_trio_plot <- function(cnv, raw_path, sample_list, results) {
   fam <- sample_list[sample_ID == off, fam_ID]
   moth <- sample_list[fam_ID == fam & role == "mother", sample_ID]
   fath <- sample_list[fam_ID == fam & role == "father", sample_ID]
+
+  # initial larger region to compute the rolling window mean
   len <- en - st + 1
-  bb <- round(len * 0.2)
-  r_st <- st - bb
-  r_en <- en + bb
+  r_st <- st - len
+  r_en <- en + len
 
-  p_off <- readRDS(file.path(raw_path, paste0(off, "_chr", cc, ".rds")))[
-                                          start >= r_st & end <= r_en, ]
-  p_moth <- readRDS(file.path(raw_path, paste0(moth, "_chr", cc, ".rds")))[
-                                            start >= r_st & end <= r_en, ]
-  p_fath <- readRDS(file.path(raw_path, paste0(fath, "_chr", cc, ".rds")))[
-                                            start >= r_st & end <= r_en, ]
+  # load data (points and segments)
+  p_off <-  load_RDS(raw_path, off, cc, r_st, r_en)
+  p_moth <- load_RDS(raw_path, moth, cc, r_st, r_en)
+  p_fath <- load_RDS(raw_path, fath, cc, r_st, r_en)
 
-  s_off <- results[sample_ID == off & chr == cc, ][between(start, r_st, r_en, incbounds = T) |
-                                                     between(end, r_st, r_en, incbounds = T), ]
-  s_moth <- results[sample_ID == moth & chr == cc, ][between(start, r_st, r_en, incbounds = T) |
-                                                       between(end, r_st, r_en, incbounds = T), ]
-  s_fath <- results[sample_ID == fath & chr == cc, ][between(start, r_st, r_en, incbounds = T) |
-                                                       between(end, r_st, r_en, incbounds = T), ]
+  s_off <- trim_res(results, off, cc, r_st, r_en)
+  s_moth <- trim_res(results, moth, cc, r_st, r_en)
+  s_fath <- trim_res(results, fath, cc, r_st, r_en)
 
   setorder(p_off, start)
   setorder(p_moth, start)
@@ -62,29 +58,60 @@ lrr_trio_plot <- function(cnv, raw_path, sample_list, results) {
   setorder(s_moth, start)
   setorder(s_fath, start)
 
-  pl <- function(pp, segs, ccol) {
-    # sliding window mean,
+  # smaller region to plot
+  r_st2 <- st - round(len * 0.2)
+  r_en2 <- en + round(len * 0.2)
+
+  # lrr plots
+  off_pl <- pl(p_off, cnv, "#FF9999", r_st2, r_en2) # here I pass the CNV
+  moth_pl <- pl(p_moth, s_moth, "#66CC33", r_st2, r_en2) # here all segments
+  fath_pl <- pl(p_fath, s_fath, "#663333", r_st2, r_en2)
+
+  # CP values only vectors, only whithin the CNV borders
+  otmp <- load_RDS(raw_path, off, cc, st, en)$copyratio
+  mtmp <- load_RDS(raw_path, moth, cc, st, en)$copyratio
+  ftmp <- load_RDS(raw_path, fath, cc, st, en)$copyratio
+
+  # CP ditribution plot
+  distr <- pl_distr(otmp, mtmp, ftmp)
+
+  trio_pl <- cowplot::plot_grid(off_pl, moth_pl, fath_pl, distr, nrow = 2,
+                                labels = c("A", "B", "C", "D"))
+
+  return(trio_pl)
+}
+
+load_RDS <- function(path, samp, cc, st, en) {
+  res <- readRDS(file.path(path, paste0(samp, "_chr", cc, ".rds")))[
+                    start >= st & end <= en, ]
+  return(res)
+}
+
+trim_res <- function(DT, samp, cc, st, en) {
+  res <- DT[sample_ID == samp & chr == cc, ][
+              between(start, st, en, incbounds = T) |
+              between(end, st, en, incbounds = T), ]
+  return(res)
+}
+
+pl <- function(pp, segs, ccol, st, en) {
+
+    # sliding window mean, at the moment these values are not changable
     sstep <- 5
     wind <- 10
     mmean <- evobiR::SlidingWindow("mean", pp$copyratio, wind, sstep)
     # recreate coordinates for the new points
     pp[, center := (end + start)/2 ]
-    # sst <- pp[, start][seq(1, by = sstep, to = nrow(pp))]
-    # een <- pp[, start][seq(wind, by = sstep, to = nrow(pp))]
-    #
-    # coord <- pp[, center][seq(1, by = sstep, to = nrow(pp))]
-    # DT <- data.table("st" = sst[1:(length(sst)-2)],
-    #                  "en" = een[1:(length(een))],
-    #                  "cr" = mmean,
-    #                  "pos" = coord[2:(length(coord)-1)])
     pp[, cr := c(rep(mmean, each = sstep), rep(NA, nrow(pp)-(length(mmean)*sstep)) )]
-
 
     # start of first seg and end of last must be in range
     if (nrow(segs) != 0) {
-      if (segs[nrow(segs), end] > r_en) segs[nrow(segs), end := r_en]
-      if (segs[1, start] < r_st) segs[1, start := r_st]
+      if (segs[nrow(segs), end] > en) segs[nrow(segs), end := en]
+      if (segs[1, start] < st) segs[1, start := st]
     }
+
+    # reduce the region
+    pp <- pp[start >= st & end <= en, ]
 
     pl_out <- ggplot() +
       geom_point(data = pp, aes(x = center/1000000, y = copyratio),
@@ -93,46 +120,29 @@ lrr_trio_plot <- function(cnv, raw_path, sample_list, results) {
                    aes(x = start/1000000, y = CN/2, xend = end/1000000, yend = CN/2),
                    colour = "red", size = 0.8) +
       geom_line(data = pp, aes(x = center/1000000, y = cr)) +
-      # geom_line(data = DT, aes(x = pos/1000000, y = cr),
-      #           colour = "#333333", size = 0.4) +
-      # geom_segment(data = DT, aes(x = st/1000000, y = cr, xend = en/1000000, yend = cr),
-      #           colour = "#333333", size = 0.4) +
       xlab("Position (Mbp)") +
       ylab("CopyRatio") +
       theme_bw() +
-      # theme(panel.border=element_blank())+
       scale_x_continuous(labels = scales::comma) +
       ylim(-0.1, 2.1)
 
     return(pl_out)
-  }
-
-  otmp <- p_off$copyratio
-  mtmp <- p_moth$copyratio
-  ftmp <- p_fath$copyratio
-
-  distr <- ggplot() +
-    geom_density(aes(otmp), colour = "#FF9999") +
-    geom_vline(aes(xintercept = mean(otmp)), colour = "#FF9999") +
-    geom_density(aes(ftmp), colour = "#663333") +
-    geom_vline(aes(xintercept = mean(ftmp)), colour = "#663333") +
-    geom_density(aes(mtmp), colour = "#66CC33") +
-    geom_vline(aes(xintercept = mean(mtmp)), colour = "#66CC33") +
-    geom_vline(aes(xintercept = 1), colour = "orange", linetype="dotted") +
-    geom_vline(aes(xintercept = 1.25), colour = "orange", linetype="dotted") +
-    geom_vline(aes(xintercept = 0.75), colour = "orange", linetype="dotted") +
-    xlab("CopyRatio") +
-    ylab("Density") +
-    theme_bw() +
-    xlim(-0.1, 2.1)
-
-  off_pl <- pl(p_off, s_off, ccol = "#FF9999")
-  moth_pl <- pl(p_moth, s_moth, ccol = "#66CC33")
-  fath_pl <- pl(p_fath, s_fath, ccol = "#663333")
-
-  trio_pl <- cowplot::plot_grid(off_pl, moth_pl, fath_pl, distr, nrow = 2,
-                                labels = c("A", "B", "C", "D"))
-
-  return(trio_pl)
 }
 
+pl_distr <- function(otmp, mtmp, ftmp) {
+  res <- ggplot() +
+           geom_density(aes(otmp), colour = "#FF9999") +
+           geom_vline(aes(xintercept = mean(otmp)), colour = "#FF9999") +
+           geom_density(aes(ftmp), colour = "#663333") +
+           geom_vline(aes(xintercept = mean(ftmp)), colour = "#663333") +
+           geom_density(aes(mtmp), colour = "#66CC33") +
+           geom_vline(aes(xintercept = mean(mtmp)), colour = "#66CC33") +
+           geom_vline(aes(xintercept = 1), colour = "orange", linetype="dotted") +
+           geom_vline(aes(xintercept = 1.25), colour = "orange", linetype="dotted") +
+           geom_vline(aes(xintercept = 0.75), colour = "orange", linetype="dotted") +
+           xlab("CopyRatio") +
+           ylab("Density") +
+           theme_bw() +
+           xlim(-0.1, 2.1)
+  return(res)
+}
