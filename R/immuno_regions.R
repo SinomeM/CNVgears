@@ -6,7 +6,7 @@
 #'   immunoglobulin biotypes al listed in Genecode
 #'   <https://www.gencodegenes.org/pages/biotypes.html>. If the user specify one
 #'   or more values only those are used.
-#' @param n_genes, integer, number of minim consecutive genes required to
+#' @param n_genes, integer, number of minimum consecutive genes required to
 #'   construct an "immunoglobulin region", default is 5.
 #' @param mart, user provided mart (from \code{biomaRt::useMart} function). For
 #'   older assemblies the user must manually retrieve the correct mart via
