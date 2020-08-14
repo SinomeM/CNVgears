@@ -38,9 +38,9 @@ package format, 1:22 for autosomes and 23 24 for chr X and Y.}
 length number of calls per sample and more.
 }
 \details{
-This function can be used together with \code{\link{summary_stats}} in order
+This function can be used together with \code{\link{summary}} in order
 to clean the dataset from possible noise and unwanted calls. It is generally
-recommended to briefly explore the data using \code{\link{summary_stats}} and
+recommended to briefly explore the data using \code{\link{summary}} and
 then proceeding to filter out any unwanted group of events. Mandatory
 arguments of the function are "results" and "min_len"/"min_NP", default
 values are the authors suggested minimal filtering step, however its quite
