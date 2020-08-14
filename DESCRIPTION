@@ -7,25 +7,25 @@ Maintainer: Simone Montalbano <simone.montalbano@protonmail.com>
 Description: This package contains a set of functions to perform several type of 
     processing and analysis on CNVs calling pipelines/algorithms results in an 
     inegrated manner and regardless of the raw data type (SNPs array or NGS).
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.0.0)
 Imports: 
-	data.table,
-	R.utils,
-	ggplot2,
-	cowplot
+    data.table,
+    ggplot2
 Suggests:
-	VariantAnnotation,
-	DelayedArray,
-	dplyr, 
-  knitr,
-  biomaRt,
-  evobiR,
-  rmarkdown,
-  devtools
+    VariantAnnotation,
+    DelayedArray,
+    knitr,
+    biomaRt,
+    evobiR,
+    rmarkdown,
+    devtools,
+    cowplot,
+    usethis,
+    scales
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-biocViews: Software
+biocViews: Software, WorkflowStep, Preprocessing
 BugReports: https://github.com/SinomeM/CNVgears/issues
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
