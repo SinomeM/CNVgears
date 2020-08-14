@@ -21,7 +21,8 @@ Suggests:
     devtools,
     cowplot,
     usethis,
-    scales
+    scales,
+    testthat
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
