@@ -3,9 +3,9 @@
 #' \code{cleaning_filter} "clean" a CNV call dataset based on measures such as
 #' length number of calls per sample and more.
 #'
-#' This function can be used together with \code{\link{summary_stats}} in order
+#' This function can be used together with \code{\link{summary}} in order
 #' to clean the dataset from possible noise and unwanted calls. It is generally
-#' recommended to briefly explore the data using \code{\link{summary_stats}} and
+#' recommended to briefly explore the data using \code{\link{summary}} and
 #' then proceeding to filter out any unwanted group of events. Mandatory
 #' arguments of the function are "results" and "min_len"/"min_NP", default
 #' values are the authors suggested minimal filtering step, however its quite
@@ -23,9 +23,10 @@
 #'   Default is 5000.
 #' @param min_NP, minimum CNVs points, any shorter event will be filtered out.
 #'   Default is 5.
-#' @param blacklists, blacklist, a list of \code{data.table} containing at least
-#'   the following columns: "chr", "start", "end". Any event in a blacklists'
-#'   region will be filtered out.
+#' @param blacklists, blacklist, a \code{list} of \code{data.table} or \code{data.frame}
+#'   containing
+#'   at least the following columns: "chr", "start", "end". Any event in a
+#'   blacklists' region will be filtered out.
 #' @param blacklist_samples, character vector containing samples ID to filter
 #'   out.
 #' @param blacklist_chrs, character vector containing chromosomes names in the
@@ -73,6 +74,7 @@ cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
 
   # blacklists
   if (length(blacklists) != 0) {
+    # if (!is.list(blacklists)) stop("blacklists must be a list!\n")
     for (i in 1:length(blacklists))
       DT <- filter_region(DT, blacklists[[i]])
   }
