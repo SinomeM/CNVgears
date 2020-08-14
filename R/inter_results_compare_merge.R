@@ -48,12 +48,18 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
 
   # check if the meth_IDs are unique
   mids <- c()
-  for (i in 1:length(res_list))
+  for (i in 1:length(res_list)) {
     if (!is.data.table(res_list[[i]]))
       stop("All results in the list should be data.table!\n")
     mids <- c(mids, res_list[[i]][, meth_ID][1]) # ugly but should work (?)
+  }
   if (length(mids) != length(unique(mids)))
     stop("Non-unique methods IDs provided in the results!\n")
+
+  # the number of algorithms is used to reduce the number of comparison
+  # downstream, in particular only n_algs events on each side of an event will
+  # be compared.
+  n_alg <- length(mids)*5
 
   # combine results in a single data.table, keep only CNVs
   res <- data.table()
@@ -62,6 +68,7 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
                                                GT, CN, meth_ID, len)])
   }
   setorder(res, len, chr, start)
+
 
   res_merge <- data.table()
   for (arm in g_arms$arm_ID) {
@@ -92,30 +99,25 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
         if (nrow(tmp_line) == 0)
           next
 
-        tmp_st <- tmp_line$start
-        tmp_en <- tmp_line$end
+        reg_ref <- get_region(tmp_line, prop)
         tmp_GT <- tmp_line$GT
-        len <- tmp_en - tmp_st + 1
 
         merge_ixs <- c(i)
-        # only a fraction of calls need to be screened every time, this is a potentially
-        # temporary solutions but it should works just fine
-        for (k in -(length(mids)*5):(length(mids)*5)) {
+
+        # questo for puo' diventare una funzione
+        for (k in -n_alg:n_alg) {
           if (k == 0) next
 
           # check if successive calls have desired reciprocal overlap, if GT is correct
           ii <- i + k
-          if (nrow(tmp[ix == ii, ]) == 0)
-            next
-          if (tmp[ix == ii, GT] != tmp_GT)
-            next
+          if (nrow(tmp[ix == ii, ]) == 0) next
+          if (tmp[ix == ii, GT] != tmp_GT) next
           if (tmp[ix == ii, meth_ID] == tmp_line$meth_ID) next
 
-          st <- tmp[ix == ii, start]
-          en <- tmp[ix == ii, end]
-          llen <- en - st + 1
-          overlap <- min(en, tmp_line$end) - max(st, tmp_line$start) + 1
-          if (overlap >= len * prop & overlap >= llen * prop)
+          reg <- get_region(tmp[ix == ii, ])
+
+          overlap <- min(reg[3], reg_ref[3]) - max(reg[2], reg_ref[2]) + 1
+          if (overlap >= reg_ref[4] & overlap >= reg[4] * prop)
             merge_ixs <- c(merge_ixs, ii) # bad thing grow a vector but it should not be longer than 10 in any scenario
         }
         # now merge_ixs contains the ix values of mnergable cnv, must create a unique line, add it
@@ -124,13 +126,18 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
         # "chr", "inner_start", "inner_end", "outer_start", "outer_end", "sample_ID", "GT", ("CN"), "seg_ID", "meth_ID", "n_meth"
         # ... #
         # CAREFUL HERE, not necessarily length(merge_ixs) > 1 !!!
+
+        # questo passaggio anche puo' diventare una funzione separata, puo' uscire
+        # anche semplicemente la data.table da fare rbind con res_merge (esternamente)
         if (length(merge_ixs) == 1) {
           # no hits
-          res_merge <- rbind(res_merge, data.table("chr" = a_chr,
-                                                   "inner_start" = tmp_st, "inner_end" = tmp_en,
-                                                   "outer_start" = tmp_st, "outer_end" = tmp_en,
-                                                   "sample_ID" = samp, "GT" = tmp_GT, "CN" = tmp_line$CN,
-                                                   "meth_ID" = tmp_line$meth_ID, "n_meth" = 1))
+          res_merge <-
+            rbind(res_merge,
+                  data.table("chr" = a_chr, "inner_start" = reg_ref[2],
+                             "inner_end" = reg_ref[3], "outer_start" = reg_ref[2],
+                             "outer_end" = reg_ref[3], "sample_ID" = samp,
+                             "GT" = tmp_GT, "CN" = tmp_line$CN,
+                             "meth_ID" = tmp_line$meth_ID, "n_meth" = 1))
         }
         else {
           sel_lines  <- tmp[ix %in% merge_ixs, ]
@@ -149,6 +156,11 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
                                                    "sample_ID" = samp, "GT" = tmp_GT, "CN" = CN_m,
                                                    "meth_ID" = meth_ID_m, "n_meth" = length(mm)))
         }
+
+        # remove the "merged" lines, in this way an event won't be used more than
+        # one time
+        # invece di aggiornare tmp, aggiungi la colonna "used" quando crei la colonna "ix"
+        # tutti FALSI e cambia in VERO man mano.
         tmp <- tmp[!ix %in% merge_ixs, ]
       }
     }
@@ -171,4 +183,16 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
   }
 
   return(res_merge)
+}
+
+get_region <- function(my_line, prop = 1) {
+  # given a line consisting of a single CNV, returns a vector constaing chr,
+  # start, end , length * prop as integers
+  chr <- as.integer(my_line$chr)
+  st <- my_line$start
+  en <- my_line$end
+  len <- (en - st +1) * prop
+  reg <- c(chr, st, en, len)
+
+  return(reg)
 }
