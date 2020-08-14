@@ -79,6 +79,7 @@ CNVgears are:
 To install the package via GitHub repository
 
 ```{r install git hub, eval = F}
+# not run 
 devtools::install_github("SinomeM/CNVgears")
 ```
 
@@ -97,6 +98,7 @@ The package uses by default half the CPU threads available, this can be changed 
 `data.table::setDTthreads`. For example to use the 75% of available threads:
 
 ``` {r DT threads, eval = F}
+# not run
 data.table::setDTthreads(percent=75)
 ```
 

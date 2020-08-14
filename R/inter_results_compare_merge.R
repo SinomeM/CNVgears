@@ -38,15 +38,18 @@
 # whether it is preferred to lower the false positives or the false negatives.
 
 inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
-                            inner_outer = NA) {
+                            inner_outer = "outer") {
   if (!is.list(res_list))
     stop("res_list is not a list and it should!\n")
-  # check input
   if (!is.data.table(g_arms))
     stop("Inputs must be data.table!\n")
-  # in a future check that the inputs are of the corrects classes.
+  if (!is.na(inner_outer)) {
+    if (!inner_outer %in% c("inner", "outer"))
+      stop("Invalid 'inner_outer' format!\n")
+  }
 
-  # check if the meth_IDs are unique
+  # check if the meth_IDs are unique and if the list elements are of the correct
+  # class
   mids <- c()
   for (i in 1:length(res_list)) {
     if (!is.data.table(res_list[[i]]))
@@ -68,7 +71,6 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
                                                GT, CN, meth_ID, len)])
   }
   setorder(res, len, chr, start)
-
 
   res_merge <- data.table()
   for (arm in g_arms$arm_ID) {
@@ -182,6 +184,8 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
     res_merge[, len := end - start + 1]
   }
 
+  # re set the class
+  class(res_merge) <- c("CNVresults", class(res_merge))
   return(res_merge)
 }
 
