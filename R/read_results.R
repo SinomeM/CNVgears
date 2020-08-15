@@ -90,84 +90,6 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
   if (missing(method_ID))
     stop("Please specify an Id for this method. One letter code is encouraged!\n")
 
-  # DT uniform subfunction
-  DT_uniform_internal <- function(DT_in, markers, sex) {
-    if (missing(markers) | missing(sex))
-      stop("Missing parameter to DT_uniform!\n")
-
-    # Input: "chr" "start" "end" "CN" ;
-    # Compute "GT" and "NP", sort and check columns data type
-    DT_in[, `:=` (chr = as.character(chr),
-                  start = as.integer(start),
-                  end = as.integer(end))]
-
-    DT_in <- chr_uniform(DT_in)
-
-    # Some segmentation algorithms might use "+"/"-" notation for CN calls
-    # for duplications/deletions without a precise CN, at the moment these
-    # are converted in 3/1 but this might change
-    # Here I assume also that everything not "+" or "-" is the normal CN indicator
-    DT_in[, CN := gsub(" ", "", CN)]
-    if ("+" %in% unique(DT_in$CN) | "-" %in% unique(DT_in$CN)) {
-      # Autosomes
-      DT_in[chr %in% as.character(1:22) & CN != "+" & CN != "-", CN := "2"][
-        chr %in% as.character(1:22) & CN == "+", CN := "3"][
-          chr %in% as.character(1:22) & CN == "-", CN := "1"]
-      if (sex == 1){
-        DT_in[chr %in% as.character(23:24) & CN != "+" & CN != "-", CN := "1"][
-          chr %in% as.character(23:24) & CN == "+", CN := "2"][
-            chr %in% as.character(23:24) & CN == "-", CN := "0"]
-      }
-      if (sex == 2) {
-        # also drop calls in Y
-        DT_in <- DT_in[chr %in% as.character(1:23)][
-          chr == "23" & CN != "+" & CN != "-", CN := "2"][
-            chr == "23" & CN == "+", CN := "3"][
-              chr == "23" & CN == "-", CN := "1"]
-      }
-    }
-    # now it is possible to check data format
-    DT_in[, CN := as.integer(CN)]
-    # GT = 0 (normal CN), GT = 1 (deletion), GT = 2 (duplication)
-    # Autosomes
-    DT_in[chr %in% as.character(1:22) & CN == 2, GT := 0][
-      chr %in% as.character(1:22) & CN < 2, GT := 1][
-        chr %in% as.character(1:22) & CN > 2, GT := 2]
-    # Sex chromosomes
-    if (sex == 1) {
-      # male
-      DT_in[chr %in% as.character(23:24) & CN == 1, GT := 0][
-        chr %in% as.character(23:24) & CN == 0, GT := 1][
-          chr %in% as.character(23:24) & CN > 1, GT := 2]
-    }
-    if (sex == 2) {
-      # female
-      # drop calls in Y
-      DT_in <- DT_in[chr %in% as.character(1:23)][
-        chr == "23" & CN == 2, GT := 0][
-          chr == "23" & CN < 2, GT := 1][
-            chr == "23" & CN > 2, GT := 2]
-    }
-    # Find mark_ID of the fisrt and last markers and compute "NP"
-    for (cc in unique(DT_in$chr)) {
-      # intricated but works correctly
-      DT_tmp <- DT_in[chr == cc, ]
-      mm_tmp <- markers[chr == cc, ]
-      DT_in[chr == cc, `:=` (first_P = mm_tmp[match(DT_tmp[, start],
-                                                    mm_tmp[, start]), P_ID],
-                             last_P = mm_tmp[match(DT_tmp[, end],
-                                                   mm_tmp[, end]), P_ID])]
-      # DT_in[chr == cc, `:=` (first_P = markers[chr == cc][match(DT_in[chr == cc, start],
-      #                                                         markers[chr == cc, start]), P_ID],
-      #                       last_P = markers[chr == cc][match(DT_in[chr == cc, end],
-      #                                                        markers[chr == cc, end]), P_ID])]
-    }
-    setorder(DT_in, chr, start)
-    DT_in[,`:=` (NP = last_P - first_P + 1, len = end - start + 1)]
-
-    return(DT_in)
-  }
-
   # One single file for the resutls of all the samples ------------------------
   # if res_type is "file" one single file is expected, then the additional
   # columns and the data standardization must be computed per sample
@@ -206,7 +128,7 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
   }
 
   # One file per sample -------------------------------------------------------
-  # if res_type is "directory"  everithing can be computed per file and
+  # if res_type is "directory"  everything can be computed per file and
   # the results concatenated in a single data.table
   if (res_type == "directory") {
       DT_out <- data.table()
@@ -244,4 +166,79 @@ read_results <- function(DT_path, res_type, pref, suff, sample_list,
   # return
   class(DT_out) <- c("CNVresults", class(DT_out))
   return(DT_out)
+}
+
+
+# DT uniform subfunction
+DT_uniform_internal <- function(DT_in, markers, sex) {
+  if (missing(markers) | missing(sex))
+    stop("Missing parameter to DT_uniform!\n")
+
+  # Input: "chr" "start" "end" "CN" ;
+  # Compute "GT" and "NP", sort and check columns data type
+  DT_in[, `:=` (chr = as.character(chr),
+                start = as.integer(start),
+                end = as.integer(end))]
+
+  DT_in <- chr_uniform(DT_in)
+
+  # Some segmentation algorithms might use "+"/"-" notation for CN calls
+  # for duplications/deletions without a precise CN, at the moment these
+  # are converted in 3/1 but this might change
+  # Here I assume also that everything not "+" or "-" is the normal CN indicator
+  DT_in[, CN := gsub(" ", "", CN)]
+  if ("+" %in% unique(DT_in$CN) | "-" %in% unique(DT_in$CN)) {
+    # Autosomes
+    DT_in[chr %in% as.character(1:22) & CN != "+" & CN != "-", CN := "2"][
+      chr %in% as.character(1:22) & CN == "+", CN := "3"][
+        chr %in% as.character(1:22) & CN == "-", CN := "1"]
+    if (sex == 1){
+      DT_in[chr %in% as.character(23:24) & CN != "+" & CN != "-", CN := "1"][
+        chr %in% as.character(23:24) & CN == "+", CN := "2"][
+          chr %in% as.character(23:24) & CN == "-", CN := "0"]
+    }
+    if (sex == 2) {
+      # also drop calls in Y
+      DT_in <- DT_in[chr %in% as.character(1:23)][
+        chr == "23" & CN != "+" & CN != "-", CN := "2"][
+          chr == "23" & CN == "+", CN := "3"][
+            chr == "23" & CN == "-", CN := "1"]
+    }
+  }
+  # now it is possible to check data format
+  DT_in[, CN := as.integer(CN)]
+  # GT = 0 (normal CN), GT = 1 (deletion), GT = 2 (duplication)
+  # Autosomes
+  DT_in[chr %in% as.character(1:22) & CN == 2, GT := 0][
+    chr %in% as.character(1:22) & CN < 2, GT := 1][
+      chr %in% as.character(1:22) & CN > 2, GT := 2]
+  # Sex chromosomes
+  if (sex == 1) {
+    # male
+    DT_in[chr %in% as.character(23:24) & CN == 1, GT := 0][
+      chr %in% as.character(23:24) & CN == 0, GT := 1][
+        chr %in% as.character(23:24) & CN > 1, GT := 2]
+  }
+  if (sex == 2) {
+    # female
+    # drop calls in Y
+    DT_in <- DT_in[chr %in% as.character(1:23)][
+      chr == "23" & CN == 2, GT := 0][
+        chr == "23" & CN < 2, GT := 1][
+          chr == "23" & CN > 2, GT := 2]
+  }
+  # Find mark_ID of the fisrt and last markers and compute "NP"
+  for (cc in unique(DT_in$chr)) {
+    # intricate but works correctly
+    DT_tmp <- DT_in[chr == cc, ]
+    mm_tmp <- markers[chr == cc, ]
+    DT_in[chr == cc, `:=` (first_P = mm_tmp[match(DT_tmp[, start],
+                                                  mm_tmp[, start]), P_ID],
+                           last_P = mm_tmp[match(DT_tmp[, end],
+                                                 mm_tmp[, end]), P_ID])]
+  }
+  setorder(DT_in, chr, start)
+  DT_in[,`:=` (NP = last_P - first_P + 1, len = end - start + 1)]
+
+  return(DT_in)
 }
