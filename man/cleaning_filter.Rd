@@ -23,9 +23,10 @@ Default is 5000.}
 \item{min_NP, }{minimum CNVs points, any shorter event will be filtered out.
 Default is 5.}
 
-\item{blacklists, }{blacklist, a list of \code{data.table} containing at least
-the following columns: "chr", "start", "end". Any event in a blacklists'
-region will be filtered out.}
+\item{blacklists, }{blacklist, a \code{list} of \code{data.table} or \code{data.frame}
+containing
+at least the following columns: "chr", "start", "end". Any event in a
+blacklists' region will be filtered out.}
 
 \item{blacklist_samples, }{character vector containing samples ID to filter
 out.}

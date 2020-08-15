@@ -4,10 +4,10 @@
 \alias{summary.CNVresults}
 \title{Explore CNV calling results prior filtering}
 \usage{
-\method{summary}{CNVresults}(results, sample_list, markers, plots_path = NA)
+\method{summary}{CNVresults}(object, sample_list, markers, plots_path = NA)
 }
 \arguments{
-\item{results, }{a \code{data.table}, the output of
+\item{object, }{a \code{data.table}, the output of
 \code{\link{read_results}}.}
 
 \item{sample_list, }{a \code{data.table}, the output of

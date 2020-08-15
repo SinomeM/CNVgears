@@ -4,7 +4,13 @@
 \alias{inter_res_merge}
 \title{Combine the results from multiple methods in a single object}
 \usage{
-inter_res_merge(res_list, sample_list, g_arms, prop = 0.3, inner_outer = NA)
+inter_res_merge(
+  res_list,
+  sample_list,
+  g_arms,
+  prop = 0.3,
+  inner_outer = "outer"
+)
 }
 \arguments{
 \item{res_list}{aaa}
