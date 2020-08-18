@@ -9,7 +9,7 @@
  #' enough). It is designed to process one sample at the time and is integrated
  #' in the function \code{\link{read_results}}. It is not suggested to use it
  #' stand-alone. The merging is done starting from the larger calls, on adjacent
- #' call with equal GT in a range of +/- length*\code{thresh}, trough several
+ #' call with equal GT in a range of +/- \code{length*thresh}, trough several
  #' iterations until no more calls can be merged.
  #'
  #' @param DT_in, a \code{data.table} in the format of
@@ -22,7 +22,7 @@
 #' @import data.table
 
 # try to change the functions in that it does require SOME columns,
-# not ONLY SOME columns, maybe avoiding the use of rbind for some vectors.
+# not ONLY SOME columns, maybe using some vectors instead of rbind.
 
 merge_calls <- function(DT_in, thresh = 0.3) {
   # check if multiple samples are present

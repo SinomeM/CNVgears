@@ -3,6 +3,9 @@ context(paste("Multiple methods CNVresults objects comparison and merge into",
               "a signle one. One of the two most complicated functions of the",
               "packege."))
 
+# This is a very intricate task (and function) as CNVRs computation.
+# I'll progressivewly try to sumplify it as the package mature
+
 library(data.table)
 
 sl <- data.table(sample_ID = "NA12878", sex = "2", role = "sibling",
