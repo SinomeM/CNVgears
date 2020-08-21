@@ -198,8 +198,8 @@ get_region <- function(my_line, prop = 1) {
   # given a line consisting of a single CNV, returns a vector constaing chr,
   # start, end , length * prop as integers
   chr <- as.integer(my_line$chr)
-  st <- my_line$start
-  en <- my_line$end
+  st <- as.integer(my_line$start)
+  en <- as.integer(my_line$end)
   len <- (en - st +1) * prop
   reg <- c(chr, st, en, len)
 

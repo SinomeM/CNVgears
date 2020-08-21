@@ -38,6 +38,7 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
   setorder(cnvs_cp,	chr, start, end)
   setorder(g_arms, chr, start)
   cnvs_cp[, cnvr := NA_character_]
+
   # this create a line with all "NA", I remove it later
   cnvrs <- data.table("r_ID" = NA_character_, "chr" = NA_character_,
                       "start" = NA_integer_, "end" = NA_integer_)
@@ -50,66 +51,61 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
     cnvrs_tmp <- data.table("r_ID" = NA_character_, "chr" = NA_character_,
                             "start" = NA_integer_, "end" = NA_integer_)
     # arm related variables
-    k <- T
-    a_chr <- g_arms[arm_ID == arm, chr]
-    a_start <- g_arms[arm_ID == arm, start]
-    a_end <- g_arms[arm_ID == arm, end]
+    reg_arm <- get_region(g_arms[arm_ID == arm,])
     # subset compatible cnvs
-    DT <- cnvs_cp[chr == a_chr &
-                    between(start, a_start, a_end) &
-                    between(end, a_start, a_end), ]
+    DT <- cnvs_cp[chr == reg_arm[1] &
+                    between(start, reg_arm[2], reg_arm[3]) &
+                    between(end, reg_arm[2], reg_arm[3]), ]
     DT[, ix := 1:nrow(DT)]
     # if no CNVs are present in the arm, just skip
     if (nrow(DT) == 0) next
-    # for each arm keep running until no more cnvs are excluded
-    # need to check how DT and the index "i" are created, only the cnvs
-    # with cnvr == NA need to be processed
+
+    # keep track of CNVR and loop number
     n_l <- 1
     n <- 1
-    while (k == T) {
+    # for each arm keep running until no more cnv is excluded
+    while (any(is.na(DT$cnvr))) {
       # create CNVRs/fill CNVRs
       cat("Creating/filling CNVRs, loop #", n_l, "...\n")
       indexes <- DT[is.na(cnvr), ix]
       cat(length(indexes), " CNVs to be assigned\n")
+
       for (i in indexes) {
-        st <- DT$start[i]
-        en <- DT$end[i]
-        len <- en - st + 1
+        my_reg <- get_region(DT[ix == i, ], prop)
         # possible cnvrs
         if (nrow(cnvrs_tmp[!is.na(r_ID), ]) != 0) {
           cnvr_m <- cnvrs_tmp[!is.na(r_ID),][
-            between(start, st, en, incbounds = TRUE) |
-            between(end, st, en, incbounds = TRUE), ]
+            between(start, my_reg[2], my_reg[3], incbounds = TRUE) |
+            between(end, my_reg[2], my_reg[3], incbounds = TRUE), ]
         } # this if else is needed for the initial CNVR (of each chr), no better solution ATM
         else cnvr_m <- cnvrs_tmp[!is.na(r_ID), ]
         # no match, initialize new cnvr
         if (nrow(cnvr_m) == 0) {
           cnvrs_tmp <- rbind(cnvrs_tmp, data.table("r_ID" = paste0(arm, "-", n),
-                                           "chr" = a_chr, "start" = st,
-                                           "end" = en))
+                                           "chr" = reg_arm[1], "start" = my_reg[2],
+                                           "end" = my_reg[3]))
           DT$cnvr[i] <- paste0(arm, "-", n)
           n <- n + 1
         }
         # at least one cnvr overlap with cnv under examination
         else {
           for (r in cnvr_m$r_ID) {
-            cnvs_tmp <- DT[cnvr == r, ]
-            overlaps <- pmin(en, cnvs_tmp$end) - pmax(st, cnvs_tmp$start) + 1
-            lens <- cnvs_tmp$end - cnvs_tmp$start + 1
+            reg_list <- get_regions_list(DT[cnvr == r, ], prop)
+            overlaps <- pmin(my_reg[3], reg_list[[3]]) - pmax(my_reg[2], reg_list[[2]]) + 1
             # reciprocal overlaps
-            if (all(overlaps >= len * prop) &
-                all(sapply(overlaps, function(x) x >= lens * prop))) {
+            if (all(overlaps >= my_reg[4]) &
+                all(sapply(overlaps, function(x) x >= reg_list[[4]]))) {
               DT$cnvr[i] <- r
               # update cnvrs boundaries
-              cnvrs_tmp[r_ID == r, `:=` (start = min(start, st), end = max(end, en))]
+              cnvrs_tmp[r_ID == r, `:=` (start = min(start, my_reg[2]), end = max(end, my_reg[3]))]
               break
             }
           }
           # cnvr not set mean no match with candidates cnvrs
           if (is.na(DT$cnvr[i])) {
             cnvrs_tmp <- rbind(cnvrs_tmp, data.table("r_ID" = paste0(arm, "-", n),
-                                             "chr" = a_chr, "start" = st,
-                                             "end" = en))
+                                             "chr" = reg_arm[1], "start" = my_reg[2],
+                                             "end" = my_reg[3]))
             DT$cnvr[i] <- paste0(arm, "-", n)
             n <- n + 1
           }
@@ -119,6 +115,7 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
       cnvrs_tmp <- cnvrs_tmp[!is.na(r_ID) & r_ID %in% DT$cnvr, ]
 
       # Check if some CNVRs can be merged
+      ## PROBABLY SOME PROBLEMS HERE
       cat("Re-checking CNVRs ...\n")
       if (nrow(cnvrs_tmp > 1)) {
         # this loop should run until no more CNVRs can be merged
@@ -129,45 +126,49 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
 
           for (i in 1:nrow(cnvrs_tmp)) {
             b <- FALSE
-            st <- cnvrs_tmp$start[i]
-            en <- cnvrs_tmp$end[i]
-            id <- cnvrs_tmp$r_ID[i]
+            my_reg <- get_region_with_rID(cnvrs_tmp[i])
             # search compatible cnvrs
-            cnvrs_m <- cnvrs_tmp[between(start, st, en, incbounds = FALSE) |
-                                   between(end, st, en, incbounds = FALSE), ]
+            cnvrs_m <-
+              cnvrs_tmp[between(start, my_reg[[1]][2], my_reg[[1]][3],
+                                incbounds = FALSE) |
+                          between(end, my_reg[[1]][2], my_reg[[1]][3],
+                                  incbounds = FALSE), ]
+
             # if there are no hits skip
             if (nrow(cnvrs_m) == 0 ) next
+
+            # if there is a match, check the relative cnvs
             for (mm in 1:nrow(cnvrs_m)) {
-              sst <- cnvrs_m$start[mm]
-              een <- cnvrs_m$end[mm]
-              iid <- cnvrs_m$r_ID[mm]
-              overl <- min(en, een) - max(st, sst)
-              lens <- c(en-st+1, een-sst+1)
-              bb <- TRUE
-              # if there is a match, check the relative cnvs
-              if (all(overl > lens * prop)) {
-                cnvs_tmp <- DT[cnvr %in% c(id, iid), ]
-                # test the CNVs
-                lens <- cnvs_tmp$end - cnvs_tmp$start + 1
+              my_reg_m <- get_region_with_rID(cnvrs_m[mm], prop)
+              overl <- min(my_reg[[1]][3], my_reg_m[[1]][3]) - max(my_reg[[1]][2],
+                                                                   my_reg_m[[1]][2])
+              pass_check <- TRUE
+              if (overl > my_reg[[1]][4] & overl > my_reg_m[[1]][4]) {
+                reg_list <-
+                  get_regions_list(DT[cnvr %in% c(my_reg[[2]], my_reg_m[[2]]), ], prop)
+                cnvs_tmp <- DT[cnvr %in% c(my_reg[[2]], my_reg_m[[2]]), ]
+                # test the CNVs one against all the other
                 for (ii in 1:nrow(cnvs_tmp)) {
                   overlaps <- pmin(cnvs_tmp$end[ii], cnvs_tmp$end) -
                               pmax(cnvs_tmp$start[ii], cnvs_tmp$start) + 1
                   # reciprocal overlaps
                   if (!(all(overlaps >= (cnvs_tmp$end[ii]-cnvs_tmp$start[ii]+1) * prop) &
-                      all(sapply(overlaps, function(x) x >= lens * prop)))) {
-                    bb <- FALSE
+                      all(sapply(overlaps, function(x) x >= reg_list[[4]])))) {
+                    pass_check <- FALSE
                     break
                   }
                 }
-                if (bb) {
+                if (pass_check) {
                   # if all cnvs are compatible, update CNVR, remove the old ones
                   # and update DT
-                  cnvrs_tmp <- rbind(cnvrs_tmp,
-                                       data.table("r_ID" = paste0(arm, "-", n),
-                                                  "chr" = a_chr, "start" = min(st, sst),
-                                                  "end" = max(en, een)))
-                  cnvrs_tmp <- cnvrs_tmp[!r_ID %in% c(id, iid)]
-                  DT[cnvr %in% c(id, iid), cnvr := paste0(arm, "-", n)]
+                  cnvrs_tmp <-
+                    rbind(cnvrs_tmp,
+                          data.table("r_ID" = paste0(arm, "-", n),
+                          "chr" = reg_arm[1],
+                          "start" = min(my_reg[[1]][2], my_reg_m[[1]][2]),
+                          "end" = max(my_reg[[1]][3], my_reg_m[[1]][3])))
+                  cnvrs_tmp <- cnvrs_tmp[!r_ID %in% c(my_reg[[2]], my_reg_m[[2]])]
+                  DT[cnvr %in% c(my_reg[[2]], my_reg_m[[2]]), cnvr := paste0(arm, "-", n)]
                   n <- n + 1
                   wh <- 1
                   cat("cnvr updated \n")
@@ -194,23 +195,18 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
 
       # Remove CNVs if necessary
       for (i in DT[, ix]) {
-        st <- DT$start[i]
-        en <- DT$end[i]
-        len <- en - st + 1
+        my_reg <- get_region(DT[ix == i, ], prop)
         # all cnvs in the cnvr
-        cnvs_tmp <- DT[cnvr == DT$cnvr[i]]
+        reg_list <- get_regions_list(DT[cnvr == DT$cnvr[i]], prop)
         # this is copy-pasted from above, check twice
-        overlaps <- pmin(en, cnvs_tmp$end) - pmax(st, cnvs_tmp$start) + 1
-        lens <- cnvs_tmp$end - cnvs_tmp$start + 1
+        overlaps <- pmin(my_reg[3], reg_list[[3]]) - pmax(my_reg[2], reg_list[[2]]) + 1
         # note that here there is a "!"
-        if (!(all(overlaps >= len * prop) &
-              all(sapply(overlaps, function(x) x >= lens * prop))))
+        if (!(all(overlaps >= my_reg[4]) &
+              all(sapply(overlaps, function(x) x >= reg_list[[4]]))))
           DT$cnvr[i] <- NA_character_
       }
       cat(length(is.na(DT$cnvr)[is.na(DT$cnvr) == T]),
           "CNVs removed from the assigned CNVR\n")
-      # no CNVRs set to NA mean that no CNV has been excluded in the last iteration
-      if (all(!is.na(DT$cnvr))) k <- F
       n_l <- n_l + 1
     }
 
@@ -227,4 +223,37 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
   cnvrs[, freq := freqs[match(cnvrs$r_ID, freqs$cnvr), N]]
 
   return(list(cnvrs[!is.na(chr), ], res))
+}
+
+get_region_with_rID <- function(my_line, prop = 1) {
+  # same as get_region but returns also r_ID if present, in that case reg is a
+  # list of vectors, in this way reg[[1]] remain a numeric vector
+  chr <- as.integer(my_line$chr)
+  st <- as.integer(my_line$start)
+  en <- as.integer(my_line$end)
+  len <- (en - st +1) * prop
+  reg <- c(chr, st, en, len)
+
+  # attach also r_ID if present
+  if ("r_ID" %in% colnames(my_line))
+    reg <- list(reg, my_line$r_ID)
+
+  return(reg)
+}
+
+get_regions_list <- function(my_lines, prop = 1) {
+  # same as get_region but with multiple lines, returns a list of vectors
+  chr <- as.integer(my_lines$chr)
+  st <- as.integer(my_lines$start)
+  en <- as.integer(my_lines$end)
+  len <- (en - st +1) * prop
+
+  if ("r_ID" %in% colnames(my_lines))
+    reg <- list(chr, st, en, len, my_lines$r_ID)
+  else if ("cnvr" %in% colnames(my_lines))
+      reg <- list(chr, st, en, len, my_lines$cnvr)
+  else
+    reg <- list(chr, st, en, len)
+
+  return(reg)
 }
