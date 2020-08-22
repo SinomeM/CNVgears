@@ -194,17 +194,6 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
   return(res_merge)
 }
 
-get_region <- function(my_line, prop = 1) {
-  # given a line consisting of a single CNV, returns a vector constaing chr,
-  # start, end , length * prop as integers
-  chr <- as.integer(my_line$chr)
-  st <- as.integer(my_line$start)
-  en <- as.integer(my_line$end)
-  len <- (en - st +1) * prop
-  reg <- c(chr, st, en, len)
-
-  return(reg)
-}
 
 compare_neighbors <- function() {
 
