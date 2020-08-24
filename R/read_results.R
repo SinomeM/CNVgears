@@ -3,14 +3,14 @@
 #' \code{read_results} takes the results of a CNVs calling pipeline and return
 #' them in a standardized object.
 #'
-#' This function aims to convert a variaety of possible types of CNVs
+#' This function aims to convert a variety of possible types of CNVs
 #' calling/segmentation pipelines and/or algorithms results into a standardized
-#' format in order to easely integrate with the the other fuctions in this
+#' format in order to easily integrate with the other functions in this
 #' package. Currently two main files type and two main file-organization structures
 #' are considered, for a total of four generic situations:
 #' \itemize{
 #' \item VCF files, one per sample (e.g. the results of GATK gCNV pipeline);
-#' \item VCF file, all sample of a cohort in the same file;
+#' \item VCF file, all sample of a cohort in the same file (not yet fully implemented);
 #' \item TSV/CSV file, one file per sample (e.g. the results of GATK ModSeg pipeline,
 #'   or the reults of running "manually" PennCNV);
 #' \item TSV/CSV file, all samples of a cohort in the same file (e.g. the results
@@ -34,31 +34,28 @@
 #' @param res_type, can be eihter "directory" or "file", indicates whether the
 #'   function must expect a single file for all samples or one file per sample.
 #' @param DT_type, can be either "VCF" or "TSV/CSV", indicate the file type.
-#' @param chr_col, name of the column containig the chromosome information
+#' @param chr_col, name of the column containing the chromosome information
 #'   in the input data.
-#' @param start_col, name of the column containig the start information in
+#' @param start_col, name of the column containing the start information in
 #'   the input data.
-#' @param end_col, name of the column containig the end information in the
+#' @param end_col, name of the column containing the end information in the
 #'   input data.
-#' @param CN_col, name of the column containig the Copy Number information
+#' @param CN_col, name of the column containing the Copy Number information
 #'   in the input data.
-#' @param samp_ID_col, name of the column containig the sample ID information in
+#' @param samp_ID_col, name of the column containing the sample ID information in
 #'   the input file, required if \code{res_type} is set to "file".
 #' @param markers, a \code{data.table} containing the marker list, the outup
 #'   \code{\link{read_finalreport_snps}} with \code{DT_type} setted to "markers"
 #'   or \code{\link{read_NGS_intervals}}.
-#' @param header_col, logical, indicates whether the input file(s) posseses a
-#'   columns header, default \code{TRUE}. Some algorithms (e.g PennCNV results
-#'   when converted in TSV format) does not have a columns header, in this case
-#'   must be setted to \code{FALSE} to do not lose a call.
 #' @param end_vcf, name of the field containing the segment end information in the
 #'   VCF file(s), passed to the function \code{\link{read_vcf}}.
 #' @param CN_vcf, name of the field containing the segment copy number
 #'   information in the VCF file(s), passed to the function \code{\link{read_vcf}}.
 #' @param do_merge, logical, indicates wheter the function \code{\link{merge_calls}}
 #'   should be automatically called for each sample (strongly suggested).
-#' @param method_ID, character identifing the method (algorithms/pipeline), one letter
-#'    code is strongly encuraged (e.g. "P" for PennCNV and "M" for GATK ModSeg). Numeric are converted to character.
+#' @param method_ID, character identifying the method (algorithms/pipeline), one letter
+#'    code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg). 
+#'    Numeric are converted to character.
 #'
 #' @export
 #'
@@ -69,9 +66,9 @@
 
 # consider describing better the path etc
 
-read_results <- function(DT_path, res_type, pref, suff, sample_list,
+read_results <- function(DT_path, res_type, DT_type, pref = NA, suff = NA, 
+                         sample_list, markers,                         
                          chr_col, start_col, end_col, CN_col, samp_ID_col,
-                         markers, header_col = T, DT_type,
                          end_vcf = "END", CN_vcf = "CN",
                          do_merge = TRUE, merge_thresh = 0.5, method_ID) {
   # check parameters
