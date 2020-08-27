@@ -147,7 +147,7 @@ them one single time and use them for all the three callers results.
 Note that during the importing of the results an intra-method CNV merging step is 
 performed, i.e. adjacent call are merged into a single one if requirements are met.
 This step is performed by default but can be avoided by setting `do_merge` parameter 
-to `FALSE`. 
+to `FALSE`. The resulting objects are of the class `CNVresults`.
 
 ```{r results + raw, message=FALSE}
 # CNV calling results
@@ -427,6 +427,19 @@ As an example to create a BED4 file were the entries names consist of
 tmp <- ipq_filtered[, .(chr, start, end, paste0(sample_ID, "-", GT))]
 head(tmp)
 fwrite(tmp, "example.bed", sep = "\t", col.names = FALSE)
+```
+
+Objects of the class `CNVresults` can also be converted into `GenomicRanges::GRanges()` 
+using the function `CNVresults_to_GRanges`. Required columns (and thus maintained 
+in the resulting object) are: chr, start, end, sample_ID, GT, meth_ID. The last 
+three columns will be placed in the `metadata` field.
+In the near future a more general function to convert all the major object into 
+`GRanges` will be implemented soon. 
+
+```{r}
+class(ipq_filtered)
+ipq_filtered_GRanges <- CNVresults_to_GRanges(ipq_filtered)
+ipq_filtered_GRanges
 ```
 
 

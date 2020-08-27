@@ -7,7 +7,7 @@
 #' @import data.table
 
 CNVresults_to_GRanges <- function(DT) {
-  GR <- GenomicRanges::makeGRangesFromDataFrame()
+  GR <- GenomicRanges::makeGRangesFromDataFrame(DT)
   GenomicRanges::mcols(GR) <- DT[, .(sample_ID, GT, meth_ID)]
   return(GR)
 }

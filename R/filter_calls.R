@@ -78,6 +78,7 @@ cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
     for (i in 1:length(blacklists))
       DT <- filter_region(DT, blacklists[[i]])
   }
-
+  # re set the class
+  class(DT) <- c("CNVresults", class(DT))
   return(DT)
 }
