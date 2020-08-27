@@ -23,6 +23,6 @@ results and try to merge adjacent calls (having equal GT and being close
 enough). It is designed to process one sample at the time and is integrated
 in the function \code{\link{read_results}}. It is not suggested to use it
 stand-alone. The merging is done starting from the larger calls, on adjacent
-call with equal GT in a range of +/- length*\code{thresh}, trough several
+call with equal GT in a range of +/- \code{length*thresh}, trough several
 iterations until no more calls can be merged.
 }

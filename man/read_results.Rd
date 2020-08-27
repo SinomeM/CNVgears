@@ -7,17 +7,16 @@
 read_results(
   DT_path,
   res_type,
-  pref,
-  suff,
+  DT_type,
+  pref = NA,
+  suff = NA,
   sample_list,
+  markers,
   chr_col,
   start_col,
   end_col,
   CN_col,
   samp_ID_col,
-  markers,
-  header_col = T,
-  DT_type,
   end_vcf = "END",
   CN_vcf = "CN",
   do_merge = TRUE,
@@ -33,6 +32,8 @@ is set to "file".}
 \item{res_type, }{can be eihter "directory" or "file", indicates whether the
 function must expect a single file for all samples or one file per sample.}
 
+\item{DT_type, }{can be either "VCF" or "TSV/CSV", indicate the file type.}
+
 \item{pref, suff, }{eventual prefix an suffix (e.g. ".txt") to the files to be used
 when \code{res_type} is set to "directory". If not necessary must be setted to
 \code{NA}.}
@@ -40,31 +41,24 @@ when \code{res_type} is set to "directory". If not necessary must be setted to
 \item{sample_list, }{minimal cohort metadata, a \code{data.table} produced by the
 function \code{\link{read_metadt}}.}
 
-\item{chr_col, }{name of the column containig the chromosome information
-in the input data.}
-
-\item{start_col, }{name of the column containig the start information in
-the input data.}
-
-\item{end_col, }{name of the column containig the end information in the
-input data.}
-
-\item{CN_col, }{name of the column containig the Copy Number information
-in the input data.}
-
-\item{samp_ID_col, }{name of the column containig the sample ID information in
-the input file, required if \code{res_type} is set to "file".}
-
 \item{markers, }{a \code{data.table} containing the marker list, the outup
 \code{\link{read_finalreport_snps}} with \code{DT_type} setted to "markers"
 or \code{\link{read_NGS_intervals}}.}
 
-\item{header_col, }{logical, indicates whether the input file(s) posseses a
-columns header, default \code{TRUE}. Some algorithms (e.g PennCNV results
-when converted in TSV format) does not have a columns header, in this case
-must be setted to \code{FALSE} to do not lose a call.}
+\item{chr_col, }{name of the column containing the chromosome information
+in the input data.}
 
-\item{DT_type, }{can be either "VCF" or "TSV/CSV", indicate the file type.}
+\item{start_col, }{name of the column containing the start information in
+the input data.}
+
+\item{end_col, }{name of the column containing the end information in the
+input data.}
+
+\item{CN_col, }{name of the column containing the Copy Number information
+in the input data.}
+
+\item{samp_ID_col, }{name of the column containing the sample ID information in
+the input file, required if \code{res_type} is set to "file".}
 
 \item{end_vcf, }{name of the field containing the segment end information in the
 VCF file(s), passed to the function \code{\link{read_vcf}}.}
@@ -75,22 +69,23 @@ information in the VCF file(s), passed to the function \code{\link{read_vcf}}.}
 \item{do_merge, }{logical, indicates wheter the function \code{\link{merge_calls}}
 should be automatically called for each sample (strongly suggested).}
 
-\item{method_ID, }{character identifing the method (algorithms/pipeline), one letter
-code is strongly encuraged (e.g. "P" for PennCNV and "M" for GATK ModSeg). Numeric are converted to character.}
+\item{method_ID, }{character identifying the method (algorithms/pipeline), one letter
+code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg). 
+Numeric are converted to character.}
 }
 \description{
 \code{read_results} takes the results of a CNVs calling pipeline and return
 them in a standardized object.
 }
 \details{
-This function aims to convert a variaety of possible types of CNVs
+This function aims to convert a variety of possible types of CNVs
 calling/segmentation pipelines and/or algorithms results into a standardized
-format in order to easely integrate with the the other fuctions in this
+format in order to easily integrate with the other functions in this
 package. Currently two main files type and two main file-organization structures
 are considered, for a total of four generic situations:
 \itemize{
 \item VCF files, one per sample (e.g. the results of GATK gCNV pipeline);
-\item VCF file, all sample of a cohort in the same file;
+\item VCF file, all sample of a cohort in the same file (not yet fully implemented);
 \item TSV/CSV file, one file per sample (e.g. the results of GATK ModSeg pipeline,
   or the reults of running "manually" PennCNV);
 \item TSV/CSV file, all samples of a cohort in the same file (e.g. the results

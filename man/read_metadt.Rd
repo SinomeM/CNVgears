@@ -13,36 +13,36 @@ read_metadt(
 )
 }
 \arguments{
-\item{DT_path, }{path to the input file.}
+\item{DT_path}{path to the input file.}
 
-\item{sample_ID_col, }{name of the columns containing the sample ID in the original file;}
+\item{sample_ID_col}{name of the columns containing the sample ID in the original file;}
 
-\item{sex_col, }{name of the columns containing the sex information in the original file;}
+\item{sex_col}{name of the columns containing the sex information in the original file;}
 
-\item{role_col, name}{of the columns containing the role information ID in the original file;}
+\item{role_col}{name of the columns containing the role information ID in the original file;}
 
-\item{fam_ID_col, }{name of the columns containing the family ID in the original file;}
+\item{fam_ID_col}{name of the columns containing the family ID in the original file;}
 }
 \description{
 \code{read_medaDT} handles the input of the sample table (sampleID, sex, role,
-famID) in a standatdized format.
+famID) in a standardized format.
 }
 \details{
-This function is needed in the fisrts step of virtually every anaysis. The input data
+This function is needed in the first step of virtually every analysis. The input data
 must have at least the following columns:
 \itemize{
 \item sample ID, self describing;
 \item sex, ideally in 1/2 format, for males and females, however also "male"/"female"
   or "Male"/"Female" are accepted;
-\item role, role of the sample in the family, either "fahter", "mother", "proband" or
+\item role, role of the sample in the family, either "father", "mother", "proband" or
 "sibling";
 \item family ID, self describing.
 }
-Actual name and order of the columns in the file is not relevand since the names are
+Actual name and order of the columns in the file is not relevant since they are
 passed to the function via parameter.
-Since the function in this packege are optimized for family based studies, family ID and
+Since the function in this package are optimized for family based studies, family ID and
 role information for each sample are required, however if the user is interested only,
 as an example, in CNVRs computation, genic content annotation or identification of calls
 in IG regions and does not have such information "role" and famID can be "NA". Note that
-doing so several function won't be usable.
+doing so some functions won't be usable.
 }
