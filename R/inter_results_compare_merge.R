@@ -3,7 +3,7 @@
 #'
 #' @param res_list aaa
 #' @param sample_list aaa
-#' @param g_arms aaa
+#' @param chr_arms aaa
 #'
 #' @return
 #' @export
@@ -37,11 +37,11 @@
 # user wants to rely on the filter based on number of calling methods and
 # whether it is preferred to lower the false positives or the false negatives.
 
-inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
+inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
                             inner_outer = "outer") {
   if (!is.list(res_list))
     stop("res_list is not a list and it should!\n")
-  if (!is.data.table(g_arms))
+  if (!is.data.table(chr_arms))
     stop("Inputs must be data.table!\n")
   if (!is.na(inner_outer)) {
     if (!inner_outer %in% c("inner", "outer"))
@@ -78,12 +78,12 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
   setorder(res, len, chr, start)
 
   res_merge <- data.table()
-  for (arm in g_arms$arm_ID) {
+  for (arm in chr_arms$arm_ID) {
     cat("\nMerging calls in chromosomal arm:", arm, "...\n")
 
-    a_chr <- g_arms[arm_ID == arm, chr]
-    a_start <- g_arms[arm_ID == arm, start]
-    a_end <- g_arms[arm_ID == arm, end]
+    a_chr <- chr_arms[arm_ID == arm, chr]
+    a_start <- chr_arms[arm_ID == arm, start]
+    a_end <- chr_arms[arm_ID == arm, end]
 
     if (a_chr %in% 23:24) {
       cat("chr X e Y skipped for now")

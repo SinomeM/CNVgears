@@ -2,7 +2,7 @@
 #'
 #' @param cnv, a data.table like the one produced by\code{\link{read_results}},
 #'  typically the results of \code{\link{inter_res_merge}}.
-#' @param g_arms, a data.table containing the genomic location of the genomic
+#' @param chr_arms, a data.table containing the genomic location of the genomic
 #'  arms. For the assemblies hg38 and hg19 it is provided by the package.
 #' @param prop, reciprocal overlap proportion, default 0.3 (30\%).
 #' @param inner_outer, specify whether inner or outer start/end should be used. If
@@ -20,9 +20,9 @@
 # OK for now, it would be nice to add a third step where for all CNVs in a CNVRs
 # it check the adjacent CNVRs if there is a better overlap, not super easy
 
-cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
+cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
   # check input
-  if (!is.data.table(cnvs) | !is.data.table(g_arms))
+  if (!is.data.table(cnvs) | !is.data.table(chr_arms))
     stop("Inputs must be data.table!\n")
 
   # data.table "set" and ":=" functions act by reference, I create a copy to
@@ -30,13 +30,13 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
   cnvs_cp <- cnvs
   rm(cnvs)
 
-  # check input formats, in particular for g_arms
-  g_arms[, `:=` (start = as.integer(start), end = as.integer(end))]
-  g_arms <- chr_uniform(g_arms)
+  # check input formats, in particular for chr_arms
+  chr_arms[, `:=` (start = as.integer(start), end = as.integer(end))]
+  chr_arms <- chr_uniform(chr_arms)
 
   # sort per chr, start & end
   setorder(cnvs_cp,	chr, start, end)
-  setorder(g_arms, chr, start)
+  setorder(chr_arms, chr, start)
   cnvs_cp[, cnvr := NA_character_]
 
   # this create a line with all "NA", I remove it later
@@ -45,13 +45,13 @@ cnvrs_create <- function(cnvs, g_arms, prop = 0.3) {
   # cnvrs: arm_ID, chr, start, end
   res <- data.table()
 
-  for (arm in g_arms$arm_ID) {
+  for (arm in chr_arms$arm_ID) {
     cat("\n-- Computing CNVRs in chromosome arm:", arm, "--\n")
     # cnvrs for this arm
     cnvrs_tmp <- data.table("r_ID" = NA_character_, "chr" = NA_character_,
                             "start" = NA_integer_, "end" = NA_integer_)
     # arm related variables
-    reg_arm <- get_region(g_arms[arm_ID == arm,])
+    reg_arm <- get_region(chr_arms[arm_ID == arm,])
     # subset compatible cnvs
     DT <- cnvs_cp[chr == reg_arm[1] &
                     between(start, reg_arm[2], reg_arm[3]) &
