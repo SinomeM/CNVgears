@@ -52,8 +52,8 @@ inter_res_merge <- function(res_list, sample_list, g_arms, prop = 0.3,
   # class
   mids <- c()
   for (i in 1:length(res_list)) {
-    if (!is.data.table(res_list[[i]]))
-      stop("All results in the list should be data.table!\n")
+    if (!"CNVresults" %in% class(res_list[[i]]))
+      stop("All results in the list should be of CNVresults class!\n")
     mids <- c(mids, res_list[[i]][, meth_ID][1]) # ugly but should work (?)
   }
   if (length(mids) != length(unique(mids)))
