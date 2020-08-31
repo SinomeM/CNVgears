@@ -44,7 +44,7 @@ cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
     stop("Input must be a 'data.table'!\n")
 
   # create a local copy
-  DT <- results
+  DT <- copy(results)
 
   # blacklist_samples and blacklist_chrs
   if (length(blacklist_samples) != 0)
