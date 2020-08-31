@@ -41,7 +41,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
 
   # data.table "set" and ":=" functions act by reference, I create a copy to
   # avoid modifying the original object (perhaps there is a better option?)
-  DT <- results
+  DT <- copy(results)
   rm(results)
 
   th <- reciprocal_overlap
