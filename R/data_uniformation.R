@@ -1,3 +1,8 @@
+
+
+## Old function no longer needed. This file will be deleted soon.
+
+
 #' Uniform data i/o
 #'
 #' \code{DT_uniform} returns the input (CNVs calling/segmentation results,
@@ -81,7 +86,6 @@
 #'
 #' @return a \code{data.table}, see the description for the details.
 #'
-#' @export
 #'
 #' @import data.table
 
