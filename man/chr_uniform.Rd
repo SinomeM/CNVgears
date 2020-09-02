@@ -7,15 +7,13 @@
 chr_uniform(DT_in)
 }
 \arguments{
-\item{DT_in, }{a \code{data.table} with a columns named "chr"
-
-This is a function for internal use in the package, it handles
-the standardize process of chromosome notation within the other functions.}
+\item{DT_in, }{a \code{data.table} with a columns named "chr"}
 }
 \value{
 the same \code{data.table} in input with the "chr" uniformed to the
   notation "1", "2", ... , "23", "24" for the chromosomes 1:22, X and Y
 }
 \description{
-Uniform chromosome notation
+This is a function for internal use in the package, it handles
+the standardize process of chromosome notation within the other functions.
 }

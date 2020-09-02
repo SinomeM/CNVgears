@@ -7,21 +7,37 @@
 inter_res_merge(
   res_list,
   sample_list,
-  g_arms,
+  chr_arms,
   prop = 0.3,
   inner_outer = "outer"
 )
 }
 \arguments{
-\item{res_list}{aaa}
+\item{res_list}{a \code{list} of \code{CNVresults}.}
 
-\item{sample_list}{aaa}
+\item{sample_list}{cohort information}
 
-\item{g_arms}{aaa}
+\item{chr_arms}{a \code{data.table} containing chromosomal arms locations. They
+are bundled in the package for hg18, hg19 and hg38 (\code{hgXX_chr_arms}).}
+
+\item{prop}{proportion of reciprocal overlap to define two calls as "replicated".}
+
+\item{inner_outer}{keep "inner" or "outer" borders? If NA all columns will be kept.}
 }
 \value{
 
 }
 \description{
-Combine the results from multiple methods in a single object
+\code{inter_res_merge} combines the results of multiple CNV calling methods
+imported via \code{\link{read_results}} into a single \code{CNVresults} object.
+}
+\details{
+Multiple \code{CNVresults} objects are combined into a single object and replicated
+calls are merged. The amount of reciprocal overlap necessary to define two calls
+as "replicated" is controlled with the \code{prop} parameter.
+When merging two or more events there will be two borders, inner and outer. By
+default the outer border are kept as "start" and "end" of the final table. If
+the user want to keep all the information \code{inner_outer} can be set to NA.
+In this case "start" and "end" will also be the outer borders. This is done because
+a \code{CNVresults} object need explicit "start" and "end" columns.
 }

@@ -5,20 +5,20 @@
 #' This function use \code{readVcf} from \code{VariantAnnotation} to read VCF
 #' files, then it select only the necessary columns (for the purpose of CNVs
 #' calling results analysis) and convert it to a \code{data.table}. Can also be
-#' usewd to check the names of the necessary fields (end and copy number) if not
+#' used to check the names of the necessary fields (end and copy number) if not
 #' already known, using the parameter \code{explore}. By default it expect a
 #' file containing data for a single sample (e.g. the results of gCNV from
-#' GATK), but it can process files containing multiple samples if a charater
-#' vector containig the IDs is given to the parameter \code{samples}.
+#' GATK), but it can process files containing multiple samples if a character
+#' vector containing the IDs is given to the parameter \code{samples}.
 #'
-#' @param DT_path, path to the file.
-#' @param end_vcf, name of the field containing the segment end information.
-#' @param CN_vcf, name of the field containing the segment copy number
+#' @param DT_path path to the file.
+#' @param end_vcf name of the field containing the segment end information.
+#' @param CN_vcf name of the field containing the segment copy number
 #'   information.
-#' @param samples, NA by default, if a character vector is providend is used to
-#'   identify and select samples in a VCF containg multiple ones.
-#' @param explore, logic, \code{FALSE} by default. If \code{TRUE} the file in
-#'   \code{DT_path} is not loaded, insted, several infos about the VCF fields
+#' @param samples NA by default, if a character vector is provided is used to
+#'   identify and select samples in a VCF containing multiple ones.
+#' @param explore logic, \code{FALSE} by default. If \code{TRUE} the file in
+#'   \code{DT_path} is not loaded, instead, several infos about the VCF fields
 #'   are printed.
 #'
 #' @export

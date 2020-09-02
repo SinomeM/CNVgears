@@ -1,9 +1,9 @@
 #' Uniform chromosome notation
 #'
-#' @param DT_in, a \code{data.table} with a columns named "chr"
-#'
 #' This is a function for internal use in the package, it handles
 #' the standardize process of chromosome notation within the other functions.
+#'
+#' @param DT_in, a \code{data.table} with a columns named "chr"
 #'
 #' @return the same \code{data.table} in input with the "chr" uniformed to the
 #'   notation "1", "2", ... , "23", "24" for the chromosomes 1:22, X and Y
@@ -12,6 +12,7 @@
 #'
 #' @import data.table
 
+# This can be NOT exported if wanted
 
 chr_uniform <- function(DT_in) {
   if (!"chr" %in% colnames(DT_in))

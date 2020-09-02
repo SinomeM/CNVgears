@@ -1,18 +1,27 @@
-#' Discover good de novo CNVs candidates
+#' Compute CNVs inheritance
 #'
-#' \code{denovo_cnvs} screen CNVs calling results to find de novo candidates,
-#' given a family based study design.
+#' \code{cnvs_inheritance} compute CNVs inheritance pattern and search good de novo
+#' CNVs candidates
 #'
-#' This function
+#' Given a trio (mother, father, offspring) this function computes inheritance patterns
+#' of the offspring's CNVs. This is done both by comparing the actual calls in the
+#' trio (CNVs-level) and the raw data (markers-level). For this reason it is suggested
+#' to use it separately on each method and then combine the results. As an example
+#' if the focus are de novo CNVs, select only those and then combine the outputs
+#' using \code{\link{inter_res_merge}}. In this way it also possible to further
+#' increase the confidence in the results, e.g. by filtering out all de novo candidates
+#' called by a single method.
 #'
-#' @param sample_list, a \code{data.table}, the output of
+#' Internally the function is structured in several steps. [...]
+#'
+#' @param sample_list a \code{data.table}, the output of
 #'   \code{\link{read_metadt}}.
-#' @param markers, a \code{data.table}, the output of
+#' @param markers a \code{data.table}, the output of
 #'   \code{\link{read_NGS_intervals}} or \code{\link{read_finalreport_snps}},
 #'   depending on the initial data type.
-#' @param results, a \code{data.table}, the output of
-#'   \code{\link{read_results}}.
-#' @param raw_path, \code{character}, the path where raw data processed by
+#' @param results a \code{CNVresults} object, the output of
+#'   \code{\link{read_results}} or \code{\link{inter_res_merge}}.
+#' @param raw_path \code{character}, the path where raw data processed by
 #'   \code{\link{read_NGS_raw}} or \code{\link{read_finalreport_raw}}.
 #'
 #' @export

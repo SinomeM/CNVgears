@@ -1,14 +1,14 @@
 #' CNVgears: A package to analyze CNVs calling/segmentation results
 #'
-#' \code{CNvgears} provides several functions to analyse the results of CNVs
+#' \code{CNvgears} provides several functions to analyze the results of CNVs
 #' calling and/or segmentation on SNPs arrays or NGS data.
 #'
-#' The CNVgears package provides sevral functions usefull in order to perform a
-#' serie of analysis the result of CNVs calling or segmentation pipelines or
+#' The CNVgears package provides several functions useful in order to perform a
+#' series of analysis the result of CNVs calling or segmentation pipelines or
 #' algorithms, on both Ilummina SNP array (e.g. PennCNV, iPattern or
 #' EnsembleCNV) and NGS data (e.g. ModSeg and gCNV pipelines from GATK), in an
 #' integrated framework. To do so all the data is imported in a standardized
-#' manner, allowing the user to perfomr analysis and data manipulatin regardless
+#' manner, allowing the user to perform analysis and data manipulation regardless
 #' of the initial raw data type, from (among the others) CNVRs creation and
 #' exclusion of immunoglobulin regions, to de novo CNVs discovery and genic
 #' content annotation.
@@ -16,8 +16,8 @@
 #' It has been originally developed for the CNVs characterization of the Italian
 #' Autism Network (ITAN) collection (DOI: 10.1186/s12888-018-1937-y).
 #'
-#' @section Anlysis pipelines examples:
-#' Here are briefly illustrated some workflow examples that can be done eihter
+#' @section Analysis pipelines examples:
+#' Here are briefly illustrated some workflow examples that can be done either
 #' interactively on sequentially. See the vignettes for further details.
 #'
 #' Staring from the results of gCNV and ModSeg pipelines on WES data in a cohort
@@ -45,15 +45,14 @@
 #' }
 #'
 #' @section CNVgears functions:
-#' The CNVgears functions are organised in groups:
+#' The CNVgears functions are organized in groups:
 #' \itemize{
 #'   \item input/output
 #'   \item filtering
 #'   \item CNVRs
-#'   \item inter/intra results comparison and merging
+#'   \item inter results comparison and merging
 #'   \item de novo discovery/inheritance pattern detection
 #'   \item plotting
-#'   \item ...
 #' }
 #'
 #' @docType package

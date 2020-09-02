@@ -2,7 +2,7 @@
 % Please edit documentation in R/CNVs_inheritance.R
 \name{cnvs_inheritance}
 \alias{cnvs_inheritance}
-\title{Discover good de novo CNVs candidates}
+\title{Compute CNVs inheritance}
 \usage{
 cnvs_inheritance(
   sample_list,
@@ -18,23 +18,32 @@ cnvs_inheritance(
 )
 }
 \arguments{
-\item{sample_list, }{a \code{data.table}, the output of
+\item{sample_list}{a \code{data.table}, the output of
 \code{\link{read_metadt}}.}
 
-\item{markers, }{a \code{data.table}, the output of
+\item{markers}{a \code{data.table}, the output of
 \code{\link{read_NGS_intervals}} or \code{\link{read_finalreport_snps}},
 depending on the initial data type.}
 
-\item{results, }{a \code{data.table}, the output of
-\code{\link{read_results}}.}
+\item{results}{a \code{CNVresults} object, the output of
+\code{\link{read_results}} or \code{\link{inter_res_merge}}.}
 
-\item{raw_path, }{\code{character}, the path where raw data processed by
+\item{raw_path}{\code{character}, the path where raw data processed by
 \code{\link{read_NGS_raw}} or \code{\link{read_finalreport_raw}}.}
 }
 \description{
-\code{denovo_cnvs} screen CNVs calling results to find de novo candidates,
-given a family based study design.
+\code{cnvs_inheritance} compute CNVs inheritance pattern and search good de novo
+CNVs candidates
 }
 \details{
-This function
+Given a trio (mother, father, offspring) this function computes inheritance patterns
+of the offspring's CNVs. This is done both by comparing the actual calls in the
+trio (CNVs-level) and the raw data (markers-level). For this reason it is suggested
+to use it separately on each method and then combine the results. As an example
+if the focus are de novo CNVs, select only those and then combine the outputs
+using \code{\link{inter_res_merge}}. In this way it also possible to further
+increase the confidence in the results, e.g. by filtering out all de novo candidates
+called by a single method.
+
+Internally the function is structured in several steps. [...]
 }

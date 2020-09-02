@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_calls.R
 \name{cleaning_filter}
 \alias{cleaning_filter}
-\title{Filter CNVs calls based on several parameter}
+\title{Filter CNVs calls based on several parameters}
 \usage{
 cleaning_filter(
   results,
@@ -18,15 +18,14 @@ cleaning_filter(
 \code{\link{read_results}}.}
 
 \item{min_len, }{minimum CNVs length, any shorter event will be filtered out.
-Default is 5000.}
+Default is 10000.}
 
 \item{min_NP, }{minimum CNVs points, any shorter event will be filtered out.
-Default is 5.}
+Default is 10.}
 
 \item{blacklists, }{blacklist, a \code{list} of \code{data.table} or \code{data.frame}
-containing
-at least the following columns: "chr", "start", "end". Any event in a
-blacklists' region will be filtered out.}
+containing at least the following columns: "chr", "start", "end". Any event
+in a blacklists' region will be filtered out.}
 
 \item{blacklist_samples, }{character vector containing samples ID to filter
 out.}
@@ -35,8 +34,8 @@ out.}
 package format, 1:22 for autosomes and 23 24 for chr X and Y.}
 }
 \description{
-\code{cleaning_filter} "clean" a CNV call dataset based on measures such as
-length number of calls per sample and more.
+\code{cleaning_filter} "clean" a CNV calls dataset based on measures such as
+length, number of calls per sample and more.
 }
 \details{
 This function can be used together with \code{\link{summary}} in order
@@ -50,6 +49,6 @@ by less than 10 points. The use of blacklist of any kind is optional and
 should be done with caution, as it can filter potential biologically relevant
 events. Over-segmented samples the user wishes to exclude can be specified via
 \code{blacklist_samples}. Immunoglobulin regions can be generated with the function
-\code{\link{immuno_regions}}, while telomeric and/or centromeric regions can be obtained with
-\code{\link{telom_centrom}}.
+\code{\link{immuno_regions}}, while telomeric and/or centromeric regions can be
+obtained with \code{\link{telom_centrom}}.
 }

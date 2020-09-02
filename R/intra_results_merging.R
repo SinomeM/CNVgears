@@ -1,30 +1,30 @@
 
 #' Merge adjacent CNV with equal Copy Number
- #'
- #' \code{merge_calls} screen the segments of a sample and merge adjacent calls
- #' with equal CN if close enough
- #'
- #' This function takes a \code{data.frame} containing CNVs calling/segmentation
- #' results and try to merge adjacent calls (having equal GT and being close
- #' enough). It is designed to process one sample at the time and is integrated
- #' in the function \code{\link{read_results}}. It is not suggested to use it
- #' stand-alone. The merging is done starting from the larger calls, on adjacent
- #' call with equal GT in a range of +/- \code{length*thresh}, trough several
- #' iterations until no more calls can be merged.
- #'
- #' @param DT_in, a \code{data.table} in the format of
- #'   \code{\link{read_results}} output.
- #' @param thresh, numeric value that multiplied by the length of a call gives
- #'   the range where adjacent calls are searched.
- #'
- #' @export
+#'
+#' \code{merge_calls} screen the segments of a sample and merge adjacent calls
+#' with equal GT if close enough
+#'
+#' This function takes a \code{CVNResults} object and try to merge adjacent calls
+#' (having equal GT and being close
+#' enough). It is designed to process one sample at the time and is integrated
+#' in the function \code{\link{read_results}}. It is not suggested to use it
+#' stand-alone. The merging is done starting from the larger calls, on adjacent
+#' call with equal GT in a range of +/- \code{length*prop}, trough several
+#' iterations until no more calls can be merged.
+#'
+#' @param DT_in a \code{data.table} in the format of
+#'   \code{\link{read_results}} output.
+#' @param prop numeric value that multiplied by the length of a call gives
+#'   the range where adjacent calls are searched.
+#'
+#' @export
 #'
 #' @import data.table
 
 # try to change the functions in that it does require SOME columns,
 # not ONLY SOME columns, maybe using some vectors instead of rbind.
 
-merge_calls <- function(DT_in, thresh = 0.3) {
+merge_calls <- function(DT_in, prop = 0.3) {
   # check if multiple samples are present
   if (length(unique(DT_in$sample_ID)) != 1)
     stop(paste0("Multiple samples detected! Intra results merging require ",
@@ -70,7 +70,7 @@ merge_calls <- function(DT_in, thresh = 0.3) {
         B <- DT_tmp$end[i]
         C <- DT_tmp$start[i+1]
         D <- DT_tmp$end[i+1]
-        if ((C-B+1) <= (D-A+1) * thresh) {
+        if ((C-B+1) <= (D-A+1) * prop) {
           # do merge
           # cat("MERGE!")
           start_m <- A
@@ -115,7 +115,9 @@ merge_calls <- function(DT_in, thresh = 0.3) {
 }
 
 
-merge_calls_old <- function(DT_in, thresh = 0.5) {
+## DELETE THIS
+
+merge_calls_old <- function(DT_in, prop = 0.5) {
   # check if multiple samples are present
   if (length(unique(DT_in$sample_ID)) != 1)
     stop(paste0("Multiple samples detected! Intra results merging require ",
@@ -146,11 +148,11 @@ merge_calls_old <- function(DT_in, thresh = 0.5) {
       adjacent_ix <- c(i+1, i-1)[!c(i+1, i-1) %in% used_ix]
       # serch possible oversegmented cnv, note that I use GT instead of CN.
       # For merging a callB with a larger callA, callB$end must be between
-      # callA$start - callA$len*thresh and callA$start OR callB$start between
-      # callA$end and callA$end + callA$len*thresh
+      # callA$start - callA$len*prop and callA$start OR callB$start between
+      # callA$end and callA$end + callA$len*prop
       tmp <- DT_in[ix %in% adjacent_ix & chr == DT_in$chr[i] & GT == DT_in$GT[i] &
-                     ((start > DT_in$end[i] & start < DT_in$end[i] + DT_in$len[i]*thresh) |
-                        (end > DT_in$start[i] - DT_in$len[i]*thresh & end < DT_in$start[i]))]
+                     ((start > DT_in$end[i] & start < DT_in$end[i] + DT_in$len[i]*prop) |
+                        (end > DT_in$start[i] - DT_in$len[i]*prop & end < DT_in$start[i]))]
       # if no "mergeble" segments are present for DT_in[i] keep track of it
       if (nrow(tmp) == 0) unmergeble_ix <- c(unmergeble_ix, i)
       else {

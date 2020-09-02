@@ -1,21 +1,28 @@
 
 #' Combine the results from multiple methods in a single object
 #'
-#' @param res_list aaa
-#' @param sample_list aaa
-#' @param chr_arms aaa
+#' \code{inter_res_merge} combines the results of multiple CNV calling methods
+#' imported via \code{\link{read_results}} into a single \code{CNVresults} object.
+#'
+#' Multiple \code{CNVresults} objects are combined into a single object and replicated
+#' calls are merged. The amount of reciprocal overlap necessary to define two calls
+#' as "replicated" is controlled with the \code{prop} parameter.
+#' When merging two or more events there will be two borders, inner and outer. By
+#' default the outer border are kept as "start" and "end" of the final table. If
+#' the user want to keep all the information \code{inner_outer} can be set to NA.
+#' In this case "start" and "end" will also be the outer borders. This is done because
+#' a \code{CNVresults} object need explicit "start" and "end" columns.
+#'
+#' @param res_list a \code{list} of \code{CNVresults}.
+#' @param sample_list cohort information
+#' @param chr_arms a \code{data.table} containing chromosomal arms locations. They
+#'   are bundled in the package for hg18, hg19 and hg38 (\code{hgXX_chr_arms}).
+#' @param prop proportion of reciprocal overlap to define two calls as "replicated".
+#' @param inner_outer keep "inner" or "outer" borders? If NA all columns will be kept.
 #'
 #' @return
 #' @export
 #'
-
-# Best option should be to load all the results in a list, rbind together
-# all the elements of the list and then, iterating per each chromosomes
-# arm (per sample) do something pretty similar to the CNVRs construction
-# given that the problem is more or less exactly the same
-
-# here the markers objects are not relevant anymore because we could be
-# combining results from different data types.
 
 # The biggest problem here is the "classic" big CNV detected in method "A"
 # and splitted or only partially called in method "B" and the opposite one
@@ -25,7 +32,7 @@
 # To solve the situation there are two approaches in my opinion:
 # 1. Bigger "wins", meaning that the function should screen the bigger
 # calls first and let them incorporate the smaller one. In this way
-# several informations are lost, in particular the big call is treated
+# several information are lost, in particular the big call is treated
 # as replicated even if in fact only a part of it is actually replicated.
 # 2. Only CNVs of compatible sizes can be merged.
 # In this case there is a second choice, i.e. only merged calls should be
@@ -130,7 +137,8 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
         # now merge_ixs contains the ix values of mnergable cnv, must create a unique line, add it
         # to res_merge and remove the original calls from tmp
         # the output object should have the following columns:
-        # "chr", "inner_start", "inner_end", "outer_start", "outer_end", "sample_ID", "GT", ("CN"), "seg_ID", "meth_ID", "n_meth"
+        # "chr", "inner_start", "inner_end", "outer_start", "outer_end", "sample_ID", "GT", ("CN"),
+        # "seg_ID", "meth_ID", "n_meth"
         # ... #
         # CAREFUL HERE, not necessarily length(merge_ixs) > 1 !!!
 
@@ -157,11 +165,12 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
           mm <- sort(sel_lines$meth_ID)
           meth_ID_m <- paste(mm, collapse = "-")
 
-          res_merge <- rbind(res_merge, data.table("chr" = a_chr,
-                                                   "inner_start" = inner_st, "inner_end" = inner_en,
-                                                   "outer_start" = outer_st, "outer_end" = outer_en,
-                                                   "sample_ID" = samp, "GT" = tmp_GT, "CN" = CN_m,
-                                                   "meth_ID" = meth_ID_m, "n_meth" = length(mm)))
+          res_merge <- rbind(res_merge,
+                             data.table("chr" = a_chr,
+                                        "inner_start" = inner_st, "inner_end" = inner_en,
+                                        "outer_start" = outer_st, "outer_end" = outer_en,
+                                        "sample_ID" = samp, "GT" = tmp_GT, "CN" = CN_m,
+                                        "meth_ID" = meth_ID_m, "n_meth" = length(mm)))
         }
 
         # remove the "merged" lines, in this way an event won't be used more than
@@ -188,12 +197,15 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
     }
     res_merge[, len := end - start + 1]
   }
+  else
+    res_merge[, `:=` (start = outer_start, end := outer_start, len = end - start + 1)]
 
   # re set the class
   class(res_merge) <- c("CNVresults", class(res_merge))
   return(res_merge)
 }
 
+## Sub-Functions
 
 compare_neighbors <- function() {
 

@@ -2,13 +2,17 @@
 % Please edit documentation in R/GRanges_from_to.R
 \name{CNVresults_to_GRanges}
 \alias{CNVresults_to_GRanges}
-\title{Title}
+\title{CNVresults to GRanges}
 \usage{
 CNVresults_to_GRanges(DT)
 }
-\value{
-
+\arguments{
+\item{DT}{a \code{CNVresults} object.}
 }
 \description{
-Title
+\code{CNVresults_to_GRanges} convert \code{CNVresults} objects into \code{GRanges}
+}
+\details{
+A simple wrapper for the fucntion \code{GenomicRanges::makeGRangesFromDataFrame}.
+Retained metadata columns are: sample_ID, GT and meth_ID.
 }

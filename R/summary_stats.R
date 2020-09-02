@@ -25,10 +25,6 @@
 #' @import data.table
 #' @import ggplot2
 
-# the function also returns the object sstat that contains number of CNVs etc
-# per sample cab be used to decide if a sample is oversegmented and need to be
-# excluded (some lines already printed int the console)
-
 # add the option to save as RDS and PNG!
 
 summary.CNVresults <- function(object, sample_list, markers, plots_path = NA) {

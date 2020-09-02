@@ -4,25 +4,25 @@
 \alias{merge_calls}
 \title{Merge adjacent CNV with equal Copy Number}
 \usage{
-merge_calls(DT_in, thresh = 0.3)
+merge_calls(DT_in, prop = 0.3)
 }
 \arguments{
-\item{DT_in, }{a \code{data.table} in the format of
+\item{DT_in}{a \code{data.table} in the format of
 \code{\link{read_results}} output.}
 
-\item{thresh, }{numeric value that multiplied by the length of a call gives
+\item{prop}{numeric value that multiplied by the length of a call gives
 the range where adjacent calls are searched.}
 }
 \description{
 \code{merge_calls} screen the segments of a sample and merge adjacent calls
-with equal CN if close enough
+with equal GT if close enough
 }
 \details{
-This function takes a \code{data.frame} containing CNVs calling/segmentation
-results and try to merge adjacent calls (having equal GT and being close
+This function takes a \code{CVNResults} object and try to merge adjacent calls
+(having equal GT and being close
 enough). It is designed to process one sample at the time and is integrated
 in the function \code{\link{read_results}}. It is not suggested to use it
 stand-alone. The merging is done starting from the larger calls, on adjacent
-call with equal GT in a range of +/- \code{length*thresh}, trough several
+call with equal GT in a range of +/- \code{length*prop}, trough several
 iterations until no more calls can be merged.
 }

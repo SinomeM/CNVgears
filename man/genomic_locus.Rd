@@ -26,19 +26,14 @@ download the CytoBands file or use a local object.}
 \item{keep_str_end, }{logical, specify if intermediate columns (locus_start
 and locus_end) must be kept or discarded.}
 }
-\value{
-a \code{data.table} with one or three additional columns containig
-  genomic locus notation.
-}
 \description{
 \code{genomic_locus} add the locus information to a \code{data.table}
-contaning CNV calls-like data
+containing CNV calls-like data
 }
 \details{
-This function takes a \code{data.table} in the format of
-\code{\link{read_results}} output and add a columns containing the genomic
-locus information. By default the file containing the CytoBands location for
-the specified assebmly are downloaded from UCSC website, but also a local
+This function takes a \code{CNVresults} object and add a columns containing the
+genomic locus information. By default the file containing the CytoBands location
+for the specified assembly are downloaded from UCSC website, but also a local
 object (as \code{data.table} or \code{data.frame}) can be used via the
 argument \code{bands}.
 }

@@ -2,11 +2,14 @@
 % Please edit documentation in R/chr_st_end_centr_arms.R
 \name{chr_st_en_etc}
 \alias{chr_st_en_etc}
-\title{internal cnvgeaRs function}
+\title{Retrieve genomic information for the major assemblies}
 \usage{
 chr_st_en_etc()
 }
 \description{
 Generates chromosome start, end centrosome location, as well as chromosomal
 arm start end datatsets in three different assemblies.
+}
+\details{
+The important related objects are already bundle in the package.
 }

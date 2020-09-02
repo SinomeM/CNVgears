@@ -1,7 +1,7 @@
-#' Filter CNVs calls based on several parameter
+#' Filter CNVs calls based on several parameters
 #'
-#' \code{cleaning_filter} "clean" a CNV call dataset based on measures such as
-#' length number of calls per sample and more.
+#' \code{cleaning_filter} "clean" a CNV calls dataset based on measures such as
+#' length, number of calls per sample and more.
 #'
 #' This function can be used together with \code{\link{summary}} in order
 #' to clean the dataset from possible noise and unwanted calls. It is generally
@@ -14,28 +14,24 @@
 #' should be done with caution, as it can filter potential biologically relevant
 #' events. Over-segmented samples the user wishes to exclude can be specified via
 #' \code{blacklist_samples}. Immunoglobulin regions can be generated with the function
-#' \code{\link{immuno_regions}}, while telomeric and/or centromeric regions can be obtained with
-#' \code{\link{telom_centrom}}.
+#' \code{\link{immuno_regions}}, while telomeric and/or centromeric regions can be
+#' obtained with \code{\link{telom_centrom}}.
 #'
 #' @param results, a \code{data.table}, the output of
 #'   \code{\link{read_results}}.
 #' @param min_len, minimum CNVs length, any shorter event will be filtered out.
-#'   Default is 5000.
+#'   Default is 10000.
 #' @param min_NP, minimum CNVs points, any shorter event will be filtered out.
-#'   Default is 5.
+#'   Default is 10.
 #' @param blacklists, blacklist, a \code{list} of \code{data.table} or \code{data.frame}
-#'   containing
-#'   at least the following columns: "chr", "start", "end". Any event in a
-#'   blacklists' region will be filtered out.
+#'   containing at least the following columns: "chr", "start", "end". Any event
+#'   in a blacklists' region will be filtered out.
 #' @param blacklist_samples, character vector containing samples ID to filter
 #'   out.
 #' @param blacklist_chrs, character vector containing chromosomes names in the
 #'   package format, 1:22 for autosomes and 23 24 for chr X and Y.
 #'
 #' @export
-
-# add also the possibility to filter based on the number of calling algorithms
-
 
 cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
                             blacklists = NULL, blacklist_samples = NULL,

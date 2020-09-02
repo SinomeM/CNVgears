@@ -5,16 +5,15 @@
 #' @param biotypes, character vector of Genecode biotypes, default value is
 #'   "protein_coding".
 #' @param mart, user specified \code{biomaRt::useMart()} object. Used if DT_in
-#'   is assembly (e.g. hg19) require older ensembl releases. If NA the latest
+#'   is assembly (e.g. hg19) require older Ensembl releases. If NA the latest
 #'   release available by \code{biomaRt::useMart()} is used.
 #'
-#'   This function takes a \code{data.table} containing CNVs calling results
-#'   data as input and add two additional columns representing the genic content
-#'   of each call, i.e. "genes" and "n_genes". The genes considered can be
-#'   changed using the `biotypes` parameter depending on which types of genes is
-#'   the user interested in.
+#'   This function takes a \code{CNVresults} object as input and add two additional
+#'   columns representing the genic content of each call, i.e. "genes" and "n_genes".
+#'   The genes considered can be changed using the \code{biotypes} parameter depending
+#'   on which types of genes is the user interested in. At the moment, genes a
+#'   stored as a "-" separated list of Ensembl IDs.
 #'
-#' @return, a \code{data.table}.
 #' @export
 #'
 #' @import data.table
