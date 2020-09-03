@@ -21,9 +21,13 @@ test_that("Overlapping calls are merged only if of comparable sizes", {
   ii <- data.table(chr = 22, start = 20878863,
                    end = 21191994, GT = 1, CN = 1,
                    sample_ID = "NA12878", meth_ID = "I")
+  class(pp) <- c("CNVresults", class(pp))
+  class(qq) <- c("CNVresults", class(qq))
+  class(ii) <- c("CNVresults", class(ii))
+
   invisible(capture.output(
     mm <- inter_res_merge(res_list = list(pp, qq, ii), sample_list = sl,
-                          g_arms = hg19_chr_arms)))
+                          chr_arms = hg19_chr_arms)))
   rr <- data.table(chr = 22 , start = c(20892562, 21060265, 20878863),
                    end = c(20931293, 21090100, 21191994))
   expect_equal(nrow(mm), 3)
@@ -42,9 +46,13 @@ test_that("Overlapping calls are not merged if GT is not compatible ", {
   ii <- data.table(chr = 22, start = 20878863,
                    end = 21191994, GT = 1, CN = 1,
                    sample_ID = "NA12878", meth_ID = "I")
+  class(pp) <- c("CNVresults", class(pp))
+  class(qq) <- c("CNVresults", class(qq))
+  class(ii) <- c("CNVresults", class(ii))
+
   invisible(capture.output(
     mm <- inter_res_merge(res_list = list(pp, qq, ii), sample_list = sl,
-                          g_arms = hg19_chr_arms)))
+                          chr_arms = hg19_chr_arms)))
   rr <- data.table(chr = 22 ,
                    start = c(20892562, 20909801, 21060265, 21060265, 20878863),
                    end = c(20931293, 20931293, 21090100, 21090100, 21191994))
