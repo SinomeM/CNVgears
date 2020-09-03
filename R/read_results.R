@@ -12,7 +12,7 @@
 #' \item VCF files, one per sample (e.g. the results of GATK gCNV pipeline);
 #' \item VCF file, all sample of a cohort in the same file (not yet fully implemented);
 #' \item TSV/CSV file, one file per sample (e.g. the results of GATK ModSeg pipeline,
-#'   or the reults of running "manually" PennCNV);
+#'   or the results of running "manually" PennCNV);
 #' \item TSV/CSV file, all samples of a cohort in the same file (e.g. the results
 #'   of EnsembleCNV).
 #' }
@@ -27,11 +27,11 @@
 #'   \code{res_type} is set to "directory" or to the single file if \code{res_type}
 #'   is set to "file".
 #' @param pref,suff, eventual prefix an suffix (e.g. ".txt") to the files to be used
-#'   when \code{res_type} is set to "directory". If not necessary must be setted to
+#'   when \code{res_type} is set to "directory". If not necessary must be set to
 #'   \code{NA}.
 #' @param sample_list, minimal cohort metadata, a \code{data.table} produced by the
 #'   function \code{\link{read_metadt}}.
-#' @param res_type, can be eihter "directory" or "file", indicates whether the
+#' @param res_type, can be either "directory" or "file", indicates whether the
 #'   function must expect a single file for all samples or one file per sample.
 #' @param DT_type, can be either "VCF" or "TSV/CSV", indicate the file type.
 #' @param chr_col, name of the column containing the chromosome information
@@ -44,33 +44,33 @@
 #'   in the input data.
 #' @param samp_ID_col, name of the column containing the sample ID information in
 #'   the input file, required if \code{res_type} is set to "file".
-#' @param markers, a \code{data.table} containing the marker list, the outup
-#'   \code{\link{read_finalreport_snps}} with \code{DT_type} setted to "markers"
+#' @param markers, a \code{data.table} containing the marker list, the output
+#'   \code{\link{read_finalreport_snps}} with \code{DT_type} set to "markers"
 #'   or \code{\link{read_NGS_intervals}}.
 #' @param end_vcf, name of the field containing the segment end information in the
 #'   VCF file(s), passed to the function \code{\link{read_vcf}}.
 #' @param CN_vcf, name of the field containing the segment copy number
 #'   information in the VCF file(s), passed to the function \code{\link{read_vcf}}.
-#' @param do_merge, logical, indicates wheter the function \code{\link{merge_calls}}
+#' @param do_merge, logical, indicates whether the function \code{\link{merge_calls}}
 #'   should be automatically called for each sample (strongly suggested).
 #' @param method_ID, character identifying the method (algorithms/pipeline), one letter
-#'    code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg). 
+#'    code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg).
 #'    Numeric are converted to character.
 #'
 #' @export
 #'
 #' @import data.table
 
-# When it everuthing will be OK it could be nice to parallelize
+# When it everything will be OK it could be nice to parallelize
 # the data input
 
 # consider describing better the path etc
 
-read_results <- function(DT_path, res_type, DT_type, pref = NA, suff = NA, 
-                         sample_list, markers,                         
+read_results <- function(DT_path, res_type, DT_type, pref = NA, suff = NA,
+                         sample_list, markers,
                          chr_col, start_col, end_col, CN_col, samp_ID_col,
                          end_vcf = "END", CN_vcf = "CN",
-                         do_merge = TRUE, merge_thresh = 0.5, method_ID) {
+                         do_merge = TRUE, merge_prop = 0.5, method_ID) {
   # check parameters
   if (missing(DT_path) | missing(res_type) | missing(DT_type))
     stop("Missing inputs!\n")
@@ -115,7 +115,7 @@ read_results <- function(DT_path, res_type, DT_type, pref = NA, suff = NA,
                                    markers = markers, sex = sex)
         # merge segments
         if (do_merge)
-          tmp <- merge_calls(tmp, thresh = merge_thresh)
+          tmp <- merge_calls(tmp, prop = merge_prop)
 
         # add seg_ID for this sample
         tmp[, seg_ID := 1:nrow(tmp)]
@@ -150,7 +150,7 @@ read_results <- function(DT_path, res_type, DT_type, pref = NA, suff = NA,
                                   sex = sample_list$sex[i])
         # merge segments
         if (do_merge)
-          DT <- merge_calls(DT, thresh = merge_thresh)
+          DT <- merge_calls(DT, prop = merge_prop)
 
         # add seg_ID for this sample
         DT[, seg_ID := 1:nrow(DT)]

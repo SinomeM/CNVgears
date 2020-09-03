@@ -20,7 +20,7 @@ read_results(
   end_vcf = "END",
   CN_vcf = "CN",
   do_merge = TRUE,
-  merge_thresh = 0.5,
+  merge_prop = 0.5,
   method_ID
 )
 }
@@ -29,20 +29,20 @@ read_results(
 \code{res_type} is set to "directory" or to the single file if \code{res_type}
 is set to "file".}
 
-\item{res_type, }{can be eihter "directory" or "file", indicates whether the
+\item{res_type, }{can be either "directory" or "file", indicates whether the
 function must expect a single file for all samples or one file per sample.}
 
 \item{DT_type, }{can be either "VCF" or "TSV/CSV", indicate the file type.}
 
 \item{pref, suff, }{eventual prefix an suffix (e.g. ".txt") to the files to be used
-when \code{res_type} is set to "directory". If not necessary must be setted to
+when \code{res_type} is set to "directory". If not necessary must be set to
 \code{NA}.}
 
 \item{sample_list, }{minimal cohort metadata, a \code{data.table} produced by the
 function \code{\link{read_metadt}}.}
 
-\item{markers, }{a \code{data.table} containing the marker list, the outup
-\code{\link{read_finalreport_snps}} with \code{DT_type} setted to "markers"
+\item{markers, }{a \code{data.table} containing the marker list, the output
+\code{\link{read_finalreport_snps}} with \code{DT_type} set to "markers"
 or \code{\link{read_NGS_intervals}}.}
 
 \item{chr_col, }{name of the column containing the chromosome information
@@ -66,11 +66,11 @@ VCF file(s), passed to the function \code{\link{read_vcf}}.}
 \item{CN_vcf, }{name of the field containing the segment copy number
 information in the VCF file(s), passed to the function \code{\link{read_vcf}}.}
 
-\item{do_merge, }{logical, indicates wheter the function \code{\link{merge_calls}}
+\item{do_merge, }{logical, indicates whether the function \code{\link{merge_calls}}
 should be automatically called for each sample (strongly suggested).}
 
 \item{method_ID, }{character identifying the method (algorithms/pipeline), one letter
-code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg). 
+code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg).
 Numeric are converted to character.}
 }
 \description{
@@ -87,7 +87,7 @@ are considered, for a total of four generic situations:
 \item VCF files, one per sample (e.g. the results of GATK gCNV pipeline);
 \item VCF file, all sample of a cohort in the same file (not yet fully implemented);
 \item TSV/CSV file, one file per sample (e.g. the results of GATK ModSeg pipeline,
-  or the reults of running "manually" PennCNV);
+  or the results of running "manually" PennCNV);
 \item TSV/CSV file, all samples of a cohort in the same file (e.g. the results
   of EnsembleCNV).
 }
