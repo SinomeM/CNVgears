@@ -88,21 +88,23 @@ devtools::install_github("SinomeM/CNVgears")
 To load the package.
 
 ```{r library}
-library(CNVgears)
+library(CNVgears, quietly = T)
 ```
 
 ### Set data.table threads
 
-All the major functions uses `data.table` package, especially in the more intensive steps.
-The package uses by default half the CPU threads available, this can be changed with the function
-`data.table::setDTthreads`. For example to use the 75% of available threads:
+All the major functions uses `data.table` package, especially in the more intensive 
+steps. The package uses by default half the CPU threads available, this can be changed 
+with the function `data.table::setDTthreads`. For example to use the 75% of available 
+threads or an integer number of them:
 
 ``` {r DT threads, eval = F}
 # not run
 data.table::setDTthreads(percent=75)
+data.table::setDTthreads(4)
 ```
 
-*[aggiungi frase su numero di cores ideale]*     
+Empirically, we found the ideal number of threads being between 4 and 8.   
 See the relative man pages for details on each function used. 
 
 
@@ -147,7 +149,7 @@ them one single time and use them for all the three callers results.
 Note that during the importing of the results an intra-method CNV merging step is 
 performed, i.e. adjacent call are merged into a single one if requirements are met.
 This step is performed by default but can be avoided by setting `do_merge` parameter 
-to `FALSE`. The resulting objects are of the class `CNVresults`.
+to `FALSE`. The resulting objects are of the class `CNVresults`.    
 
 ```{r results + raw, message=FALSE}
 # CNV calling results
@@ -197,6 +199,24 @@ Obviously, if more methods are used this initial step is longer, in particular i
 also WGS and/or high density SNPs array data is used (because of the very high 
 number of markers). More examples will be added in future version of this vignette. 
 
+### `cn.mops` package results loading
+
+CNVs calling from NGS data Bioconductor package `cn.mops` uses GRanges objects as 
+results. In particular, the actual calls are stored in the `cnvs` slot. These can 
+be loaded into a `CNVgears` pipeline using the function `cnmops_to_CNVresults`
+as shown here. Note that only calls in chromosomes 1:22 are supported by this package 
+at the moment. 
+
+```{r, eval= FALSE}
+## not run
+library(cn.mops)
+data(cn.mops)
+resCNMOPS <- cn.mops(XRanges)
+resCNMOPS <- calcIntegerCopyNumbers(resCNMOPS)
+resCNMOPS_cnvs <- cnvs(resCNMOPS)
+cnmops_calls <- cnmops_to_CNVresults(resCNMOPS_cnvs)
+```
+
 
 ## Data integration and processing ##
 
@@ -213,10 +233,10 @@ An example for one of the callers results.
 ```{r summary stats, eval = FALSE}
 # not run 
 
-sstatPenn <- summary(results = penn, sample_list = cohort,
+sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers)
 # also saves plots
-sstatPenn <- summary(results = penn, sample_list = cohort,
+sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers, 
                      plots_path = file.path("tmp","sstatPenn"))
 ```
@@ -290,7 +310,7 @@ dataset and, when all the individual comparison are done, two additional columns
 containing the adjusted p-values are computed, leaving to the user the choice of 
 which sets of p-value use.
 
-```{r inheritance}
+```{r inheritance, message=FALSE, results="hide"}
 penn_inheritance <- 
   cnvs_inheritance(results = penn_filtered, sample_list =  cohort[fam_ID == "1463", ], 
                    markers = SNP_markers, raw_path = file.path("tmp_RDS"))
@@ -344,16 +364,22 @@ ipq_denovo[4:6,]
 
 ### CNV Regions Computation
 
-*[aggungi qualche frase di descrizione su CNVR e possibili utilizzi]*    
-We also provide a method to compute Copy Number Variable Regions (CNVRs), starting 
-from the integrated object created in the previous step
+Copy Number Variable Regions can be defined in several ways, an intuitive way to 
+visualize them is: regions of the human genomes were CNVs (of comparable size) are 
+present across samples in a population. This can be due for examples because such
+region is bordered by two particularly active breakpoints. CNVRs can be used for 
+CNVs-GWAS and, more easily, to extract rare events from a cohort.     
+In this package, we provide a method to compute Copy Number Variable Regions (CNVRs), 
+based on reciprocal overlap, starting from the integrated object created in the 
+previous step. See the `?cnvrs_create` for details. 
 
 ```{r cnvrs, results="hide"}
 cnvrs <- cnvrs_create(cnvs = ipq_filtered, chr_arms = hg19_chr_arms)
 ```
 
 CNVRs can also be used for filtering purposes, as an example a user can be more 
-interested in rare events and use CNVRs frequency to achieve this internally.
+interested in rare events and use CNVRs frequency to achieve this internally. 
+Examples using `data.table` syntax are shown in the "Data Export" section.
 
 ### De-novo CNVs visual confirmation 
 
@@ -423,6 +449,7 @@ fwrite(tmp, "example.tsv", sep = "\t")
 
 As an example to create a BED4 file were the entries names consist of 
 `sample_ID"-"GT` that can be loaded in IGV we do: 
+
 ```{r}
 tmp <- ipq_filtered[, .(chr, start, end, paste0(sample_ID, "-", GT))]
 head(tmp)
@@ -440,6 +467,19 @@ In the near future a more general function to convert all the major object into
 class(ipq_filtered)
 ipq_filtered_GRanges <- CNVresults_to_GRanges(ipq_filtered)
 ipq_filtered_GRanges
+```
+
+`data.table` queries can also be used to easily extract subset of interest from the 
+results. Some relevant examples are shown here. 
+
+```{r}
+## only call with > 1 calling methods
+
+## only "rare" call
+
+## de novo CNVs with a significant corrected p-value
+
+
 ```
 
 
@@ -465,7 +505,7 @@ procedure effect, it is recommended to perform at least those steps on the entir
 dataset. While parallelizing the user should always keep in mind that `data.table` 
 uses more than one thread by default, so `data.table::setDTthreads()` should always 
 be set appropriately.   
-Empirically we found that the optimal number of threads is between 2 and 6 depending 
+Again, empirically we found that the optimal number of threads is between 2 and 8 depending 
 on the number of total accessible threads and the amount of formal, external 
 parallelization desired, as more tend to increase the process speed rather than 
 increasing it. 
