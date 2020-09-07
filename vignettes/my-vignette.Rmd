@@ -201,7 +201,7 @@ number of markers). More examples will be added in future version of this vignet
 
 ### `cn.mops` package results loading
 
-CNVs calling from NGS data Bioconductor package `cn.mops` uses GRanges objects as 
+CNVs calling from NGS data Bioconductor package `cn.mops` uses `GRanges` objects as 
 results. In particular, the actual calls are stored in the `cnvs` slot. These can 
 be loaded into a `CNVgears` pipeline using the function `cnmops_to_CNVresults`
 as shown here. Note that only calls in chromosomes 1:22 are supported by this package 
@@ -235,10 +235,9 @@ An example for one of the callers results.
 
 sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers)
-# also saves plots
 sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers, 
-                     plots_path = file.path("tmp","sstatPenn"))
+                     plots_path = file.path("tmp","sstatPenn")) # plots are saved
 ```
 
 Exploring these summary statistics can provide important insights on the cohort 
@@ -453,6 +452,10 @@ As an example to create a BED4 file were the entries names consist of
 ```{r}
 tmp <- ipq_filtered[, .(chr, start, end, paste0(sample_ID, "-", GT))]
 head(tmp)
+```
+
+```{r, eval=FALSE}
+# not run 
 fwrite(tmp, "example.bed", sep = "\t", col.names = FALSE)
 ```
 
@@ -462,8 +465,8 @@ in the resulting object) are: chr, start, end, sample_ID, GT, meth_ID. The last
 three columns will be placed in the `metadata` field.
 In the near future a more general function to convert all the major object into 
 `GRanges` will be implemented soon. 
-
-```{r}
+```{r, eval=FALSE}
+# not run 
 class(ipq_filtered)
 ipq_filtered_GRanges <- CNVresults_to_GRanges(ipq_filtered)
 ipq_filtered_GRanges
