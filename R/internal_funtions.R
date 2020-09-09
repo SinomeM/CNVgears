@@ -45,3 +45,19 @@ get_regions_list <- function(my_lines, prop = 1) {
 
   return(reg)
 }
+
+
+check_overlap <- function(cnvs, my_reg, prop) {
+  # search reciprocal overlap between "my_reg" and any entry in "cnvs", if found
+  # returns 1, 0 otherwise.
+  res <- 0
+  for (n in 1:nrow(cnvs)) {
+    tmp_reg <- get_region(cnvs[n], prop)
+    overl <- min(my_reg[3], tmp_reg[3]) - max(my_reg[2], tmp_reg[2]) + 1
+    if (overl >= my_reg[4] & overl >= tmp_reg[4]) {
+      res <- 1
+      break # unnecessary?
+    }
+  }
+  return(res)
+}

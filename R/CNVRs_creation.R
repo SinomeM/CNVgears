@@ -128,7 +128,6 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
   cnvrs <- cnvrs[r_ID %in% unique(res$cnvr), ]
   # count the final CNVs frequency per CNVRs
   freqs <- res[, .N, by = cnvr]
-
   cnvrs[, freq := freqs[match(cnvrs$r_ID, freqs$cnvr), N]]
 
   return(list(cnvrs[!is.na(chr), ], res))
