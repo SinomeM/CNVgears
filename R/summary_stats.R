@@ -120,11 +120,33 @@ summary.CNVresults <- function(object, sample_list, markers, plots_path = NA) {
           guides(fill=FALSE)
       )
       dev.off()
+      # Length and NP distributions
+      pdf(file = file.path(plots_path, "lengths_and_NP_distributions.pdf"), paper = "a4r")
+      print(
+        cowplot::plot_grid(
+          ggplot( object, aes(log10(len)) ) +
+            geom_histogram(bins = 50, colour="black", aes(fill=as.character(CN))) +
+            labs(x = "log10(length)", y = "# segments",
+                 title = "Length distribution of all segments") +
+            theme_bw() +
+            theme(plot.title = element_text(size=10), axis.text = element_text(size = 6),
+                  axis.title = element_text(size = 8), legend.text = element_text(size = 6),
+                  legend.title = element_text(size = 8), legend.key.size = unit(.5, "cm")),
+          ggplot( object, aes(log10(NP)) ) +
+            geom_histogram(bins = 50, colour="black", aes(fill=as.character(CN))) +
+            labs(x = "log10(NP)", y = "# segments",
+                 title = "NP (number of points) distribution in all segments") +
+            theme_bw() +
+            theme(plot.title = element_text(size=10), axis.text = element_text(size = 6),
+                  axis.title = element_text(size = 8), legend.text = element_text(size = 6),
+                  legend.title = element_text(size = 8), legend.key.size = unit(.5, "cm")),
+          nrow = 2)
+      )
+      dev.off()
     }
-    # Length and NP distributions
-    pdf(file = file.path(plots_path, "lengths_and_NP_distributions.pdf"), paper = "a4r")
-    print(
-    cowplot::plot_grid(
+    else {
+      pdf(file = file.path(plots_path, "lengths_distribution.pdf"), paper = "a4r")
+
       ggplot( object, aes(log10(len)) ) +
         geom_histogram(bins = 50, colour="black", aes(fill=as.character(CN))) +
         labs(x = "log10(length)", y = "# segments",
@@ -132,18 +154,10 @@ summary.CNVresults <- function(object, sample_list, markers, plots_path = NA) {
         theme_bw() +
         theme(plot.title = element_text(size=10), axis.text = element_text(size = 6),
               axis.title = element_text(size = 8), legend.text = element_text(size = 6),
-              legend.title = element_text(size = 8), legend.key.size = unit(.5, "cm")),
-      ggplot( object, aes(log10(NP)) ) +
-        geom_histogram(bins = 50, colour="black", aes(fill=as.character(CN))) +
-        labs(x = "log10(NP)", y = "# segments",
-             title = "NP (number of points) distribution in all segments") +
-        theme_bw() +
-        theme(plot.title = element_text(size=10), axis.text = element_text(size = 6),
-              axis.title = element_text(size = 8), legend.text = element_text(size = 6),
-              legend.title = element_text(size = 8), legend.key.size = unit(.5, "cm")),
-      nrow = 2)
-    )
-    dev.off()
+              legend.title = element_text(size = 8), legend.key.size = unit(.5, "cm"))
+
+      dev.off()
+    }
   }
 
   # compute per sample:
