@@ -433,7 +433,9 @@ All the major object handled by the package are `data.table`. Thus to export out
 of R an object (as an example the output of the combination of several methods 
 results) it is possible to use `data.table` semantics and functions. 
 
-```{r}
+```{r, eval=FALSE}
+## not run
+
 # Select a subset of columns using DT[, .(col1,col2,coln)]
 tmp <- ipq_filtered[, .(sample_ID, chr, start, end, GT, meth_ID)]
 head(tmp, 3)
@@ -449,13 +451,12 @@ fwrite(tmp, "example.tsv", sep = "\t")
 As an example to create a BED4 file were the entries names consist of 
 `sample_ID"-"GT` that can be loaded in IGV we do: 
 
-```{r}
+```{r, eval=FALSE}
+## not run
+
 tmp <- ipq_filtered[, .(chr, start, end, paste0(sample_ID, "-", GT))]
 head(tmp)
-```
 
-```{r, eval=FALSE}
-# not run 
 fwrite(tmp, "example.bed", sep = "\t", col.names = FALSE)
 ```
 
@@ -466,7 +467,8 @@ three columns will be placed in the `metadata` field.
 In the near future a more general function to convert all the major object into 
 `GRanges` will be implemented soon. 
 ```{r, eval=FALSE}
-# not run 
+## not run 
+
 class(ipq_filtered)
 ipq_filtered_GRanges <- CNVresults_to_GRanges(ipq_filtered)
 ipq_filtered_GRanges
@@ -475,15 +477,31 @@ ipq_filtered_GRanges
 `data.table` queries can also be used to easily extract subset of interest from the 
 results. Some relevant examples are shown here. 
 
-```{r}
-## only call with > 1 calling methods
+```{r, eval=FALSE}
+## not run
 
-## only "rare" call
+# only call with > 1 calling methods
+tmp <- ipq_filtered[n_meth > 1, ]
+head(tmp)
 
-## de novo CNVs with a significant corrected p-value
-
-
+# de novo CNVs with a significant corrected p-value (note that the p-values are
+# lost when combining more results)
+tmp <- penn_inheritance[adj_m_pval < 0.05 & adj_p_pval < 0.05, ]
+head(tmp)
 ```
+
+Rare (within the cohort) calls can be obtained filtering out the common CNVRs, as 
+follows. 
+
+```{r, eval=FALSE}
+## not run
+
+# define common CNVR as the one present in > 5% of the cohort 
+# here the cohort is very small so it won't be a significative result
+common_cnvrs <- cnvrs[[1]][freq > nrow(cohort)*0.5, ]
+rare_cvns <- cnvrs[[2]][!cnvr %in% common_cnvrs$r_ID]
+```
+
 
 
 ## Notes on Parallelization ## 
