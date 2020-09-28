@@ -11,7 +11,7 @@
 #' is touched by this last step, a new cycle begins, this until no more CNVs can
 #' be removed from the assigned CNVR.
 #'
-#' @param cnv a \code{CNVresults} produced by \code{\link{read_results}}.
+#' @param cnvs a \code{CNVresults} produced by \code{\link{read_results}}.
 #' @param chr_arms a \code{data.table} containing chromosomal arms locations. They
 #'   are bundled in the package for hg18, hg19 and hg38 (\code{hgXX_chr_arms}).
 #' @param prop reciprocal overlap proportion, default 0.3 (30\%).

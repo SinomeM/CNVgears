@@ -23,6 +23,14 @@
 #'   \code{\link{read_results}} or \code{\link{inter_res_merge}}.
 #' @param raw_path \code{character}, the path where raw data processed by
 #'   \code{\link{read_NGS_raw}} or \code{\link{read_finalreport_raw}}.
+#' @param mmethod fine-screening method.
+#' @param alfa p value alfa value, default in 0.05.
+#' @param min_NP minimum number of points to try fine screening a de novo
+#'   candidate
+#' @param pre_fine_screen logical, do a pre screen?
+#' @param adjust_pval logical compute adjusted p-value?
+#' @param reciprocal_overlap minimum reciprocal overlap for inherited CNVs
+#'   detection
 #'
 #' @export
 #'
@@ -31,7 +39,7 @@
 
 cnvs_inheritance <- function(sample_list, markers, results, raw_path,
                              mmethod = 1, alfa = 0.05, min_NP = 10,
-                             pre_fine_screen = TRUE, adjust_pval = T,
+                             pre_fine_screen = TRUE, adjust_pval = TRUE,
                              reciprocal_overlap = 0.3) {
   # check input
   if (!is.data.table(results) | !is.data.table(sample_list) |

@@ -51,11 +51,13 @@
 #'   VCF file(s), passed to the function \code{\link{read_vcf}}.
 #' @param CN_vcf, name of the field containing the segment copy number
 #'   information in the VCF file(s), passed to the function \code{\link{read_vcf}}.
-#' @param do_merge, logical, indicates whether the function \code{\link{merge_calls}}
-#'   should be automatically called for each sample (strongly suggested).
-#' @param method_ID, character identifying the method (algorithms/pipeline), one letter
-#'    code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg).
-#'    Numeric are converted to character.
+#' @param do_merge, logical, indicates whether the function
+#'   \code{\link{merge_calls}} should be automatically called for each sample
+#'   (strongly suggested).
+#' @param merge_prop minimum reciprocal overlap proportion in order to merge.
+#' @param method_ID, character identifying the method (algorithms/pipeline), one
+#'    letter code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK
+#'    ModSeg). Numeric are converted to character.
 #'
 #' @export
 #'
