@@ -3,7 +3,7 @@
 
 #' Convert cn.mops results into \code{CNVgears} format
 #'
-#' @param cnvs
+#' @param cnvs cn.mops results
 #' @param sample_list, minimal cohort metadata, a \code{data.table} produced by the
 #'   function \code{\link{read_metadt}}.
 #' @param markers, a \code{data.table} containing the marker list, the output

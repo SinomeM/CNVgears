@@ -7,6 +7,8 @@
 cnmops_to_CNVresults(cnvs, samples_list, markers)
 }
 \arguments{
+\item{cnvs}{cn.mops results}
+
 \item{markers, }{a \code{data.table} containing the marker list, the output
 \code{\link{read_finalreport_snps}} with \code{DT_type} set to "markers"
 or \code{\link{read_NGS_intervals}}.}
