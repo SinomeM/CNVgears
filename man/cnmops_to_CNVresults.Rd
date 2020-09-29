@@ -4,17 +4,17 @@
 \alias{cnmops_to_CNVresults}
 \title{Convert cn.mops results into \code{CNVgears} format}
 \usage{
-cnmops_to_CNVresults(cnvs, samples_list, markers)
+cnmops_to_CNVresults(cnvs, sample_list, markers)
 }
 \arguments{
 \item{cnvs}{cn.mops results}
 
-\item{markers, }{a \code{data.table} containing the marker list, the output
+\item{sample_list}{minimal cohort metadata, a \code{data.table} produced by the
+function \code{\link{read_metadt}}.}
+
+\item{markers}{a \code{data.table} containing the marker list, the output
 \code{\link{read_finalreport_snps}} with \code{DT_type} set to "markers"
 or \code{\link{read_NGS_intervals}}.}
-
-\item{sample_list, }{minimal cohort metadata, a \code{data.table} produced by the
-function \code{\link{read_metadt}}.}
 }
 \description{
 Convert cn.mops results into \code{CNVgears} format
