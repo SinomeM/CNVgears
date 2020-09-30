@@ -13,6 +13,6 @@ CNVresults_to_GRanges(DT)
 \code{CNVresults_to_GRanges} convert \code{CNVresults} objects into \code{GRanges}
 }
 \details{
-A simple wrapper for the fucntion \code{GenomicRanges::makeGRangesFromDataFrame}.
+A simple wrapper for the function \code{GenomicRanges::makeGRangesFromDataFrame}.
 Retained metadata columns are: sample_ID, GT and meth_ID.
 }
