@@ -20,7 +20,6 @@
 #'   that contains the actual CNVR information, genomic location and frequency in
 #'   the cohort. The second element is the \code{CNVresults}
 #'
-#'
 #' @export
 #'
 #' @import data.table

@@ -1,14 +1,12 @@
 
-#' Retrieve genomic information for the major assemblies
-#'
-#' Generates chromosome start, end centrosome location, as well as chromosomal
-#' arm start end datatsets in three different assemblies.
-#'
-#' The important related objects are already bundle in the package.
-#'
-#' @export
-#'
-#' @import data.table
+# Retrieve genomic information for the major assemblies
+#
+# Generates chromosome start, end centrosome location, as well as chromosomal
+# arm start end datatsets in three different assemblies.
+#
+# The important related objects are already bundle in the package.
+#
+# internal function, does not need to be exported
 
 chr_st_en_etc <- function() {
 

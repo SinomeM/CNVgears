@@ -355,7 +355,7 @@ ipq_denovo <-
 At this point it is possible to perform a second filtering step based on the number 
 of calling methods, e.g. filter out all the calls made by one single algorithm. 
 
-Note how the merge perform *reciprocal* overlap comparison in order to merge two 
+Note how the merge perform **reciprocal** overlap comparison in order to merge two 
 calls. Candidate events should thus not only overlap but must also be of comparable 
 size. This is clear in the de-novo merge object, at lines 4:6, the event at line
 6 overlap the two at line 4 and 5 but is too large to be merged. However it is 
@@ -472,6 +472,7 @@ in the resulting object) are: chr, start, end, sample_ID, GT, meth_ID. The last
 three columns will be placed in the `metadata` field.
 In the near future a more general function to convert all the major object into 
 `GRanges` will be implemented soon. 
+
 ```{r, eval=FALSE}
 ## not run 
 

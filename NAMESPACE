@@ -2,7 +2,6 @@
 
 S3method(summary,CNVresults)
 export(CNVresults_to_GRanges)
-export(chr_st_en_etc)
 export(chr_uniform)
 export(cleaning_filter)
 export(cnmops_to_CNVresults)
