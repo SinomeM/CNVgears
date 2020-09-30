@@ -27,7 +27,6 @@
 #' @param alfa p value alfa value, default in 0.05.
 #' @param min_NP minimum number of points to try fine screening a de novo
 #'   candidate
-#' @param pre_fine_screen logical, do a pre screen?
 #' @param adjust_pval logical compute adjusted p-value?
 #' @param reciprocal_overlap minimum reciprocal overlap for inherited CNVs
 #'   detection
@@ -39,8 +38,7 @@
 
 cnvs_inheritance <- function(sample_list, markers, results, raw_path,
                              mmethod = 1, alfa = 0.05, min_NP = 10,
-                             pre_fine_screen = TRUE, adjust_pval = TRUE,
-                             reciprocal_overlap = 0.3) {
+                             adjust_pval = TRUE, reciprocal_overlap = 0.3) {
   # check input
   if (!is.data.table(results) | !is.data.table(sample_list) |
       !is.data.table(markers))
@@ -69,7 +67,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
     # select the trio CNVs
     trio <- select_cnvs(DT, sample_list, samp)
     if (length(trio) == 1)
-      if (!trio) next
+      if (!trio[[1]]) next
     off_cnvs <- trio[[1]]
 
     # screen per chromosome
@@ -95,22 +93,27 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
         if (nrow(fath_tmp) != 0 ) p <- check_overlap(fath_tmp, reg_tmp, th)
         else p <- 0
 
+        ### QUESTE IF DIVENTANO UNA FUNZIONE
         # interpret results
         if (m == 1 & p == 0) inh <- "maternal"
         if (m == 0 & p == 1) inh <- "paternal"
         if (m == 1 & p == 1) inh <- "CNP/ancestral/artifact"
         if (m == 0 & p == 0) inh <- "putative_denovo"
+        ###
+        ### seg_ID forse e' meglio che diventi un "ix" creato internamente alla funzione
         DT[sample_ID == samp & seg_ID == off_tmp$seg_ID[i],
                 inheritance := inh]
       }
     }
   }
 
+  if (mmethod == 0) return(DT)
+
   cat("\nINFO: fine-screening putative de novo CNVs using intervals/SNPs raw data\n")
   # iterate for each offspring (proband | sibling)
   for (samp in offs) {
+
     cat("Sample #", samp, "\n")
-    if (mmethod == 0) break
 
     # only the putative de novo CNVs needs to be processed in this way
     off_cnvs <- DT[sample_ID == samp & inheritance == "putative_denovo", ]
@@ -145,42 +148,6 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
         fath_ints_tmp <- fath_ints[start >= my_reg[2] & end <= my_reg[3], copyratio]
         moth_ints_tmp <- moth_ints[start >= my_reg[2] & end <= my_reg[3], copyratio]
 
-        # Initial screening: count the number of points with a GT (from the
-        # copyratios) compatible with the offspring CNV, the presence of a
-        # substantial proportion of such points could indicate a missed or
-        # splitted call in the parent.
-        if (pre_fine_screen) {
-          if (gt == 1) {
-            t_cp <- 0.75
-            mlen <- length(moth_ints_tmp[moth_ints_tmp < t_cp])
-            flen <- length(fath_ints_tmp[fath_ints_tmp < t_cp])
-          }
-          if (gt == 2){
-            t_cp <- 1.25
-            mlen <- length(moth_ints_tmp[moth_ints_tmp > t_cp])
-            flen <- length(fath_ints_tmp[fath_ints_tmp > t_cp])
-          }
-            # more than 75% (at the moment) points of a parent are compatible with
-            # the offspring call GT, it could be a missed or splitted call in the
-            # parent. 75% is a pretty high threshold, but given that this is only
-            # a preliminary screening (for the marker-based part) I think it's OK
-            # to not drop to many putative de novo events
-            if (mlen >= 0.75 * length(off_ints_tmp))
-              DT[sample_ID == samp & seg_ID == sid,
-                      inheritance := "p.maternal"]
-            if (flen >= 0.75 * length(off_ints_tmp))
-              DT[sample_ID == samp & seg_ID == sid,
-                      inheritance := "p.paternal"]
-            if (mlen >= 0.75 * length(off_ints_tmp) &
-                flen >= 0.75 * length(off_ints_tmp))
-              DT[sample_ID == samp & seg_ID == sid,
-                      inheritance := "p.CNP/ancestral/artifact"]
-        }
-
-        # if inheritance has been update by the first screening skip the rest
-        if (DT[sample_ID == samp & seg_ID == sid,
-               inheritance] != "putative_denovo") next
-
         ## Fine screening
         # Possibilities: 1. compare the two means, 2. count the points in the
         # off that are outside the region mean+/-2*SD, 3. ...
@@ -195,20 +162,25 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             next
           }
 
-          # AT THE MOMENT THIS DISTINCTION IS USELESS, if we stick to a "two tailed"
-          # test, it can be removed
+          ### {
+          alt <- ifelse(gt==1, "less", "greater") ### DUE CASI COSI" NON SERVONO!
           if (gt == 1) {
             # test if the mean is lower in the offspring
-            # ACTUALLY THIS IS TESTING IF IT IS DIFFERENT!
-            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = F)$p.value
-            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = F)$p.value
+            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE,
+                                 alternative = "less")$p.value
+            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE,
+                                 alternative = "less")$p.value
           }
           if (gt == 2) {
             # test if the mean is greater in the offspring
-            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = F)$p.value
-            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = F)$p.value
+            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE,
+                                 alternative = "greater")$p.value
+            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE,
+                                 alternative = "greater")$p.value
           }
 
+          ### QUI NON SERVE AGGIORNARE SUBITO IL DT MA PUOI PRENDERE SOLO IL VALORE
+          ### DI INHERITANCE E AGGIORNARE DT UNA SOLA VOLTA
           if (mpval >= alfa)
             DT[sample_ID == samp & seg_ID == sid,
                 `:=` (inheritance = "p.maternal", m_pval = mpval, p_pval = fpval)]
@@ -219,12 +191,13 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             DT[sample_ID == samp & seg_ID == sid,
                 `:=` (inheritance = "p.CNP/ancestral/artifact",
                       m_pval = mpval, p_pval = fpval)]
-
           # at the moment the p-value is for the probability of being inherited
           if (mpval < alfa & fpval < alfa)
             DT[sample_ID == samp & seg_ID == sid,
                     `:=` (inheritance = "denovo",
                           m_pval = mpval, p_pval = fpval)]
+          ###
+          ### }
         }
 
         # Approach 2, count the points
@@ -242,8 +215,8 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
           fmean <- mean(fath_ints_tmp)
           fsd <- sd(fath_ints_tmp)
 
-          # count the points of the offspring that are whithin the region
-          # mean+/-x*SD of both parents, whare x is either 1 or 2 ATM
+          # count the points of the offspring that are within the region
+          # mean+/-x*SD of both parents, where x is either 1 or 2 ATM
           if (mmmethod == 2) {
             mlen <- length(off_ints_tmp[off_ints_tmp >= mmean - 2*msd |
                                           off_ints_tmp <= mmean + 2*msd])
@@ -274,9 +247,12 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             DT[sample_ID == samp & seg_ID == sid,
                     inheritance := "denovo"]
         }
+
+        ### LA data.table FINALE SI PUO' AGGIORNARE QUI!!!!
       }
     }
   }
+
   if (adjust_pval == TRUE)
     DT[!is.na(m_pval) & !is.na(p_pval),
        `:=` (adj_m_pval = p.adjust(m_pval[!is.na(m_pval)]),
