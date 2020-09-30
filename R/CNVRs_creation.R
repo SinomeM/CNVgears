@@ -44,7 +44,7 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
   chr_arms <- chr_uniform(chr_arms)
 
   # sort per chr, start & end
-  setorder(cnvs_cp,	chr, start, end)
+  setorder(cnvs_cp, chr, start, end)
   setorder(chr_arms, chr, start)
   cnvs_cp[, cnvr := NA_character_]
 
@@ -77,7 +77,7 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
     n <- 1
 
     # for each arm keep running until no more cnv is excluded
-    while (any(is.na(DT$cnvr))) {
+    while (any(is.na(DT$cnvr)) & n_loop < 100) {
 
       # create CNVRs/fill CNVRs
       cat("Creating/filling CNVRs, loop #", n_loop, "...\n")
@@ -151,8 +151,8 @@ create_fill_CNVR <- function(cnvrs, DT, n, prop, ixs, arm, reg_arm) {
     # no match, initialize new cnvr
     if (nrow(cnvr_m) == 0) {
       cnvrs <- rbind(cnvrs, data.table("r_ID" = paste0(arm, "-", n),
-                                               "chr" = reg_arm[1], "start" = my_reg[2],
-                                               "end" = my_reg[3]))
+                                       "chr" = reg_arm[1], "start" = my_reg[2],
+                                       "end" = my_reg[3]))
       DT$cnvr[i] <- paste0(arm, "-", n)
       n <- n + 1
     }
@@ -163,6 +163,7 @@ create_fill_CNVR <- function(cnvrs, DT, n, prop, ixs, arm, reg_arm) {
         overlaps <- pmin(my_reg[3], reg_list[[3]]) - pmax(my_reg[2], reg_list[[2]]) + 1
         # reciprocal overlaps
         if (all(overlaps >= my_reg[4]) &
+            ### sapply -> vapply
             all(sapply(overlaps, function(x) x >= reg_list[[4]]))) {
           DT$cnvr[i] <- r
           # update cnvrs boundaries
@@ -174,8 +175,8 @@ create_fill_CNVR <- function(cnvrs, DT, n, prop, ixs, arm, reg_arm) {
       # cnvr not set mean no match with candidates cnvrs
       if (is.na(DT$cnvr[i])) {
         cnvrs <- rbind(cnvrs, data.table("r_ID" = paste0(arm, "-", n),
-                                                 "chr" = reg_arm[1], "start" = my_reg[2],
-                                                 "end" = my_reg[3]))
+                                         "chr" = reg_arm[1], "start" = my_reg[2],
+                                         "end" = my_reg[3]))
         DT$cnvr[i] <- paste0(arm, "-", n)
         n <- n + 1
       }
@@ -261,11 +262,12 @@ remove_cnvs <- function(DT, prop) {
     overlaps <- pmin(my_reg[3], reg_list[[3]]) - pmax(my_reg[2], reg_list[[2]]) + 1
 
     if (!(all(overlaps >= my_reg[4]) &
+          ### sapply -> vapply
           all(sapply(overlaps, function(x) x >= reg_list[[4]]))))
       DT$cnvr[i] <- NA_character_
   }
 
-  cat(length(is.na(DT$cnvr)[is.na(DT$cnvr) == T]),
+  cat(length(is.na(DT$cnvr)[is.na(DT$cnvr) == TRUE]),
       "CNVs removed from the assigned CNVR\n")
 
   return(DT)

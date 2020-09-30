@@ -78,7 +78,7 @@ CNVgears are:
 ### Install 
 To install the package via GitHub repository
 
-```{r install git hub, eval = F}
+```{r install git hub, eval = FALSE}
 # not run 
 devtools::install_github("SinomeM/CNVgears")
 ```
@@ -88,7 +88,7 @@ devtools::install_github("SinomeM/CNVgears")
 To load the package.
 
 ```{r library}
-library(CNVgears, quietly = T)
+library(CNVgears, quietly = TRUE)
 ```
 
 ### Set data.table threads
@@ -98,7 +98,7 @@ steps. The package uses by default half the CPU threads available, this can be c
 with the function `data.table::setDTthreads`. For example to use the 75% of available 
 threads or an integer number of them:
 
-``` {r DT threads, eval = F}
+``` {r DT threads, eval = FALSE}
 # not run
 data.table::setDTthreads(percent=75)
 data.table::setDTthreads(4)
@@ -109,6 +109,8 @@ See the relative man pages for details on each function used.
 
 
 ## Data Load ##
+
+### Cohort PED and Markers data
 
 The first two objects we need to load are the cohort and markers information. The
 first object is loaded from a PED file from with the following columns are extracted:
@@ -138,6 +140,8 @@ SNP_markers <- read_finalreport_snps(system.file("extdata", "SNP.pfb",
                                      mark_ID_col = "Name", chr_col = "Chr", 
                                      pos_col = "Position")
 ```
+
+### CNV Calling Results and Markers-level raw data
 
 Then we load the actual results and the marker-level raw data. The results are 
 loaded in the session, while the raw data are processed and stored as RDS one 
@@ -181,7 +185,8 @@ ipn <-  read_results(DT_path = system.file("extdata",
                      markers = SNP_markers, method_ID = "I")
 
 # raw data
-library("data.table", quietly = T)
+library("data.table", quietly = TRUE)
+setDTthreads(4)
 
 read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"), 
                      pref = NA, suff = ".txt", 
@@ -252,7 +257,7 @@ ipn_filtered <- cleaning_filter(ipn)
 ```
 
 It is also possible to filter calls based on blacklists, e.g. immunoglobulin regions 
-or telomers. In our package we provide two fucntions to generate immunoglobulin,
+or telomers. In our package we provide two functions to generate immunoglobulin,
 telomeric and centromeric regions for the hg18, hg19 and hg38 genome assemblies. 
 The user can specify the number of minimum consecutive immuno genes to create a 
 region and the desired telomers and centromers blacklists width. Here we create 
@@ -295,6 +300,7 @@ a deletion or a CopyRatio > 1.25 if the CNV is a duplication. This step is mostl
 needed to speed up the function and will be made optional in near future.
 
 For autosomal chromosomes 
+
 $$LRR = log2R = log2(CopyRatio) = log2(numeric_{CN}/2)$$
 
 The putative *de-novo* events that survive undergo the final screening. This can 
@@ -387,11 +393,11 @@ candidates. We use as an example the two calls detected by both PennCNV and
 QantiSNP and the larger one made by IPattern.
 
 ```{r denovo plot, warning=FALSE}
-lrr_trio_plot(cnv = ipq_denovo[4], raw_path =  file.path("tmp_RDS"), 
+lrr_trio_plot(cnv = ipq_denovo[1], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
-lrr_trio_plot(cnv = ipq_denovo[5], raw_path =  file.path("tmp_RDS"), 
+lrr_trio_plot(cnv = ipq_denovo[2], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
-lrr_trio_plot(cnv = ipq_denovo[6], raw_path =  file.path("tmp_RDS"), 
+lrr_trio_plot(cnv = ipq_denovo[3], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
 ```
 
@@ -407,7 +413,7 @@ custom mart is needed to work in hg19.
 
 ```{r annotation, echo=c(-2,-4)}
 # locus 
-ipq_denovo_locus <- genomic_locus(DT_in = ipq_denovo, keep_str_end = F)
+ipq_denovo_locus <- genomic_locus(DT_in = ipq_denovo, keep_str_end = FALSE)
 
 # genes 
 ensembl37 <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL", 

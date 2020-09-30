@@ -12,7 +12,6 @@ cnvs_inheritance(
   mmethod = 1,
   alfa = 0.05,
   min_NP = 10,
-  pre_fine_screen = TRUE,
   adjust_pval = TRUE,
   reciprocal_overlap = 0.3
 )
@@ -37,8 +36,6 @@ depending on the initial data type.}
 
 \item{min_NP}{minimum number of points to try fine screening a de novo
 candidate}
-
-\item{pre_fine_screen}{logical, do a pre screen?}
 
 \item{adjust_pval}{logical compute adjusted p-value?}
 

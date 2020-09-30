@@ -74,7 +74,7 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
   # combine results in a single data.table, keep only CNVs
   res <- data.table()
   for (i in 1:length(res_list)) {
-    # compute lenght if for some reson is not present
+    # compute length if for some reason is not present
     if (!"len" %in% colnames(res_list[[i]])) res_list[[i]][, len := end-start+1]
 
     res <- rbind(res, res_list[[i]][GT != 0, .(chr, start, end, sample_ID,
@@ -96,7 +96,6 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
     }
 
     for (samp in sample_list$sample_ID) {
-      # cat("Sample :", samp, "...\n")
 
       # subset compatible cnvs
       tmp <- res[sample_ID == samp & (chr == a_chr &

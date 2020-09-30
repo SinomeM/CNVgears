@@ -30,3 +30,15 @@ CNVresults_to_GRanges <- function(DT) {
 ##
 ##   return(DT)
 ## }
+
+# #' Title
+# #'
+# #' @return
+# #' @export
+# #'
+# #' @import data.table
+
+CNVresults_to_GRangesList <- function(DT) {
+
+  return(GRL)
+}

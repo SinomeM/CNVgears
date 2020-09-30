@@ -4,7 +4,13 @@
 \alias{read_vcf}
 \title{Convert a VCF file of genomics segments into a \code{data.table}}
 \usage{
-read_vcf(DT_path, end_vcf = "END", CN_vcf = "CN", samples = NA, explore = F)
+read_vcf(
+  DT_path,
+  end_vcf = "END",
+  CN_vcf = "CN",
+  samples = NA,
+  explore = FALSE
+)
 }
 \arguments{
 \item{DT_path}{path to the file.}

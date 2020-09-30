@@ -89,8 +89,8 @@ load_RDS <- function(path, samp, cc, st, en) {
 
 trim_res <- function(DT, samp, cc, st, en) {
   res <- DT[sample_ID == samp & chr == cc, ][
-              between(start, st, en, incbounds = T) |
-              between(end, st, en, incbounds = T), ]
+              between(start, st, en, incbounds = TRUE) |
+              between(end, st, en, incbounds = TRUE), ]
   return(res)
 }
 

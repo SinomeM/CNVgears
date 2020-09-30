@@ -6,10 +6,10 @@
 \usage{
 genomic_locus(
   DT_in,
-  remote_cytobands = T,
+  remote_cytobands = TRUE,
   bands,
   assembly = "hg19",
-  keep_str_end = T
+  keep_str_end = TRUE
 )
 }
 \arguments{

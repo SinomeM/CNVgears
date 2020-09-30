@@ -36,6 +36,7 @@ get_regions_list <- function(my_lines, prop = 1) {
   en <- as.integer(my_lines$end)
   len <- (en - st +1) * prop
 
+  # list of list when R_ID or cnvrs information are present (character/numeric)
   if ("r_ID" %in% colnames(my_lines))
     reg <- list(chr, st, en, len, my_lines$r_ID)
   else if ("cnvr" %in% colnames(my_lines))

@@ -188,6 +188,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             next
           }
 
+          ### {
           mmean <- mean(moth_ints_tmp)
           msd <- sd(moth_ints_tmp)
           fmean <- mean(fath_ints_tmp)
@@ -224,6 +225,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
               flen < 0.5 * length(off_ints_tmp))
             DT[sample_ID == samp & seg_ID == sid,
                     inheritance := "denovo"]
+          ### }
         }
 
         ### LA data.table FINALE SI PUO' AGGIORNARE QUI!!!!
