@@ -42,6 +42,10 @@ candidate}
 \item{reciprocal_overlap}{minimum reciprocal overlap for inherited CNVs
 detection}
 }
+\value{
+a \code{CNVresults} object with some additional columns: inheritance
+  and related p-values.
+}
 \description{
 \code{cnvs_inheritance} compute CNVs inheritance pattern and search good de novo
 CNVs candidates

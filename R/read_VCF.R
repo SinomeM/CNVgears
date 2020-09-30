@@ -18,8 +18,10 @@
 #' @param samples NA by default, if a character vector is provided is used to
 #'   identify and select samples in a VCF containing multiple ones.
 #' @param explore logic, \code{FALSE} by default. If \code{TRUE} the file in
-#'   \code{DT_path} is not loaded, instead, several infos about the VCF fields
+#'   \code{DT_path} is not loaded, instead, several info about the VCF fields
 #'   are printed.
+#'
+#' @return a \code{CNVresults} from the VCF results conversion.
 #'
 #' @export
 

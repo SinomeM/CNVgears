@@ -9,6 +9,9 @@ CNVresults_to_GRanges(DT)
 \arguments{
 \item{DT}{a \code{CNVresults} object.}
 }
+\value{
+the input object \code{DT} converted into \code{GRanges}.
+}
 \description{
 \code{CNVresults_to_GRanges} convert \code{CNVresults} objects into \code{GRanges}
 }

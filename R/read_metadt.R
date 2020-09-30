@@ -27,6 +27,9 @@
 #' @param role_col name of the columns containing the role information ID in the original file;
 #' @param fam_ID_col name of the columns containing the family ID in the original file;
 #'
+#' @return cohort metatadata object, a \code{data.table}. Will be of the
+#'   \code{SampleList} class in future versions.
+#'
 #' @export
 
 # CHANGE INPUT TO PED

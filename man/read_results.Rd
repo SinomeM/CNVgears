@@ -76,6 +76,9 @@ information in the VCF file(s), passed to the function \code{\link{read_vcf}}.}
 letter code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK
 ModSeg). Numeric are converted to character.}
 }
+\value{
+a \code{CNVresults} object.
+}
 \description{
 \code{read_results} takes the results of a CNVs calling pipeline and return
 them in a standardized object.

@@ -45,6 +45,9 @@ input file. Default is \code{"Log R Ratio"}.}
 \item{BAF_col, }{name of the column containing the BAF information in the
 input file. Default is \code{"B Allele Freq"}.}
 }
+\value{
+nothing, this function saves the results on disk.
+}
 \description{
 \code{read_finalreport} handles inputs of data in FinalReport-like format
 }

@@ -26,6 +26,8 @@
 #' @param BAF_col, name of the column containing the BAF information in the
 #'   input file. Default is \code{"B Allele Freq"}.
 #'
+#' @return nothing, this function saves the results on disk.
+#'
 #' @export
 
 read_finalreport_raw <- function(DT_path, rds_path, pref, suff,

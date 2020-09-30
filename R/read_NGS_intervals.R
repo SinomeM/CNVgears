@@ -18,6 +18,9 @@
 #' @param end_col, name of the column containing the end information in the input
 #'   file.
 #'
+#' @return a \code{data.table}, will be of \code{Markers} class in future
+#'   versions.
+#'
 #' @export
 #'
 #' @import data.table

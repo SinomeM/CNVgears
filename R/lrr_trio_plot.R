@@ -13,7 +13,7 @@
 #' This function plot the raw data in the regions of interest in order to visually
 #' confirm the presence of a good de novo CNV candidate.
 #'
-#' @return a \code{list} containing the plot.
+#' @return a \code{list} containing the \code{ggplot2} object.
 #' @export
 #'
 #' @import data.table

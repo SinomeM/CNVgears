@@ -8,6 +8,8 @@
 #'
 #' @param DT a \code{CNVresults} object.
 #'
+#' @return the input object \code{DT} converted into \code{GRanges}.
+#'
 #' @export
 #'
 #' @import data.table

@@ -31,6 +31,9 @@
 #' @param reciprocal_overlap minimum reciprocal overlap for inherited CNVs
 #'   detection
 #'
+#' @return a \code{CNVresults} object with some additional columns: inheritance
+#'   and related p-values.
+#'
 #' @export
 #'
 #' @import data.table

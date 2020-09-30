@@ -30,6 +30,8 @@
 #' @param raw_col, name of the column containing the marker-level raw data in
 #'   the input file.
 #'
+#' @return nothing, this function saves the results on disk.
+#'
 #' @export
 #'
 #' @import data.table

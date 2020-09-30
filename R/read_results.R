@@ -59,6 +59,8 @@
 #'    letter code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK
 #'    ModSeg). Numeric are converted to character.
 #'
+#' @return a \code{CNVresults} object.
+#'
 #' @export
 #'
 #' @import data.table

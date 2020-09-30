@@ -17,6 +17,8 @@
 #' @param prop numeric value that multiplied by the length of a call gives
 #'   the range where adjacent calls are searched.
 #'
+#' @return a \code{CNVresults}, \code{DT_in} processing result.
+#'
 #' @export
 #'
 #' @import data.table

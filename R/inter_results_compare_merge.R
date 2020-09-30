@@ -20,7 +20,9 @@
 #' @param prop proportion of reciprocal overlap to define two calls as "replicated".
 #' @param inner_outer keep "inner" or "outer" borders? If NA all columns will be kept.
 #'
-#' @return
+#' @return a \code{CNVresults} containing the merge of the one provided via
+#'   \code{res_list}.
+#'
 #' @export
 #'
 

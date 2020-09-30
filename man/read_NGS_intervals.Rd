@@ -23,6 +23,10 @@ input file.}
 \item{end_col, }{name of the column containing the end information in the input
 file.}
 }
+\value{
+a \code{data.table}, will be of \code{Markers} class in future
+  versions.
+}
 \description{
 \code{read_intervals} handles inputs of data used as the markers in CNVs
 calling/segmentation using NGS data (WES or WGS)

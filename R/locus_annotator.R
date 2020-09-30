@@ -18,6 +18,8 @@
 #' @param keep_str_end, logical, specify if intermediate columns (locus_start
 #'   and locus_end) must be kept or discarded.
 #'
+#' @return a \code{CNVresults}, \code{DT_in} with the additional column "locus".
+#'
 #' @export
 #'
 #' @import data.table
