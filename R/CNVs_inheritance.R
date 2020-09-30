@@ -107,6 +107,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
     }
   }
 
+  # skip markers-level comparison
   if (mmethod == 0) return(DT)
 
   cat("\nINFO: fine-screening putative de novo CNVs using intervals/SNPs raw data\n")
@@ -162,46 +163,23 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             next
           }
 
-          ### {
-          alt <- ifelse(gt==1, "less", "greater") ### DUE CASI COSI" NON SERVONO!
-          if (gt == 1) {
-            # test if the mean is lower in the offspring
-            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE,
-                                 alternative = "less")$p.value
-            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE,
-                                 alternative = "less")$p.value
-          }
-          if (gt == 2) {
-            # test if the mean is greater in the offspring
-            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE,
-                                 alternative = "greater")$p.value
-            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE,
-                                 alternative = "greater")$p.value
-          }
+          ### { MAKE THIS A FUNCTION
+          alt <- ifelse(gt==1, "less", "greater")
+          # test if the mean is less/greater in the offspring, depending on GT
+          mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE,
+                               alternative = alt)$p.value
+          fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE,
+                               alternative = alt)$p.value
 
-          ### QUI NON SERVE AGGIORNARE SUBITO IL DT MA PUOI PRENDERE SOLO IL VALORE
-          ### DI INHERITANCE E AGGIORNARE DT UNA SOLA VOLTA
-          if (mpval >= alfa)
-            DT[sample_ID == samp & seg_ID == sid,
-                `:=` (inheritance = "p.maternal", m_pval = mpval, p_pval = fpval)]
-          if (fpval >= alfa)
-            DT[sample_ID == samp & seg_ID == sid,
-                `:=` (inheritance = "p.paternal", m_pval = mpval, p_pval = fpval)]
-          if (mpval >= alfa & fpval >= alfa)
-            DT[sample_ID == samp & seg_ID == sid,
-                `:=` (inheritance = "p.CNP/ancestral/artifact",
-                      m_pval = mpval, p_pval = fpval)]
-          # at the moment the p-value is for the probability of being inherited
-          if (mpval < alfa & fpval < alfa)
-            DT[sample_ID == samp & seg_ID == sid,
-                    `:=` (inheritance = "denovo",
-                          m_pval = mpval, p_pval = fpval)]
-          ###
+          if (mpval >= alfa) inh <- "p.maternal"
+          if (fpval >= alfa) inh <- "p.paternal"
+          if (mpval >= alfa & fpval >= alfa) inh <- "p.CNP/ancestral/artifact"
+          if (mpval < alfa & fpval < alfa) inh <- "denovo"
           ### }
         }
 
         # Approach 2, count the points
-        if (mmethod == 2 | mmethod == 2.1) {
+        if (mmethod == 2) {
 
           # Here a minimum number of points is required, at the moment 10
           if (off_tmp$NP[i] < 10) {
@@ -249,6 +227,8 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
         }
 
         ### LA data.table FINALE SI PUO' AGGIORNARE QUI!!!!
+        DT[sample_ID == samp & seg_ID == sid, `:=`
+           (inheritance = inh, m_pval = mpval, p_pval = fpval)]
       }
     }
   }
