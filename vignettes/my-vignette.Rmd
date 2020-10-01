@@ -14,6 +14,16 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Initial Note ## 
+
+The illustrative pipelines shown in this file uses real data from the 1000 
+Genomes project (<https://www.internationalgenome.org/>). The examples are 
+performed on array data for chromosomes 14 and 22 only and the raw final report
+are provided as raw data is are necessary for some critical steps of the pipeline.
+Because those files are relatively large (> 5Mb) they are provided as a separate 
+GitHub repository (<https://github.com/SinomeM/CNVgears_data>). The user is kindly
+asked to download the repo and give the directory path at the 5.2 in oreder to 
+being able to perform the examples. 
 
 ## Introduction ##
 
@@ -191,7 +201,7 @@ setDTthreads(4)
 dir.create("tmp")
 
 
-read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"), 
+read_finalreport_raw(DT_path = "PATH_TO_DOWNLOADED_DATA_DIRECTORY", 
                      pref = NA, suff = ".txt", 
                      rds_path = file.path("tmp_RDS"), 
                      markers = SNP_markers, 
