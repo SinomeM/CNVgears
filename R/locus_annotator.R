@@ -22,10 +22,10 @@
 #'
 #' @import data.table
 
-genomic_locus <- function(DT_in, remote_cytobands = T, bands, assembly = "hg19",
-                          keep_str_end = T) {
+genomic_locus <- function(DT_in, remote_cytobands = TRUE, bands, assembly = "hg19",
+                          keep_str_end = TRUE) {
   # check inputs
-  if (!remote_cytobands %in% c(T, F))
+  if (!remote_cytobands %in% c(TRUE, FALSE))
     stop("Wrong 'remote_cytobands' format!\n")
   if (!assembly %in% c("hg18", "hg19", "hg38"))
     stop("Wrong 'assembly' format!\n")
@@ -41,7 +41,7 @@ genomic_locus <- function(DT_in, remote_cytobands = T, bands, assembly = "hg19",
   rm(DT_in)
 
   # load cytobands
-  if  (remote_cytobands == T)
+  if  (remote_cytobands == TRUE)
     bands <- fread(paste0("https://hgdownload.cse.ucsc.edu/goldenPath/",
                           assembly, "/database/cytoBand.txt.gz"))
   else {
@@ -67,7 +67,7 @@ genomic_locus <- function(DT_in, remote_cytobands = T, bands, assembly = "hg19",
                     locus_start != locus_end, locus := paste0(chr, locus_start,
                                                               "-", locus_end)]
   # deleted intermediate columns if needed
-  if (keep_str_end == F)
+  if (keep_str_end == FALSE)
     DT[, `:=` (locus_start = NULL, locus_end = NULL)]
 
   return(DT)

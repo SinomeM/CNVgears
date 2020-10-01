@@ -31,7 +31,7 @@
 
 cnvs_inheritance <- function(sample_list, markers, results, raw_path,
                              mmethod = 1, alfa = 0.05, min_NP = 10,
-                             pre_fine_screen = TRUE, adjust_pval = T,
+                             pre_fine_screen = TRUE, adjust_pval = TRUE,
                              reciprocal_overlap = 0.3) {
   # check input
   if (!is.data.table(results) | !is.data.table(sample_list) |
@@ -247,13 +247,13 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
 
           if (gt == 1) {
             # test if the mean is lower in the offspring
-            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = F)$p.value
-            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = F)$p.value
+            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE)$p.value
+            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE)$p.value
           }
           if (gt == 2) {
             # test if the mean is greater in the offspring
-            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = F)$p.value
-            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = F)$p.value
+            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE)$p.value
+            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE)$p.value
           }
 
           # it also possible to obtain the confidence interval and, if desired,

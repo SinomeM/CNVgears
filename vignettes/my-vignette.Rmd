@@ -78,7 +78,7 @@ CNVgears are:
 ### Install 
 To install the package via GitHub repository
 
-```{r install git hub, eval = F}
+```{r install git hub, eval = FALSE}
 # not run 
 devtools::install_github("SinomeM/CNVgears")
 ```
@@ -88,7 +88,7 @@ devtools::install_github("SinomeM/CNVgears")
 To load the package.
 
 ```{r library}
-library(CNVgears, quietly = T)
+library(CNVgears, quietly = TRUE)
 ```
 
 ### Set data.table threads
@@ -98,7 +98,7 @@ steps. The package uses by default half the CPU threads available, this can be c
 with the function `data.table::setDTthreads`. For example to use the 75% of available 
 threads or an integer number of them:
 
-``` {r DT threads, eval = F}
+``` {r DT threads, eval = FALSE}
 # not run
 data.table::setDTthreads(percent=75)
 data.table::setDTthreads(4)
@@ -181,7 +181,7 @@ ipn <-  read_results(DT_path = system.file("extdata",
                      markers = SNP_markers, method_ID = "I")
 
 # raw data
-library("data.table", quietly = T)
+library("data.table", quietly = TRUE)
 
 read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"), 
                      pref = NA, suff = ".txt", 
@@ -408,7 +408,7 @@ custom mart is needed to work in hg19.
 
 ```{r annotation, echo=c(-2,-4)}
 # locus 
-ipq_denovo_locus <- genomic_locus(DT_in = ipq_denovo, keep_str_end = F)
+ipq_denovo_locus <- genomic_locus(DT_in = ipq_denovo, keep_str_end = FALSE)
 
 # genes 
 ensembl37 <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL", 

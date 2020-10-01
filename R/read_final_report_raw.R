@@ -36,7 +36,7 @@ read_finalreport_raw <- function(DT_path, rds_path, pref, suff,
   if (!dir.exists(DT_path)) stop("File do not exist, typo(s)?\n")
 
   # create the directory for the RDS if don't exist
-  dir.create(rds_path, showWarnings = F)
+  dir.create(rds_path, showWarnings = FALSE)
 
   for (i in 1:nrow(sample_list)) {
     cat("Reading data for sample #:", i ,"\n")

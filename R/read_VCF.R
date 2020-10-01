@@ -27,7 +27,7 @@
 # Multiple samples, to be finished
 
 
-read_vcf <- function(DT_path, end_vcf = "END", CN_vcf = "CN", samples = NA, explore = F) {
+read_vcf <- function(DT_path, end_vcf = "END", CN_vcf = "CN", samples = NA, explore = FALSE) {
   # just explore the header (e.g. if not sure on the right on col names)
   if (explore == T) {
     cat("\nVCF header content\n")
@@ -40,7 +40,7 @@ read_vcf <- function(DT_path, end_vcf = "END", CN_vcf = "CN", samples = NA, expl
     print(VariantAnnotation::fixed(VariantAnnotation::scanVcfHeader(DT_path)))
   }
   # actually read VCF
-  if (explore == F) {
+  if (explore == FALSE) {
     # check defaults
     if (end_vcf != "END" | CN_vcf != "CN")
       cat("WARNING: default VCF field idenfier modified!\n")

@@ -115,7 +115,7 @@
 
 dt_uniform <- function(DT_in, DT_type, markers, chr_col, start_col, end_col, CN_col,
                        LRR_col, BAF_col, raw_col, raw_col_type, mark_ID_col, sample_ID_col,
-                       sample_ID, sex, keep_all = F) {
+                       sample_ID, sex, keep_all = FALSE) {
   # check argument consistency
   if (!is.data.table(DT_in)) stop("DT_in is not a data.table object!\n")
   if (!DT_type %in% c("results", "markers_array", "markers_NGS", "raw_array",
