@@ -22,9 +22,10 @@ input file.}
 
 \item{end_col, }{name of the column containing the end information in the input
 file.}
-
-\item{mark_ID_col, }{name of the column containing the name of each marker,
-inherited from the SNPs arrays, completely optional.}
+}
+\value{
+a \code{data.table}, will be of \code{Markers} class in future
+  versions.
 }
 \description{
 \code{read_intervals} handles inputs of data used as the markers in CNVs

@@ -33,6 +33,10 @@ out.}
 \item{blacklist_chrs, }{character vector containing chromosomes names in the
 package format, 1:22 for autosomes and 23 24 for chr X and Y.}
 }
+\value{
+the \code{CNVresults} object \code{results} after the selected filters
+  have been applied.
+}
 \description{
 \code{cleaning_filter} "clean" a CNV calls dataset based on measures such as
 length, number of calls per sample and more.

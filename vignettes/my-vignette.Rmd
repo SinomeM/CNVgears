@@ -110,6 +110,8 @@ See the relative man pages for details on each function used.
 
 ## Data Load ##
 
+### Cohort PED and Markers data
+
 The first two objects we need to load are the cohort and markers information. The
 first object is loaded from a PED file from with the following columns are extracted:
 Sample ID, Family ID, sex and role (proband/sibling/mother/father). Role information
@@ -138,6 +140,8 @@ SNP_markers <- read_finalreport_snps(system.file("extdata", "SNP.pfb",
                                      mark_ID_col = "Name", chr_col = "Chr", 
                                      pos_col = "Position")
 ```
+
+### CNV Calling Results and Markers-level raw data
 
 Then we load the actual results and the marker-level raw data. The results are 
 loaded in the session, while the raw data are processed and stored as RDS one 
@@ -182,6 +186,7 @@ ipn <-  read_results(DT_path = system.file("extdata",
 
 # raw data
 library("data.table", quietly = TRUE)
+setDTthreads(4)
 
 read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"), 
                      pref = NA, suff = ".txt", 
@@ -201,7 +206,7 @@ number of markers). More examples will be added in future version of this vignet
 
 ### `cn.mops` package results loading
 
-CNVs calling from NGS data Bioconductor package `cn.mops` uses GRanges objects as 
+CNVs calling from NGS data Bioconductor package `cn.mops` uses `GRanges` objects as 
 results. In particular, the actual calls are stored in the `cnvs` slot. These can 
 be loaded into a `CNVgears` pipeline using the function `cnmops_to_CNVresults`
 as shown here. Note that only calls in chromosomes 1:22 are supported by this package 
@@ -235,10 +240,9 @@ An example for one of the callers results.
 
 sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers)
-# also saves plots
 sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers, 
-                     plots_path = file.path("tmp","sstatPenn"))
+                     plots_path = file.path("tmp","sstatPenn")) # plots are saved
 ```
 
 Exploring these summary statistics can provide important insights on the cohort 
@@ -253,7 +257,7 @@ ipn_filtered <- cleaning_filter(ipn)
 ```
 
 It is also possible to filter calls based on blacklists, e.g. immunoglobulin regions 
-or telomers. In our package we provide two fucntions to generate immunoglobulin,
+or telomers. In our package we provide two functions to generate immunoglobulin,
 telomeric and centromeric regions for the hg18, hg19 and hg38 genome assemblies. 
 The user can specify the number of minimum consecutive immuno genes to create a 
 region and the desired telomers and centromers blacklists width. Here we create 
@@ -296,6 +300,7 @@ a deletion or a CopyRatio > 1.25 if the CNV is a duplication. This step is mostl
 needed to speed up the function and will be made optional in near future.
 
 For autosomal chromosomes 
+
 $$LRR = log2R = log2(CopyRatio) = log2(numeric_{CN}/2)$$
 
 The putative *de-novo* events that survive undergo the final screening. This can 
@@ -350,7 +355,7 @@ ipq_denovo <-
 At this point it is possible to perform a second filtering step based on the number 
 of calling methods, e.g. filter out all the calls made by one single algorithm. 
 
-Note how the merge perform *reciprocal* overlap comparison in order to merge two 
+Note how the merge perform **reciprocal** overlap comparison in order to merge two 
 calls. Candidate events should thus not only overlap but must also be of comparable 
 size. This is clear in the de-novo merge object, at lines 4:6, the event at line
 6 overlap the two at line 4 and 5 but is too large to be merged. However it is 
@@ -388,11 +393,11 @@ candidates. We use as an example the two calls detected by both PennCNV and
 QantiSNP and the larger one made by IPattern.
 
 ```{r denovo plot, warning=FALSE}
-lrr_trio_plot(cnv = ipq_denovo[4], raw_path =  file.path("tmp_RDS"), 
+lrr_trio_plot(cnv = ipq_denovo[1], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
-lrr_trio_plot(cnv = ipq_denovo[5], raw_path =  file.path("tmp_RDS"), 
+lrr_trio_plot(cnv = ipq_denovo[2], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
-lrr_trio_plot(cnv = ipq_denovo[6], raw_path =  file.path("tmp_RDS"), 
+lrr_trio_plot(cnv = ipq_denovo[3], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
 ```
 
@@ -434,7 +439,9 @@ All the major object handled by the package are `data.table`. Thus to export out
 of R an object (as an example the output of the combination of several methods 
 results) it is possible to use `data.table` semantics and functions. 
 
-```{r}
+```{r, eval=FALSE}
+## not run
+
 # Select a subset of columns using DT[, .(col1,col2,coln)]
 tmp <- ipq_filtered[, .(sample_ID, chr, start, end, GT, meth_ID)]
 head(tmp, 3)
@@ -450,9 +457,12 @@ fwrite(tmp, "example.tsv", sep = "\t")
 As an example to create a BED4 file were the entries names consist of 
 `sample_ID"-"GT` that can be loaded in IGV we do: 
 
-```{r}
+```{r, eval=FALSE}
+## not run
+
 tmp <- ipq_filtered[, .(chr, start, end, paste0(sample_ID, "-", GT))]
 head(tmp)
+
 fwrite(tmp, "example.bed", sep = "\t", col.names = FALSE)
 ```
 
@@ -463,7 +473,9 @@ three columns will be placed in the `metadata` field.
 In the near future a more general function to convert all the major object into 
 `GRanges` will be implemented soon. 
 
-```{r}
+```{r, eval=FALSE}
+## not run 
+
 class(ipq_filtered)
 ipq_filtered_GRanges <- CNVresults_to_GRanges(ipq_filtered)
 ipq_filtered_GRanges
@@ -472,15 +484,31 @@ ipq_filtered_GRanges
 `data.table` queries can also be used to easily extract subset of interest from the 
 results. Some relevant examples are shown here. 
 
-```{r}
-## only call with > 1 calling methods
+```{r, eval=FALSE}
+## not run
 
-## only "rare" call
+# only call with > 1 calling methods
+tmp <- ipq_filtered[n_meth > 1, ]
+head(tmp)
 
-## de novo CNVs with a significant corrected p-value
-
-
+# de novo CNVs with a significant corrected p-value (note that the p-values are
+# lost when combining more results)
+tmp <- penn_inheritance[adj_m_pval < 0.05 & adj_p_pval < 0.05, ]
+head(tmp)
 ```
+
+Rare (within the cohort) calls can be obtained filtering out the common CNVRs, as 
+follows. 
+
+```{r, eval=FALSE}
+## not run
+
+# define common CNVR as the one present in > 5% of the cohort 
+# here the cohort is very small so it won't be a significative result
+common_cnvrs <- cnvrs[[1]][freq > nrow(cohort)*0.5, ]
+rare_cvns <- cnvrs[[2]][!cnvr %in% common_cnvrs$r_ID]
+```
+
 
 
 ## Notes on Parallelization ## 

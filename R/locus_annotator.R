@@ -18,6 +18,8 @@
 #' @param keep_str_end, logical, specify if intermediate columns (locus_start
 #'   and locus_end) must be kept or discarded.
 #'
+#' @return a \code{CNVresults}, \code{DT_in} with the additional column "locus".
+#'
 #' @export
 #'
 #' @import data.table
@@ -31,7 +33,7 @@ genomic_locus <- function(DT_in, remote_cytobands = TRUE, bands, assembly = "hg1
     stop("Wrong 'assembly' format!\n")
   if (!is.data.table(DT_in))
     stop("'DT_in' must be a data.table (usually the output of read_results())!\n")
-  if (remote_cytobands == F & missing(bands))
+  if (remote_cytobands == FALSE & missing(bands))
     stop("'remote_cytobands' is set to FALSE but no local cytobands object provided!\n")
   # check also colnames?
 

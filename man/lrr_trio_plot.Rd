@@ -23,7 +23,7 @@ This function plot the raw data in the regions of interest in order to visually
 confirm the presence of a good de novo CNV candidate.}
 }
 \value{
-a \code{list} containing the plot.
+a \code{list} containing the \code{ggplot2} object.
 }
 \description{
 Plot markers raw data in a CNV region for a trio

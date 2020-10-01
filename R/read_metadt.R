@@ -27,6 +27,9 @@
 #' @param role_col name of the columns containing the role information ID in the original file;
 #' @param fam_ID_col name of the columns containing the family ID in the original file;
 #'
+#' @return cohort metatadata object, a \code{data.table}. Will be of the
+#'   \code{SampleList} class in future versions.
+#'
 #' @export
 
 # CHANGE INPUT TO PED
@@ -39,26 +42,27 @@ read_metadt <- function(DT_path, sample_ID_col = "sample_ID", sex_col = "sex",
   colnames(DT) <- c("sample_ID", "sex", "role", "fam_ID")
 
   # check sex and role
-  if (FALSE %in% (unique(DT$sex) %in% c("1", "2", "male", "female", "Male",
-                                    "Female"))) stop("Bad \"sex\" format!\n")
-  if (TRUE %in% (unique(DT$role) %in% c("Father", "Mother", "Proband", "Sibling"))) {
+  if (!all(unique(DT$sex) %in%
+           c("1", "2", "male", "female", "Male", "Female")))
+    stop("Bad \"sex\" format!\n")
+  if (any(unique(DT$role) %in% c("Father", "Mother", "Proband", "Sibling"))) {
     DT[role == "Father", role := "father"][role == "Mother", role := "mother"][
       role == "Proband", role := "proband"][role == "Sibling", role := "sibling"]
   }
 
   # if role is NA print warning, check it and skip the rest
-  if (TRUE %in% is.na(unique(DT$role)) | TRUE %in% (unique(DT$role) == "NA")) {
+  if (any(is.na(unique(DT$role)) | (unique(DT$role) == "NA"))) {
     cat("WARNING: \"role\" not specified!\n")
     DT[, role := NA]
   }
   else {
-    if (FALSE %in% (unique(DT$role) %in% c("father", "mother", "proband", "sibling",
-                                       "Father", "Mother", "Proband",
-                                       "Sibling"))) stop("Bad \"role\" format!\n")
+    if (!all(unique(DT$role) %in%
+             c("father", "mother", "proband", "sibling", "Father", "Mother",
+               "Proband", "Sibling"))) stop("Bad \"role\" format!\n")
     # convert "male"/"female" or "Male"/"Female" to "1"/"2" and
     # "Father", "Mother" etc to "father", "mother" if needed
     # there may be an easiest way
-    if (TRUE %in% (unique(DT$sex) %in% c("male", "female", "Male", "Female"))) {
+    if (any(unique(DT$sex) %in% c("male", "female", "Male", "Female"))) {
       DT[sex == "male" | sex == "Male", sex := 1][
         sex == "female" | sex == "Female", sex := 2]
     }

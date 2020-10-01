@@ -18,8 +18,10 @@
 #' @param samples NA by default, if a character vector is provided is used to
 #'   identify and select samples in a VCF containing multiple ones.
 #' @param explore logic, \code{FALSE} by default. If \code{TRUE} the file in
-#'   \code{DT_path} is not loaded, instead, several infos about the VCF fields
+#'   \code{DT_path} is not loaded, instead, several info about the VCF fields
 #'   are printed.
+#'
+#' @return a \code{CNVresults} from the VCF results conversion.
 #'
 #' @export
 
@@ -27,9 +29,10 @@
 # Multiple samples, to be finished
 
 
-read_vcf <- function(DT_path, end_vcf = "END", CN_vcf = "CN", samples = NA, explore = FALSE) {
+read_vcf <- function(DT_path, end_vcf = "END", CN_vcf = "CN", samples = NA,
+                     explore = FALSE) {
   # just explore the header (e.g. if not sure on the right on col names)
-  if (explore == T) {
+  if (explore == TRUE) {
     cat("\nVCF header content\n")
     print(VariantAnnotation::scanVcfHeader(DT_path))
     cat("\nVCF 'geno' content \n")

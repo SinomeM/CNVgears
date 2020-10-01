@@ -31,6 +31,9 @@
 #' @param blacklist_chrs, character vector containing chromosomes names in the
 #'   package format, 1:22 for autosomes and 23 24 for chr X and Y.
 #'
+#' @return the \code{CNVresults} object \code{results} after the selected filters
+#'   have been applied.
+#'
 #' @export
 
 cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
