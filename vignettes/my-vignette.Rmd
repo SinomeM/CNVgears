@@ -2,7 +2,7 @@
 title: "CNVgears package."
 output: BiocStyle::html_document
 vignette: >
-  %\VignetteIndexEntry{cnvgeaRs package}
+  %\VignetteIndexEntry{CNVgears package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -27,60 +27,64 @@ being able to perform the examples.
 
 ## Introduction ##
 
-The cnvgeaRs package aims to implement an interactive and extensible framework for 
+The CNVgears package aims to implement an interactive and extensible framework for 
 the analysis of Copy Number Variation calling and/or segmentation results, typically 
 from multiple pipelines or algorithms, regardless the initial raw data type. At 
 the moment Illumina SNPs array and any type of NGS data are supported, provided 
 that at least the raw log2R value, or any related measure is accessible for each 
 sample. The package is particularly suited for the analysis of family based studies, 
-being originally developed for the CNV characterization of the Italian Autism Network 
-Collection (ITAN). However, the more vast majority of the functions are of general 
+however, the more vast majority of the functions are of general 
 purpose and useful for any CNVs study. Next session illustrate the pipeline main 
-steps. 
-  
-Depending on user needs and cohort composition (e.g. family based or not) it is 
-possible to perform all or only a fraction of these steps. As an example, if the 
-cohort is not family based, if CNVs inheritance pattern is not a desired information 
-or if the markers-level raw data is not available, the raw data load step can be 
-easily skip. The package can be used also only to combine the results of different 
-methods in a uniform format and export the output to be processed in other programs. 
-
-Here we show most of the package features using CNVs calling results on a subset
+steps and most of the package features using CNVs calling results on a subset
 of the 1000 Genomes cohort. We created the subset using samples that creates full
 trios and have both SNP array and WGS data available. However at the moment only 
 the arrays are used here. CNVs calling was performed using a modified minimal 
 version of EnsembleCNV.
 
 ## Main Steps ## 
+  
+CNVgears supports multiple analysis and cohort composition (e.g. family based or not) 
+as it is possible to perform all or only a fraction of these steps. As an example, if the 
+cohort is not family based, if CNVs inheritance pattern is not a desired information 
+or if the markers-level raw data is not available, the raw data load step can be 
+easily skip. The package can be used also only to combine the results of different 
+methods in a uniform format and export the output to be processed in other programs. 
 
-The typical main steps of such analysis using 
-CNVgears are:
+The typical main steps of such analysis using CNVgears are:
 
-**This list needs to be revised at some point**    
-*[aggiungi required/optional/etc]*
-
-1. Load the cohort minimal metadata in the form of PED file;
-2. Load the markers file (i.e. genomic location of each marker, SNP in case of array, interval/bin
-  in case of NGS data);
-3. Read and pre-process the results for all samples from the individual algorithms/pipelines, in particular 
-  adjacent calls with equal genotype (i.e. deletions/duplications) can be merged if closer than 
-  user-specified distances;
-4. Read and pre-process the "raw data" (in particular the log2R for each marker for all samples);
-5. Explore the sample's summary statistics, identify groups of unwanted events (e.g. smaller 
-  then 5 kbp or consisting of less than 5 points) and possible over-segmented samples;
-6. Filter the results based on several parameters and blacklist (both provided by the package and 
-  user-generated), such as immunoglobulin and telomeric/centromeric regions. Also more extreme 
-  intra-results merging can be performed if one or more methods appear to over-segment. 
-7. Detect CNVs inheritance pattern, if families structure is given;
-8. Visually inspect the good de novo CNVs candidate raw data (LRR/log2R in particular);
-9. Merge the various methods results in a single object, keep only the call made by N (one or more)
-  algorithms/pipelines if desired;
-1. Annotate genomic locus of the calls and search for CNVs in known disease-linked loci (e.g. 
-  in studies on ASD or schizophrenia). Annotate genic content of selected CNVs;
-2. Compute CNV regions (CNVRs); 
-3. Extract high confidence rare events based on CNVRs; 
-4. Export desired data as BED (e.g. for being viewed in IGV) or VCF (e.g. for being processed with Annovar)
-  , as well as TSV.
+1. Load the cohort minimal metadata in the form of PED file (mandatory);
+2. Load the markers file (i.e. genomic location of each marker, SNP in case of 
+   array, interval/bin in case of NGS data) (mandatory);
+3. Read and pre-process the CNVs calling results for all samples from the 
+   individual algorithms/pipelines, in particular adjacent calls with equal 
+   genotype (i.e. deletions/duplications) can be merged if closer than 
+   user-specified distances (mandatory);
+4. Read and pre-process the "raw data" (in particular the log2R for each marker 
+   for all samples) (not mandatory but required for CNVs inheritance detection);
+5. Explore the sample's summary statistics, identify groups of unwanted events 
+   (e.g. smaller then 5 kbp or consisting of less than 5 points) and possible 
+   over-segmented samples (not mandatory but strongly suggested);
+6. Filter the results based on several parameters and blacklist (both provided 
+   by the package and user-generated), such as immunoglobulin and 
+   telomeric/centromeric regions. Also more extreme intra-results merging can be 
+   performed if one or more methods appear to over-segment (not mandatory but 
+   strongly suggested); 
+7. Detect CNVs inheritance pattern, if families structure is given (not mandatory);
+8. Visually inspect the good de novo CNVs candidate raw data (not mandatory, 
+   strongly suggested in the case of de novo CNVs, require the previous step);
+9. Merge the various methods results in a single object (not mandatory, however 
+   this is one of the main points of the package);
+1. Second round of filtering, keep only the call made by N (one or more) 
+   algorithms/pipelines (not mandatory, requires the previous step);
+1. Annotate genomic locus of the calls and search for CNVs in known 
+   disease-linked loci (e.g. in studies on ASD or schizophrenia) (not mandatory); 
+2. Annotate genic content of selected CNVs (not mandatory);
+2. Compute CNV regions (CNVRs) (not mandatory); 
+3. Extract high confidence rare events based on CNVRs (not mandatory, requires 
+   the previous step); 
+4. Export desired data. Several format are supported, such as BED (e.g. for 
+   being viewed in IGV) or VCF (e.g. for being processed with Annovar), as well 
+   as TSV (not mandatory).
 
 
 ## Setup ## 
@@ -97,7 +101,7 @@ devtools::install_github("SinomeM/CNVgears")
 
 To load the package.
 
-```{r library, eval=FALSE}
+```{r library}
 library(CNVgears, quietly = TRUE)
 ```
 
@@ -108,7 +112,7 @@ steps. The package uses by default half the CPU threads available, this can be c
 with the function `data.table::setDTthreads`. For example to use the 75% of available 
 threads or an integer number of them:
 
-``` {r DT threads, eval = FALSE}
+```{undefined message=TRUE, warning=TRUE}
 # not run
 data.table::setDTthreads(percent=75)
 data.table::setDTthreads(4)
@@ -116,7 +120,6 @@ data.table::setDTthreads(4)
 
 Empirically, we found the ideal number of threads being between 4 and 8.   
 See the relative man pages for details on each function used. 
-
 
 ## Data Load ##
 
@@ -136,26 +139,29 @@ chromosomes 14 and 22 of 24 samples from the 1000 Genomes project, as well as a 
 file of the cohort and the markers-level raw data for a single trio (within the 
 24 samples).  
 
-```{r PED PFB, eval=FALSE}
+```{r PED PFB}
 # cohort data
 cohort <- read_metadt(DT_path = system.file("extdata", "cohort.ped", 
                                             package = "CNVgears"),
                       sample_ID_col = "Individual ID", 
                       fam_ID_col = "Family ID",
                       sex_col = "Gender", role_col = "Role")
+head(cohort)
 
 # markers location
 SNP_markers <- read_finalreport_snps(system.file("extdata", "SNP.pfb", 
                                                  package = "CNVgears"),
                                      mark_ID_col = "Name", chr_col = "Chr", 
                                      pos_col = "Position")
+head(SNP_markers)
 ```
 
 ### CNV Calling Results and Markers-level raw data
 
-Then we load the actual results and the marker-level raw data. The results are 
-loaded in the session, while the raw data are processed and stored as RDS one 
-chromosome at the time. The RDS files will be loaded only when necessary in order 
+Then we load the actual CNV calling results and the marker-level raw data. 
+The results are loaded in the session as R objects, while the raw data are 
+processed and stored as RDS one chromosome at the time. The RDS files will be 
+loaded only when necessary in order 
 to reduce the RAM requirements of processing results from very large cohorts 
 and/or from several methods.   
 In this scenario the raw data consist of the SNP array only, thus we can process
@@ -165,7 +171,7 @@ performed, i.e. adjacent call are merged into a single one if requirements are m
 This step is performed by default but can be avoided by setting `do_merge` parameter 
 to `FALSE`. The resulting objects are of the class `CNVresults`.    
 
-```{r results + raw, eval=FALSE}
+```{r results + raw, message=TRUE, warning=TRUE}
 # CNV calling results
 penn <- read_results(DT_path = system.file("extdata", 
                                            "chrs_14_22_cnvs_penn.txt", 
@@ -175,6 +181,7 @@ penn <- read_results(DT_path = system.file("extdata",
                      end_col = "posEnd", CN_col = "CN", 
                      samp_ID_col = "Sample_ID", sample_list = cohort, 
                      markers = SNP_markers, method_ID = "P")
+head(penn)
 
 quanti <- read_results(DT_path = system.file("extdata", 
                                              "chrs_14_22_cnvs_quanti.txt", 
@@ -193,13 +200,13 @@ ipn <-  read_results(DT_path = system.file("extdata",
                      end_col = "posEnd", CN_col = "CN", 
                      samp_ID_col = "Sample_ID", sample_list = cohort, 
                      markers = SNP_markers, method_ID = "I")
+```
 
+```{r, eval = FALSE}
 # raw data
+# not run
 library("data.table", quietly = TRUE)
 setDTthreads(4)
-
-dir.create("tmp")
-
 
 read_finalreport_raw(DT_path = "PATH_TO_DOWNLOADED_DATA_DIRECTORY", 
                      pref = NA, suff = ".txt", 
@@ -207,6 +214,7 @@ read_finalreport_raw(DT_path = "PATH_TO_DOWNLOADED_DATA_DIRECTORY",
                      markers = SNP_markers, 
                      sample_list = cohort[fam_ID == "1463", ])
 ```
+
 
 Note that when loading the raw data only the trio is used as cohort. The samples
 object is subset using a `data.table` query.
@@ -248,22 +256,30 @@ plot on the results, both cohort-wise and samples-wise. They are designed for
 interactive use, also more then one time if desired.
 An example for one of the callers results. 
 
-```{r summary stats, eval = FALSE}
-# not run 
-
+```{r summary stats}
 sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers)
+```
+
+```{r, eval = FALSE}
+# not run 
 sstatPenn <- summary(object = penn, sample_list = cohort,
                      markers = SNP_markers, 
                      plots_path = file.path("tmp","sstatPenn")) # plots are saved
 ```
 
+
 Exploring these summary statistics can provide important insights on the cohort 
 composition and on the differences between the individual callers. Obviously, the 
 process is completely optional, and we provide default values for the filtering 
-function based on literature and our experience. 
+function based on literature and our experience.     
+The output of summary can help identifying over-segmented samples.
+```{r}
+head(sstatPenn)
+```
 
-```{r filtering, eval=FALSE}
+
+```{r filtering}
 penn_filtered <- cleaning_filter(results = penn, min_len = 10000, min_NP = 10)
 quanti_filtered <- cleaning_filter(quanti)
 ipn_filtered <- cleaning_filter(ipn)
@@ -279,16 +295,27 @@ Note that the fucntion `immuno_regions` uses internally the package `biomaRt` th
 work with the hg38 genome assembly by default. To work with older assemblies we 
 need to pass a custom `mart` object, as exemplified here. 
 
-```{r blacklists, eval=FALSE, echo=-5}
+```{r blacklists}
 hg19telom <- telom_centrom(hg19_start_end_centromeres, centrom = FALSE)
-hg19centrom <- telom_centrom(hg19_start_end_centromeres, telom = FALSE, region = 25000)
+hg19centrom <- telom_centrom(hg19_start_end_centromeres, telom = FALSE, 
+                             region = 25000)
+```
 
+```{r, eval=FALSE}
 ensembl37 <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL", 
                               host = "grch37.ensembl.org", 
                               dataset="hsapiens_gene_ensembl")
 hg19_immuno <- immuno_regions(n_genes = 10, mart = ensembl37)
-rm(ensembl37)
 ```
+
+A blacklist can be any `data.table` with at least these three columns: chr, start, 
+end. Users should be particularly careful when filtering using blacklists as 
+it is possible to filter out relevant data. 
+
+```{r}
+head(hg19telom)
+```
+
 
 ### Inheritance pattern detection 
 
@@ -355,11 +382,14 @@ detection.
 At this point we can integrate the multiple methods results into a single object.
 As exemplification of a real pipeline we also process the *de-novo* calls.
 
-```{r inter merge, eval=FALSE}
+```{r inter merge, results="hide"}
 ipq_filtered <- 
   inter_res_merge(res_list = list(penn_filtered, quanti_filtered, ipn_filtered),
                   sample_list = cohort, chr_arms = hg19_chr_arms)
+```
 
+```{r, eval=FALSE}
+# not run
 ipq_denovo <- 
   inter_res_merge(res_list = list(penn_denovo, quanti_denovo, ipn_denovo),
                   sample_list = cohort, chr_arms = hg19_chr_arms)
@@ -383,13 +413,23 @@ In this package, we provide a method to compute Copy Number Variable Regions (CN
 based on reciprocal overlap, starting from the integrated object created in the 
 previous step. See the `?cnvrs_create` for details. 
 
-```{r cnvrs, eval=FALSE}
-cnvrs <- cnvrs_create(cnvs = ipq_filtered, chr_arms = hg19_chr_arms)
+```{r cnvrs, results="hide"}
+cnvrs_chr22 <- cnvrs_create(cnvs = ipq_filtered[chr == 22,], 
+                            chr_arms = hg19_chr_arms)
 ```
 
 CNVRs can also be used for filtering purposes, as an example a user can be more 
-interested in rare events and use CNVRs frequency to achieve this internally. 
-Examples using `data.table` syntax are shown in the "Data Export" section.
+interested in rare events and use CNVRs frequency to achieve this internally.     
+Rare (within the cohort) calls can be obtained filtering out the common CNVRs, as 
+follows. 
+
+```{r}
+# define common CNVR as the one present in > 5% of the cohort 
+# here the cohort is very small so it won't be a significative result
+common_cnvrs_chr22 <- cnvrs_chr22[[1]][freq > nrow(cohort)*0.5, ]
+rare_cvns_chr22 <- cnvrs_chr22[[2]][!cnvr %in% common_cnvrs$r_ID]
+```
+
 
 ### De-novo CNVs visual confirmation 
 
@@ -416,16 +456,16 @@ separated Ensemble IDs.
 As `immuno_regions`, the function `genic_load` uses `biomaRt` internally, thus a 
 custom mart is needed to work in hg19. 
 
-```{r annotation, echo=c(-2,-4), eval=FALSE}
+```{r annotation, echo=c(-2,-4)}
 # locus 
-ipq_denovo_locus <- genomic_locus(DT_in = ipq_denovo, keep_str_end = FALSE)
+ipq_denovo_locus <- genomic_locus(DT_in = ipq_filtered, keep_str_end = FALSE)
 
 # genes 
 ensembl37 <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL", 
                               host = "grch37.ensembl.org", 
                               dataset="hsapiens_gene_ensembl")
 
-ipq_denovo_genes <- genic_load(DT_in = ipq_denovo, mart = ensembl37)
+ipq_denovo_genes <- genic_load(DT_in = ipq_filtered, mart = ensembl37)
 
 rm(ensembl37)
 ```
@@ -461,61 +501,40 @@ fwrite(tmp, "example.tsv", sep = "\t")
 As an example to create a BED4 file were the entries names consist of 
 `sample_ID"-"GT` that can be loaded in IGV we do: 
 
-```{r, eval=FALSE}
-## not run
-
+```{r}
 tmp <- ipq_filtered[, .(chr, start, end, paste0(sample_ID, "-", GT))]
 head(tmp)
+```
 
+```{r, eval=FALSE}
+## not run
 fwrite(tmp, "example.bed", sep = "\t", col.names = FALSE)
 ```
+
 
 Objects of the class `CNVresults` can also be converted into `GenomicRanges::GRanges()` 
 using the function `CNVresults_to_GRanges`. Required columns (and thus maintained 
 in the resulting object) are: chr, start, end, sample_ID, GT, meth_ID. The last 
 three columns will be placed in the `metadata` field.
 In the near future a more general function to convert all the major object into 
-`GRanges` will be implemented soon.    
+`GRanges` as well as `GRangesList` (e.g. for integration with `CNVranger` 
+package) will be implemented soon.    
 
-```{r, eval=FALSE}
-## not run 
-
-class(ipq_filtered)
+```{r}
 ipq_filtered_GRanges <- CNVresults_to_GRanges(ipq_filtered)
-ipq_filtered_GRanges
 ```
-
-Conversion to `GRangesList` (e.g. for integration with `CNVranger` package) will 
-be implemented soon. 
 
 `data.table` queries can also be used to easily extract subset of interest from the 
 results. Some relevant examples are shown here. 
 
 ```{r, eval=FALSE}
-## not run
-
 # only call with > 1 calling methods
 tmp <- ipq_filtered[n_meth > 1, ]
-head(tmp)
 
 # de novo CNVs with a significant corrected p-value (note that the p-values are
 # lost when combining more results)
 tmp <- penn_inheritance[adj_m_pval < 0.05 & adj_p_pval < 0.05, ]
-head(tmp)
 ```
-
-Rare (within the cohort) calls can be obtained filtering out the common CNVRs, as 
-follows. 
-
-```{r, eval=FALSE}
-## not run
-
-# define common CNVR as the one present in > 5% of the cohort 
-# here the cohort is very small so it won't be a significative result
-common_cnvrs <- cnvrs[[1]][freq > nrow(cohort)*0.5, ]
-rare_cvns <- cnvrs[[2]][!cnvr %in% common_cnvrs$r_ID]
-```
-
 
 
 ## Notes on Parallelization ## 
