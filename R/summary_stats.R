@@ -9,10 +9,11 @@
 #'   depending on the initial data type.
 #' @param plots_path, path where the plots should be saved, if \code{NA} no plot is
 #'   produced.
+#' @param ... compatibility
 #'
 #'   This function produce several summary statistics on the CNVs results in
 #'   input. Ideally, it should be used interactively, together with
-#'   \code{\link{cleaning_filter}}. Some information is printend on the console
+#'   \code{\link{cleaning_filter}}. Some information is printed on the console
 #'   (mostly \code{summary()} on several characteristics of the results and the
 #'   cohort), several plots can be produced and saved in the user specified
 #'   location. Finally the function also return a \code{data.table} of sample-level
@@ -27,7 +28,7 @@
 
 # add the option to save as RDS and PNG!
 
-summary.CNVresults <- function(object, sample_list, markers, plots_path = NA) {
+summary.CNVresults <- function(object, sample_list, markers, plots_path = NA, ...) {
   # check input
   if (!is.data.table(object) | !is.data.table(sample_list) |
       !is.data.table(markers))

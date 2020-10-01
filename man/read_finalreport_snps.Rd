@@ -23,6 +23,10 @@ the input file. Default is \code{"Chr"}.}
 \item{pos_col, }{name of the column containing the SNPs position information
 in the input file. Default is \code{"Position"}.}
 }
+\value{
+a \code{data.table}, will be of \code{Markers} class in future
+  versions.
+}
 \description{
 \code{read_finalreport} handles inputs of data in FinalReport-like format
 }

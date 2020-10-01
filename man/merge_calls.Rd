@@ -13,6 +13,9 @@ merge_calls(DT_in, prop = 0.3)
 \item{prop}{numeric value that multiplied by the length of a call gives
 the range where adjacent calls are searched.}
 }
+\value{
+a \code{CNVresults}, \code{DT_in} processing result.
+}
 \description{
 \code{merge_calls} screen the segments of a sample and merge adjacent calls
 with equal GT if close enough

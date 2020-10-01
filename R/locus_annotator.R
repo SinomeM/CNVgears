@@ -18,20 +18,22 @@
 #' @param keep_str_end, logical, specify if intermediate columns (locus_start
 #'   and locus_end) must be kept or discarded.
 #'
+#' @return a \code{CNVresults}, \code{DT_in} with the additional column "locus".
+#'
 #' @export
 #'
 #' @import data.table
 
-genomic_locus <- function(DT_in, remote_cytobands = T, bands, assembly = "hg19",
-                          keep_str_end = T) {
+genomic_locus <- function(DT_in, remote_cytobands = TRUE, bands, assembly = "hg19",
+                          keep_str_end = TRUE) {
   # check inputs
-  if (!remote_cytobands %in% c(T, F))
+  if (!remote_cytobands %in% c(TRUE, FALSE))
     stop("Wrong 'remote_cytobands' format!\n")
   if (!assembly %in% c("hg18", "hg19", "hg38"))
     stop("Wrong 'assembly' format!\n")
   if (!is.data.table(DT_in))
     stop("'DT_in' must be a data.table (usually the output of read_results())!\n")
-  if (remote_cytobands == F & missing(bands))
+  if (remote_cytobands == FALSE & missing(bands))
     stop("'remote_cytobands' is set to FALSE but no local cytobands object provided!\n")
   # check also colnames?
 
@@ -41,7 +43,7 @@ genomic_locus <- function(DT_in, remote_cytobands = T, bands, assembly = "hg19",
   rm(DT_in)
 
   # load cytobands
-  if  (remote_cytobands == T)
+  if  (remote_cytobands == TRUE)
     bands <- fread(paste0("https://hgdownload.cse.ucsc.edu/goldenPath/",
                           assembly, "/database/cytoBand.txt.gz"))
   else {
@@ -67,7 +69,7 @@ genomic_locus <- function(DT_in, remote_cytobands = T, bands, assembly = "hg19",
                     locus_start != locus_end, locus := paste0(chr, locus_start,
                                                               "-", locus_end)]
   # deleted intermediate columns if needed
-  if (keep_str_end == F)
+  if (keep_str_end == FALSE)
     DT[, `:=` (locus_start = NULL, locus_end = NULL)]
 
   return(DT)

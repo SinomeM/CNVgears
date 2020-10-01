@@ -30,6 +30,8 @@
 #' @param raw_col, name of the column containing the marker-level raw data in
 #'   the input file.
 #'
+#' @return nothing, this function saves the results on disk.
+#'
 #' @export
 #'
 #' @import data.table
@@ -66,7 +68,7 @@ read_NGS_raw <- function(DT_path, rds_path, pref, suff,
   if (!raw_type %in% c("log2", "copyratio", "numeric_CN"))
     stop("Wrong 'raw_type' format!\n")
   # create the directory for the RDS if don't exist
-  dir.create(rds_path, showWarnings = F)
+  dir.create(rds_path, showWarnings = FALSE)
 
   for (i in 1:nrow(sample_list)) {
     cat("Reading data for sample #:", i ,"\n")
@@ -118,29 +120,6 @@ read_NGS_raw <- function(DT_path, rds_path, pref, suff,
     # the same in every sample and exactly the same of "markers" (that is used to annotate the calls)
     }
     DT[, P_CN := round((2^log2R)*2)]
-
-    # # probably slow here
-    # sids <- results[sample_ID == sample_list$sample_ID[i], seg_ID]
-    # for (sid in sids) {
-    #   res_line <- results[sample_ID == sample_list$sample_ID[i] & seg_ID == sid]
-    #   last_P <- res_line[, last_P]
-    #   first_P <- res_line[, first_P]
-    #   GT <- res_line[, GT]
-    #   CN <- res_line[, CN]
-    #   DT[P_ID >= first_P & P_ID <= last_P, `:=` (seg_ID = sid, seg_GT = GT, seg_CN = CN)]
-    # }
-
-    # # probably vary slow here
-    # # TEST CHANGES HERE
-    # ix <-  results$sample_ID == sample_list$sample_ID[i]
-    # for (sid in results[ix , seg_ID]) {
-    #   ixtmp <- ix & seg_ID == sid
-    #   last_P <- results[ixtmp , last_P]
-    #   first_P <- results[ixtmp , first_P]
-    #   GT <- results[ixtmp , GT]
-    #   CN <- results[ixtmp , CN]
-    #   DT[P_ID >= first_P & P_ID < last_P, `:=` (seg_ID = sid, seg_GT = GT, seg_CN = CN)]
-    # }
 
     # save in RDS one chromosome at time in the specified path
     if (sex == 1) chrs <- as.character(1:24)

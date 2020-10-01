@@ -3,19 +3,21 @@
 
 #' Convert cn.mops results into \code{CNVgears} format
 #'
-#' @param cnvs
-#' @param sample_list, minimal cohort metadata, a \code{data.table} produced by the
+#' @param cnvs cn.mops results
+#' @param sample_list minimal cohort metadata, a \code{data.table} produced by the
 #'   function \code{\link{read_metadt}}.
-#' @param markers, a \code{data.table} containing the marker list, the output
+#' @param markers a \code{data.table} containing the marker list, the output
 #'   \code{\link{read_finalreport_snps}} with \code{DT_type} set to "markers"
 #'   or \code{\link{read_NGS_intervals}}.
+#'
+#' @return the input object \code{cnvs} converted into \code{CNVresults}
 #'
 #' @import data.table
 #'
 #' @export
 
 
-cnmops_to_CNVresults <- function(cnvs, samples_list, markers) {
+cnmops_to_CNVresults <- function(cnvs, sample_list, markers) {
 
   tmp <- GenomicRanges::as.data.frame(cnvs)
   setDT(tmp)
@@ -25,7 +27,7 @@ cnmops_to_CNVresults <- function(cnvs, samples_list, markers) {
   res <- data.table()
   # compute GT from  CN and sex
   for (s in unique(tmp$sample_ID)) {
-    sex <- samples_list[sample_ID == s, sex]
+    sex <- sample_list[sample_ID == s, sex]
     res <- rbind(res,
                  DT_uniform_internal(tmp[sample_ID == s, ], markers, sex))
   }

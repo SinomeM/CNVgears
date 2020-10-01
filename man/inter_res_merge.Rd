@@ -25,7 +25,8 @@ are bundled in the package for hg18, hg19 and hg38 (\code{hgXX_chr_arms}).}
 \item{inner_outer}{keep "inner" or "outer" borders? If NA all columns will be kept.}
 }
 \value{
-
+a \code{CNVresults} containing the merge of the one provided via
+  \code{res_list}.
 }
 \description{
 \code{inter_res_merge} combines the results of multiple CNV calling methods

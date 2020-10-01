@@ -12,8 +12,7 @@ cnvs_inheritance(
   mmethod = 1,
   alfa = 0.05,
   min_NP = 10,
-  pre_fine_screen = TRUE,
-  adjust_pval = T,
+  adjust_pval = TRUE,
   reciprocal_overlap = 0.3
 )
 }
@@ -30,6 +29,22 @@ depending on the initial data type.}
 
 \item{raw_path}{\code{character}, the path where raw data processed by
 \code{\link{read_NGS_raw}} or \code{\link{read_finalreport_raw}}.}
+
+\item{mmethod}{fine-screening method.}
+
+\item{alfa}{p value alfa value, default in 0.05.}
+
+\item{min_NP}{minimum number of points to try fine screening a de novo
+candidate}
+
+\item{adjust_pval}{logical compute adjusted p-value?}
+
+\item{reciprocal_overlap}{minimum reciprocal overlap for inherited CNVs
+detection}
+}
+\value{
+a \code{CNVresults} object with some additional columns: inheritance
+  and related p-values.
 }
 \description{
 \code{cnvs_inheritance} compute CNVs inheritance pattern and search good de novo

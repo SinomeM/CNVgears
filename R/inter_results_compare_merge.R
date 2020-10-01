@@ -20,7 +20,9 @@
 #' @param prop proportion of reciprocal overlap to define two calls as "replicated".
 #' @param inner_outer keep "inner" or "outer" borders? If NA all columns will be kept.
 #'
-#' @return
+#' @return a \code{CNVresults} containing the merge of the one provided via
+#'   \code{res_list}.
+#'
 #' @export
 #'
 
@@ -71,12 +73,10 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
   # be compared.
   n_alg <- length(mids)*5
 
-
-
   # combine results in a single data.table, keep only CNVs
   res <- data.table()
   for (i in 1:length(res_list)) {
-    # compute lenght if for some reson is not present
+    # compute length if for some reason is not present
     if (!"len" %in% colnames(res_list[[i]])) res_list[[i]][, len := end-start+1]
 
     res <- rbind(res, res_list[[i]][GT != 0, .(chr, start, end, sample_ID,
@@ -98,7 +98,6 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
     }
 
     for (samp in sample_list$sample_ID) {
-      # cat("Sample :", samp, "...\n")
 
       # subset compatible cnvs
       tmp <- res[sample_ID == samp & (chr == a_chr &
@@ -106,12 +105,13 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
                                       between(end, a_start, a_end)), ]
       setorder(tmp, len, chr, start)
       tmp$ix <- 1:nrow(tmp)
+      tmp$used <- FALSE
 
       for (i in tmp$ix) {
+
         tmp_line <- tmp[ix == i, ]
         # if the line has already been used, skip
-        if (nrow(tmp_line) == 0)
-          next
+        if (tmp_line$used) next
 
         reg_ref <- get_region(tmp_line, prop)
         tmp_GT <- tmp_line$GT
@@ -121,10 +121,11 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
         # questo for puo' diventare una funzione (compare_neighbors())
         for (k in -n_alg:n_alg) {
           if (k == 0) next
+          ii <- i + k
 
           # check if successive calls have desired reciprocal overlap, if GT is correct
-          ii <- i + k
           if (nrow(tmp[ix == ii, ]) == 0) next
+          if (tmp[ix == ii, used]) next
           if (tmp[ix == ii, GT] != tmp_GT) next
           if (tmp[ix == ii, meth_ID] == tmp_line$meth_ID) next
 
@@ -132,15 +133,9 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
 
           overlap <- min(reg[3], reg_ref[3]) - max(reg[2], reg_ref[2]) + 1
           if (overlap >= reg_ref[4] & overlap >= reg[4] * prop)
-            merge_ixs <- c(merge_ixs, ii) # bad thing grow a vector but it should not be longer than 10 in any scenario
+            merge_ixs <- c(merge_ixs, ii)
         }
-        # now merge_ixs contains the ix values of mnergable cnv, must create a unique line, add it
-        # to res_merge and remove the original calls from tmp
-        # the output object should have the following columns:
-        # "chr", "inner_start", "inner_end", "outer_start", "outer_end", "sample_ID", "GT", ("CN"),
-        # "seg_ID", "meth_ID", "n_meth"
-        # ... #
-        # CAREFUL HERE, not necessarily length(merge_ixs) > 1 !!!
+        # now merge_ixs contains the ix values of "mergable" cnv
 
         # questo passaggio anche puo' diventare una funzione separata, puo' uscire
         # anche semplicemente la data.table da fare rbind con res_merge (esternamente)
@@ -155,52 +150,29 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
                              "meth_ID" = tmp_line$meth_ID, "n_meth" = 1))
         }
         else {
-          sel_lines  <- tmp[ix %in% merge_ixs, ]
-          # GT_m  <- tmp_GT # un-necessary
-          inner_st  <- max(sel_lines$start)
-          outer_st  <- min(sel_lines$start)
-          inner_en  <- min(sel_lines$end)
-          outer_en  <- max(sel_lines$end)
-          CN_m <- round(mean(sel_lines$CN))
-          mm <- sort(sel_lines$meth_ID)
-          meth_ID_m <- paste(mm, collapse = "-")
-
-          res_merge <- rbind(res_merge,
-                             data.table("chr" = a_chr,
-                                        "inner_start" = inner_st, "inner_end" = inner_en,
-                                        "outer_start" = outer_st, "outer_end" = outer_en,
-                                        "sample_ID" = samp, "GT" = tmp_GT, "CN" = CN_m,
-                                        "meth_ID" = meth_ID_m, "n_meth" = length(mm)))
+          # do merge
+          sel_lines <- tmp[ix %in% merge_ixs, ]
+          merged_line <- do_merge(sel_lines)
+          meths <- paste(sort(sel_lines$meth_ID), collapse = "-")
+          res_merge <-
+            rbind(res_merge,
+                  data.table("chr" = merged_line[1], "inner_start" = merged_line[2],
+                             "inner_end" = merged_line[3], "outer_start" = merged_line[4],
+                             "outer_end" = merged_line[5], "sample_ID" = samp,
+                             "GT" = tmp_GT, "CN" = merged_line[6], "meth_ID" = meths,
+                             "n_meth" = length(sel_lines$meth_ID)))
         }
-
-        # remove the "merged" lines, in this way an event won't be used more than
-        # one time
-        # invece di aggiornare tmp, aggiungi la colonna "used" quando crei la colonna "ix"
-        # tutti FALSI e cambia in VERO man mano.
-        tmp <- tmp[!ix %in% merge_ixs, ]
+        # mark "merged" lines, in this way an event won't be used more than once time
+        tmp[ix %in% merge_ixs, used := TRUE]
       }
     }
   }
-
   # re-create seg_ID, unique for each sample
   setorder(res_merge, chr, outer_end, outer_start)
   res_merge[, seg_ID := 1:.N, by = sample_ID]
-
-  if (!is.na(inner_outer)) {
-    if (inner_outer == "outer") {
-      setnames(res_merge, c("outer_start", "outer_end"), c("start", "end"))
-      res_merge[, `:=` (inner_start = NULL, inner_end = NULL)]
-    }
-    if (inner_outer == "inner") {
-      setnames(res_merge, c("inner_start", "inner_end"), c("start", "end"))
-      res_merge[, `:=` (outer_start = NULL, outer_end = NULL)]
-    }
-    res_merge[, len := end - start + 1]
-  }
-  else
-    res_merge[, `:=` (start = outer_start, end := outer_start, len = end - start + 1)]
-
-  # re set the class
+  # re-create start end
+  res_merge <- start_end(res_merge, inner_outer)
+  # re-set the class
   class(res_merge) <- c("CNVresults", class(res_merge))
   return(res_merge)
 }
@@ -209,4 +181,34 @@ inter_res_merge <- function(res_list, sample_list, chr_arms, prop = 0.3,
 
 compare_neighbors <- function() {
 
+}
+
+
+do_merge <- function(my_lines) {
+  chr <- my_lines$chr[1]
+  inner_st  <- max(my_lines$start)
+  outer_st  <- min(my_lines$start)
+  inner_en  <- min(my_lines$end)
+  outer_en  <- max(my_lines$end)
+  CN <- round(mean(my_lines$CN))
+  res <- c(chr, inner_st, inner_en, outer_st, outer_en, CN)
+  return(as.integer(res))
+}
+
+start_end <- function(DT, in_out) {
+  if (!is.na(in_out)) {
+    if (in_out == "outer") {
+      setnames(DT, c("outer_start", "outer_end"), c("start", "end"))
+      DT[, `:=` (inner_start = NULL, inner_end = NULL)]
+    }
+    if (in_out == "inner") {
+      setnames(DT, c("inner_start", "inner_end"), c("start", "end"))
+      DT[, `:=` (outer_start = NULL, outer_end = NULL)]
+    }
+    DT[, len := end - start + 1]
+  }
+  else
+    DT[, `:=` (start = outer_start, end := outer_start, len = end - start + 1)]
+
+  return(DT)
 }

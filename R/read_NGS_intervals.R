@@ -11,14 +11,15 @@
 #' The parameters default values are for file in GATK interval list like format.
 #'
 #' @param DT_path, path to the input file.
-#' @param mark_ID_col, name of the column containing the name of each marker,
-#'   inherited from the SNPs arrays, completely optional.
 #' @param chr_col, name of the column containing the chromosome information in
 #'   the input file.
 #' @param start_col, name of the column containing the start information in the
 #'   input file.
 #' @param end_col, name of the column containing the end information in the input
 #'   file.
+#'
+#' @return a \code{data.table}, will be of \code{Markers} class in future
+#'   versions.
 #'
 #' @export
 #'

@@ -14,6 +14,9 @@
 #'   on which types of genes is the user interested in. At the moment, genes a
 #'   stored as a "-" separated list of Ensembl IDs.
 #'
+#' @return the \code{CNVresults} object \code{DT_in} with additional columns:
+#'   genes and n_genes.
+#'
 #' @export
 #'
 #' @import data.table

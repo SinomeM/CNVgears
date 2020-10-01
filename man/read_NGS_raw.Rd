@@ -49,6 +49,9 @@ description.}
 \code{\link{read_NGS_intervals}} or \code{\link{read_finalreport_snps}},
 depending on the initial data type.}
 }
+\value{
+nothing, this function saves the results on disk.
+}
 \description{
 \code{read_NGS_raw}
 }

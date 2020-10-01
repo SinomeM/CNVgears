@@ -9,10 +9,13 @@ CNVresults_to_GRanges(DT)
 \arguments{
 \item{DT}{a \code{CNVresults} object.}
 }
+\value{
+the input object \code{DT} converted into \code{GRanges}.
+}
 \description{
 \code{CNVresults_to_GRanges} convert \code{CNVresults} objects into \code{GRanges}
 }
 \details{
-A simple wrapper for the fucntion \code{GenomicRanges::makeGRangesFromDataFrame}.
+A simple wrapper for the function \code{GenomicRanges::makeGRangesFromDataFrame}.
 Retained metadata columns are: sample_ID, GT and meth_ID.
 }

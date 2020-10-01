@@ -13,7 +13,7 @@
 #' This function plot the raw data in the regions of interest in order to visually
 #' confirm the presence of a good de novo CNV candidate.
 #'
-#' @return a \code{list} containing the plot.
+#' @return a \code{list} containing the \code{ggplot2} object.
 #' @export
 #'
 #' @import data.table
@@ -89,8 +89,8 @@ load_RDS <- function(path, samp, cc, st, en) {
 
 trim_res <- function(DT, samp, cc, st, en) {
   res <- DT[sample_ID == samp & chr == cc, ][
-              between(start, st, en, incbounds = T) |
-              between(end, st, en, incbounds = T), ]
+              between(start, st, en, incbounds = TRUE) |
+              between(end, st, en, incbounds = TRUE), ]
   return(res)
 }
 

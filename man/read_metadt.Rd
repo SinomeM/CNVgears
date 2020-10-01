@@ -23,6 +23,10 @@ read_metadt(
 
 \item{fam_ID_col}{name of the columns containing the family ID in the original file;}
 }
+\value{
+cohort metatadata object, a \code{data.table}. Will be of the
+  \code{SampleList} class in future versions.
+}
 \description{
 \code{read_medaDT} handles the input of the sample table (sampleID, sex, role,
 famID) in a standardized format.

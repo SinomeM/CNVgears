@@ -16,9 +16,12 @@
 #' @param pos_col, name of the column containing the SNPs position information
 #'   in the input file. Default is \code{"Position"}.
 #'
+#' @return a \code{data.table}, will be of \code{Markers} class in future
+#'   versions.
+#'
 #' @export
 
-read_finalreport_snps <- function(DT_path, mark_ID_col = "SNP Name", 
+read_finalreport_snps <- function(DT_path, mark_ID_col = "SNP Name",
                                   chr_col = "Chr", pos_col = "Position") {
   # check inputs
   if (!file.exists(DT_path)) stop("File do not exist, typo(s)?\n")

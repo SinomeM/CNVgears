@@ -44,10 +44,10 @@ immuno_regions <- function(biotype = NULL,
                                                dataset="hsapiens_gene_ensembl")
   else ensembl <- mart
 
-  genes <- biomaRt::getBM(attributes=c("ensembl_gene_id", "chromosome_name",
-							          "start_position", "end_position", "gene_biotype"),
-      				     filters = "chromosome_name", values = c(1:22, "X", "Y"),
-                         mart = ensembl)
+  genes <- biomaRt::getBM(
+    attributes=c("ensembl_gene_id", "chromosome_name","start_position",
+                 "end_position", "gene_biotype"), filters = "chromosome_name",
+    values = c(1:22, "X", "Y"), mart = ensembl)
   setDT(genes)
   colnames(genes) <- c("ensembl_gene_id", "chr", "start", "end", "gene_biotype")
   genes <- chr_uniform(genes)

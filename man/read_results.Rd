@@ -66,12 +66,18 @@ VCF file(s), passed to the function \code{\link{read_vcf}}.}
 \item{CN_vcf, }{name of the field containing the segment copy number
 information in the VCF file(s), passed to the function \code{\link{read_vcf}}.}
 
-\item{do_merge, }{logical, indicates whether the function \code{\link{merge_calls}}
-should be automatically called for each sample (strongly suggested).}
+\item{do_merge, }{logical, indicates whether the function
+\code{\link{merge_calls}} should be automatically called for each sample
+(strongly suggested).}
 
-\item{method_ID, }{character identifying the method (algorithms/pipeline), one letter
-code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK ModSeg).
-Numeric are converted to character.}
+\item{merge_prop}{minimum reciprocal overlap proportion in order to merge.}
+
+\item{method_ID, }{character identifying the method (algorithms/pipeline), one
+letter code is strongly encouraged (e.g. "P" for PennCNV and "M" for GATK
+ModSeg). Numeric are converted to character.}
+}
+\value{
+a \code{CNVresults} object.
 }
 \description{
 \code{read_results} takes the results of a CNVs calling pipeline and return

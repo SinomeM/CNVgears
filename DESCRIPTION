@@ -3,13 +3,14 @@ Type: Package
 Title: A Framework of Functions to Combine, Analize and Interpret CNVs Calling Results 
 Version: 0.4.0
 Author: Simone Montalbano
-Maintainer: Simone Montalbano <simone.montalbano@protonmail.com>
+Maintainer: Simone Montalbano <simone.montalbano@pm.me>
 Description: This package contains a set of functions to perform several type of 
     processing and analysis on CNVs calling pipelines/algorithms results in an 
     inegrated manner and regardless of the raw data type (SNPs array or NGS).
-Depends: R (>= 4.0.0)
+Depends: 
+    R (>= 4.0.0), 
+    data.table
 Imports: 
-    data.table,
     ggplot2
 Suggests:
     VariantAnnotation,
@@ -22,7 +23,8 @@ Suggests:
     cowplot,
     usethis,
     scales,
-    testthat
+    testthat,
+    GenomicRanges
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

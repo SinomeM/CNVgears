@@ -4,7 +4,13 @@
 \alias{read_vcf}
 \title{Convert a VCF file of genomics segments into a \code{data.table}}
 \usage{
-read_vcf(DT_path, end_vcf = "END", CN_vcf = "CN", samples = NA, explore = F)
+read_vcf(
+  DT_path,
+  end_vcf = "END",
+  CN_vcf = "CN",
+  samples = NA,
+  explore = FALSE
+)
 }
 \arguments{
 \item{DT_path}{path to the file.}
@@ -18,8 +24,11 @@ information.}
 identify and select samples in a VCF containing multiple ones.}
 
 \item{explore}{logic, \code{FALSE} by default. If \code{TRUE} the file in
-\code{DT_path} is not loaded, instead, several infos about the VCF fields
+\code{DT_path} is not loaded, instead, several info about the VCF fields
 are printed.}
+}
+\value{
+a \code{CNVresults} from the VCF results conversion.
 }
 \description{
 \code{read_vcf} read a VCF file into a \code{data.table}

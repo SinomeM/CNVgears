@@ -6,10 +6,10 @@
 \usage{
 genomic_locus(
   DT_in,
-  remote_cytobands = T,
+  remote_cytobands = TRUE,
   bands,
   assembly = "hg19",
-  keep_str_end = T
+  keep_str_end = TRUE
 )
 }
 \arguments{
@@ -25,6 +25,9 @@ download the CytoBands file or use a local object.}
 
 \item{keep_str_end, }{logical, specify if intermediate columns (locus_start
 and locus_end) must be kept or discarded.}
+}
+\value{
+a \code{CNVresults}, \code{DT_in} with the additional column "locus".
 }
 \description{
 \code{genomic_locus} add the locus information to a \code{data.table}

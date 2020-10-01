@@ -7,12 +7,12 @@
 cnvrs_create(cnvs, chr_arms, prop = 0.3)
 }
 \arguments{
+\item{cnvs}{a \code{CNVresults} produced by \code{\link{read_results}}.}
+
 \item{chr_arms}{a \code{data.table} containing chromosomal arms locations. They
 are bundled in the package for hg18, hg19 and hg38 (\code{hgXX_chr_arms}).}
 
 \item{prop}{reciprocal overlap proportion, default 0.3 (30\%).}
-
-\item{cnv}{a \code{CNVresults} produced by \code{\link{read_results}}.}
 }
 \value{
 a \code{list} of two elements. The first element is a \code{data.table}

@@ -22,6 +22,10 @@ genic_load(DT_in, biotypes = "protein_coding", mart = NULL)
   on which types of genes is the user interested in. At the moment, genes a
   stored as a "-" separated list of Ensembl IDs.}
 }
+\value{
+the \code{CNVresults} object \code{DT_in} with additional columns:
+  genes and n_genes.
+}
 \description{
 Annotate genic load
 }
