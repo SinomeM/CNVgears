@@ -22,7 +22,7 @@ performed on array data for chromosomes 14 and 22 only and the raw final report
 are provided as raw data is are necessary for some critical steps of the pipeline.
 Because those files are relatively large (> 5Mb) they are provided as a separate 
 GitHub repository (<https://github.com/SinomeM/CNVgears_data>). The user is kindly
-asked to download the repo and give the directory path at the 5.2 in oreder to 
+asked to download the repo and give the directory path at the 5.2 in order to 
 being able to perform the examples. 
 
 ## Introduction ##
@@ -427,7 +427,7 @@ follows.
 # define common CNVR as the one present in > 5% of the cohort 
 # here the cohort is very small so it won't be a significative result
 common_cnvrs_chr22 <- cnvrs_chr22[[1]][freq > nrow(cohort)*0.5, ]
-rare_cvns_chr22 <- cnvrs_chr22[[2]][!cnvr %in% common_cnvrs$r_ID]
+rare_cvns_chr22 <- cnvrs_chr22[[2]][!cnvr %in% common_cnvrs_chr22$r_ID, ]
 ```
 
 
