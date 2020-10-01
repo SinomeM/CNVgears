@@ -166,6 +166,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
             next
           }
 
+
           ### { MAKE THIS A FUNCTION
           alt <- ifelse(gt==1, "less", "greater")
           # test if the mean is less/greater in the offspring, depending on GT
