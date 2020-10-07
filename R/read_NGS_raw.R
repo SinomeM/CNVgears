@@ -19,7 +19,7 @@
 #' @param end_col, name of the column containing the end information in the
 #'   input file.
 #' @param raw_type, character, it describes the format in which the LRR-like
-#'   data is give. Can be either "log2", "numeric_CN" or "copyratio", see
+#'   data is give. Can be either "log2R", "numeric_CN" or "copyratio", see
 #'   description.
 #' @param sample_list, a \code{data.table}, the output of
 #'   \code{\link{read_metadt}}.
@@ -65,7 +65,7 @@ read_NGS_raw <- function(DT_path, rds_path, pref, suff,
       missing(raw_col) | missing(raw_type) | missing(sample_list) | missing(rds_path) |
       missing(pref) | missing(suff) | missing(markers))
     stop("Missing parameters!\n")
-  if (!raw_type %in% c("log2", "copyratio", "numeric_CN"))
+  if (!raw_type %in% c("log2R", "copyratio", "numeric_CN"))
     stop("Wrong 'raw_type' format!\n")
   # create the directory for the RDS if don't exist
   dir.create(rds_path, showWarnings = FALSE)
