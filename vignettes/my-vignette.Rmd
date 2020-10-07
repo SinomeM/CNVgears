@@ -118,10 +118,9 @@ data.table::setDTthreads(percent=75)
 data.table::setDTthreads(4)
 ```
 
-```{r, eval=FALSE}
-data.table::setDTthreads(4)
+```{r, include=FALSE}
+data.table::setDTthreads(2)
 ```
-
 
 Empirically, we found the ideal number of threads being between 4 and 8.   
 See the relative man pages for details on each function used. 
@@ -209,7 +208,7 @@ ipn <-  read_results(DT_path = system.file("extdata",
 
 ```{r, eval = FALSE}
 # raw data
-# not run
+# not run. This step needs the additional data
 library("data.table", quietly = TRUE)
 setDTthreads(4)
 
@@ -361,6 +360,7 @@ containing the adjusted p-values are computed, leaving to the user the choice of
 which sets of p-value use.
 
 ```{r inheritance, eval=FALSE}
+# not run, needs the additional raw data
 penn_inheritance <- 
   cnvs_inheritance(results = penn_filtered, sample_list =  cohort[fam_ID == "1463", ], 
                    markers = SNP_markers, raw_path = file.path("tmp_RDS"))
@@ -394,7 +394,7 @@ ipq_filtered <-
 ```
 
 ```{r, eval=FALSE}
-# not run
+# not run, it needs inheritance detection step
 ipq_denovo <- 
   inter_res_merge(res_list = list(penn_denovo, quanti_denovo, ipn_denovo),
                   sample_list = cohort, chr_arms = hg19_chr_arms)
@@ -443,6 +443,7 @@ candidates. We use as an example the two calls detected by both PennCNV and
 QantiSNP and the larger one made by IPattern.
 
 ```{r denovo plot, eval=FALSE}
+# not run, it needs inheritance detection step
 lrr_trio_plot(cnv = ipq_denovo[1], raw_path =  file.path("tmp_RDS"), 
               sample_list = cohort, results = ipn_filtered)
 lrr_trio_plot(cnv = ipq_denovo[2], raw_path =  file.path("tmp_RDS"), 
@@ -537,7 +538,7 @@ results. Some relevant examples are shown here.
 tmp <- ipq_filtered[n_meth > 1, ]
 
 # de novo CNVs with a significant corrected p-value (note that the p-values are
-# lost when combining more results)
+# lost when combining more result-objects)
 tmp <- penn_inheritance[adj_m_pval < 0.05 & adj_p_pval < 0.05, ]
 ```
 

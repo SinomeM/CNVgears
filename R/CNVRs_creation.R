@@ -24,6 +24,8 @@
 #'
 #' @import data.table
 #'
+#' @examples
+#' DT <- cnvrs_create(penn_22, hg19_chr_arms)
 
 # OK for now, it would be nice to add a third step where for all CNVs in a CNVRs
 # it check the adjacent CNVRs if there is a better overlap, not super easy

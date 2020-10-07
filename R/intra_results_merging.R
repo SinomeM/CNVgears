@@ -22,6 +22,13 @@
 #' @export
 #'
 #' @import data.table
+#'
+#' @examples
+#' # with merge
+#' DT <- read_results(DT_path = system.file("extdata", "chrs_14_22_cnvs_penn.txt", package = "CNVgears"), res_type = "file", DT_type = "TSV/CSV", chr_col = "chr", start_col = "posStart", end_col = "posEnd", CN_col = "CN", samp_ID_col = "Sample_ID", sample_list = cohort_examples, markers = markers_examples, method_ID = "P")
+#' # without
+#' DT <- read_results(do_merge = FALSE, DT_path = system.file("extdata", "chrs_14_22_cnvs_penn.txt", package = "CNVgears"), res_type = "file", DT_type = "TSV/CSV", chr_col = "chr", start_col = "posStart", end_col = "posEnd", CN_col = "CN", samp_ID_col = "Sample_ID", sample_list = cohort_examples, markers = markers_examples, method_ID = "P")
+#'
 
 # try to change the functions in that it does require SOME columns,
 # not ONLY SOME columns, maybe using some vectors instead of rbind.
@@ -32,6 +39,7 @@ merge_calls <- function(DT_in, prop = 0.3) {
     stop(paste0("Multiple samples detected! Intra results merging require ",
                 "an object containig a single sample and it is recommended to ",
                 "perform it whithin the 'read_results' function.\n"))
+  ### this will need to change!
   # check colnames and order
   if (!all(colnames(DT_in) == c("chr", "start", "end", "CN", "sample_ID", "GT",
                                 "first_P", "last_P", "NP", "len")))

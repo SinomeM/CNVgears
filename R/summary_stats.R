@@ -25,6 +25,9 @@
 #'
 #' @import data.table
 #' @import ggplot2
+#'
+#' @examples
+#' DT <- summary(penn_22, cohort_examples, markers_examples)
 
 # add the option to save as RDS and PNG!
 

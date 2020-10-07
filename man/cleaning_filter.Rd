@@ -56,3 +56,7 @@ events. Over-segmented samples the user wishes to exclude can be specified via
 \code{\link{immuno_regions}}, while telomeric and/or centromeric regions can be
 obtained with \code{\link{telom_centrom}}.
 }
+\examples{
+
+DT <- cleaning_filter(penn_22, min_len = 50000)
+}

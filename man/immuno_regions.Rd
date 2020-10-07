@@ -34,3 +34,6 @@ a list with two element, the first is a \code{data.table} containing
 \description{
 Retrieve genomic regions of consecutive immunoglobulin genes
 }
+\examples{
+DT <- immuno_regions(biotype = c("IG_C_gene", "IG_D_gene"))
+}

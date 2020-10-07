@@ -13,6 +13,9 @@
 #' @export
 #'
 #' @import data.table
+#'
+#' @examples
+#' GR <- CNVresults_to_GRanges(penn_22)
 
 CNVresults_to_GRanges <- function(DT) {
   GR <- GenomicRanges::makeGRangesFromDataFrame(DT)

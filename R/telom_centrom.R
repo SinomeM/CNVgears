@@ -11,8 +11,11 @@
 #'
 #' @return, a \code{data.table} that can be passed to
 #' \code{\link{cleaning_filter}} as blacklist.
+#'
 #' @export
 #'
+#' @examples
+#' DT <- telom_centrom(hg19_start_end_centromeres)
 
 telom_centrom <- function(DT_in, telom = TRUE, centrom = TRUE,
                           region = 50000) {

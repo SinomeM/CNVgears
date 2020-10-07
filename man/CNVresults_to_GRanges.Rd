@@ -19,3 +19,6 @@ the input object \code{DT} converted into \code{GRanges}.
 A simple wrapper for the function \code{GenomicRanges::makeGRangesFromDataFrame}.
 Retained metadata columns are: sample_ID, GT and meth_ID.
 }
+\examples{
+GR <- CNVresults_to_GRanges(penn_22)
+}

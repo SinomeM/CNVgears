@@ -40,3 +40,6 @@ for the specified assembly are downloaded from UCSC website, but also a local
 object (as \code{data.table} or \code{data.frame}) can be used via the
 argument \code{bands}.
 }
+\examples{
+DT <- genomic_locus(penn_22)
+}

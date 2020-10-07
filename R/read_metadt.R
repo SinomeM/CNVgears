@@ -31,6 +31,9 @@
 #'   \code{SampleList} class in future versions.
 #'
 #' @export
+#'
+#' @examples
+#' DT <- read_metadt(DT_path = system.file("extdata", "cohort.ped", package = "CNVgears"), sample_ID_col = "Individual ID", fam_ID_col = "Family ID", sex_col = "Gender", role_col = "Role")
 
 # CHANGE INPUT TO PED
 

@@ -17,3 +17,8 @@ the same \code{data.table} in input with the "chr" uniformed to the
 This is a function for internal use in the package, it handles
 the standardize process of chromosome notation within the other functions.
 }
+\examples{
+DT <- data.table::data.table(chr= c("chr1", "chrX", "chr20"))
+DT <- chr_uniform(DT)
+DT
+}

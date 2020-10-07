@@ -11,8 +11,12 @@
 #' @export
 #'
 #' @import data.table
+#'
+#' @examples
+#' DT <- data.table::data.table(chr= c("chr1", "chrX", "chr20"))
+#' DT <- chr_uniform(DT)
+#' DT
 
-# This can be NOT exported if wanted
 
 chr_uniform <- function(DT_in) {
   if (!"chr" %in% colnames(DT_in))

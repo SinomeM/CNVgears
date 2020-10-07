@@ -29,3 +29,6 @@ the \code{CNVresults} object \code{DT_in} with additional columns:
 \description{
 Annotate genic load
 }
+\examples{
+DT <- genic_load(penn_22)
+}

@@ -32,3 +32,6 @@ overlap is no longer fulfilled with all the member of the CNVR. If any event
 is touched by this last step, a new cycle begins, this until no more CNVs can
 be removed from the assigned CNVR.
 }
+\examples{
+DT <- cnvrs_create(penn_22, hg19_chr_arms)
+}

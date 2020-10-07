@@ -35,6 +35,10 @@
 #'   have been applied.
 #'
 #' @export
+#'
+#' @examples
+#'
+#' DT <- cleaning_filter(penn_22, min_len = 50000)
 
 cleaning_filter <- function(results, min_len = 10000, min_NP = 10,
                             blacklists = NULL, blacklist_samples = NULL,

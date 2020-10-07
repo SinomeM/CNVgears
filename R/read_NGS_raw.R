@@ -96,10 +96,8 @@ read_NGS_raw <- function(DT_path, rds_path, pref, suff,
     # somatic chrs
     if (raw_type == "copyratio")
       DT[chr %in% as.character(1:24), `:=` (copyratio = log2R, log2R = log2(log2R))]
-                              # 1:24, hopefully sex chrs alredy corrected here
     if (raw_type == "log2R")
-      DT[chr %in% as.character(1:24), `:=` (copyratio = 2^log2R, log2R = log2R)]
-                              # 1:24, hopefully sex chrs alredy corrected here
+      DT[chr %in% as.character(1:24), copyratio := 2^log2R]
     if (raw_type == "numeric_CN") {
       # numeric CN can't be < 0 it's a normalization artifact, eventually normalize to 0
       DT[log2R < 0, log2R := 0]

@@ -42,3 +42,7 @@ the user want to keep all the information \code{inner_outer} can be set to NA.
 In this case "start" and "end" will also be the outer borders. This is done because
 a \code{CNVresults} object need explicit "start" and "end" columns.
 }
+\examples{
+
+DT <- inter_res_merge(res_list = list(penn_22, quanti_22), sample_list= cohort_examples, chr_arms= hg19_chr_arms)
+}

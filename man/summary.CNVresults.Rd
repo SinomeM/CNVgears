@@ -37,3 +37,6 @@ a \code{data.table} with summary statistics for the samples in the
 \description{
 Explore CNV calling results prior filtering
 }
+\examples{
+DT <- summary(penn_22, cohort_examples, markers_examples)
+}

@@ -25,3 +25,6 @@ centromeric region will be twice this large.}
 \description{
 Generate blacklist for telomeric and centromeric regions
 }
+\examples{
+DT <- telom_centrom(hg19_start_end_centromeres)
+}
