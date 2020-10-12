@@ -39,7 +39,7 @@ input file.}
 the input file.}
 
 \item{raw_type, }{character, it describes the format in which the LRR-like
-data is give. Can be either "log2", "numeric_CN" or "copyratio", see
+data is give. Can be either "log2R", "numeric_CN" or "copyratio", see
 description.}
 
 \item{sample_list, }{a \code{data.table}, the output of

@@ -29,6 +29,14 @@
 #' @return nothing, this function saves the results on disk.
 #'
 #' @export
+#'
+#' @examples
+#'
+#' read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"),
+#'                     pref = "Final_report_example", suff = ".txt",
+#'                     rds_path = file.path("tmp_RDS"),
+#'                     markers = SNP_markers,
+#'                     sample_list = cohort[fam_ID == "1463", ])
 
 read_finalreport_raw <- function(DT_path, rds_path, pref, suff,
                                  sample_list, markers, chr_col = "Chr",

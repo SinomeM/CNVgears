@@ -22,3 +22,13 @@ the input object \code{cnvs} converted into \code{CNVresults}
 \description{
 Convert cn.mops results into \code{CNVgears} format
 }
+\examples{
+\dontrun{
+library(cn.mops)
+data(cn.mops)
+resCNMOPS <- cn.mops(XRanges)
+resCNMOPS <- calcIntegerCopyNumbers(resCNMOPS)
+resCNMOPS_cnvs <- cnvs(resCNMOPS)
+cnmops_calls <- cnmops_to_CNVresults(resCNMOPS_cnvs)
+}
+}

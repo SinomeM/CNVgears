@@ -57,3 +57,11 @@ files) of the the markers-level raw data for each sample starting from
 FinalReport-like files (any plain text file with columns header can be read).
 Input must be one file per sample.
 }
+\examples{
+
+read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"),
+                    pref = "Final_report_example", suff = ".txt",
+                    rds_path = file.path("tmp_RDS"),
+                    markers = SNP_markers,
+                    sample_list = cohort[fam_ID == "1463", ])
+}

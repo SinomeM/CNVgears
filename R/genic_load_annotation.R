@@ -22,7 +22,10 @@
 #' @import data.table
 #'
 #' @examples
+#' \dontrun{
+#' # biomaRt is not working at the moment
 #' DT <- genic_load(penn_22)
+#' }
 
 genic_load <- function(DT_in, biotypes = "protein_coding", mart = NULL) {
   if (!is.data.table(DT_in))
