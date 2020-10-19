@@ -33,7 +33,7 @@
 #' @examples
 #'
 #' read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"),
-#'                     pref = "Final_report_example_", suff = ".txt",
+#'                     pref = "Final_report_example", suff = ".txt",
 #'                     rds_path = file.path("tmp_RDS"),
 #'                     markers = markers_examples,
 #'                     sample_list = cohort_examples[sample_ID == "NA12878", ])
