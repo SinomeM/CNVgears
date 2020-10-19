@@ -36,7 +36,7 @@
 #'                     pref = "Final_report_example", suff = ".txt",
 #'                     rds_path = file.path("tmp_RDS"),
 #'                     markers = SNP_markers,
-#'                     sample_list = cohort[fam_ID == "1463", ])
+#'                     sample_list = cohort_examples[fam_ID == "1463", ])
 
 read_finalreport_raw <- function(DT_path, rds_path, pref, suff,
                                  sample_list, markers, chr_col = "Chr",

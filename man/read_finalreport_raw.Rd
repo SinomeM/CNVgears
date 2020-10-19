@@ -63,5 +63,5 @@ read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"),
                     pref = "Final_report_example", suff = ".txt",
                     rds_path = file.path("tmp_RDS"),
                     markers = SNP_markers,
-                    sample_list = cohort[fam_ID == "1463", ])
+                    sample_list = cohort_examples[fam_ID == "1463", ])
 }
