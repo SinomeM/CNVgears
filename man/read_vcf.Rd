@@ -45,5 +45,6 @@ vector containing the IDs is given to the parameter \code{samples}.
 }
 \examples{
 read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"))
-read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"), explore = TRUE)
+read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"),
+explore = TRUE)
 }

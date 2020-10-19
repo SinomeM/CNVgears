@@ -44,5 +44,6 @@ a \code{CNVresults} object need explicit "start" and "end" columns.
 }
 \examples{
 
-DT <- inter_res_merge(res_list = list(penn_22, quanti_22), sample_list= cohort_examples, chr_arms= hg19_chr_arms)
+DT <- inter_res_merge(res_list = list(penn_22, quanti_22),
+sample_list= cohort_examples, chr_arms= hg19_chr_arms)
 }

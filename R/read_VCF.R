@@ -27,7 +27,8 @@
 #'
 #' @examples
 #' read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"))
-#' read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"), explore = TRUE)
+#' read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"),
+#' explore = TRUE)
 
 # Single sample,    Tested         OK!
 # Multiple samples, to be finished

@@ -51,5 +51,7 @@ in IG regions and does not have such information "role" and famID can be "NA". N
 doing so some functions won't be usable.
 }
 \examples{
-DT <- read_metadt(DT_path = system.file("extdata", "cohort.ped", package = "CNVgears"), sample_ID_col = "Individual ID", fam_ID_col = "Family ID", sex_col = "Gender", role_col = "Role")
+DT <- read_metadt(DT_path = system.file("extdata", "cohort.ped", package = "CNVgears"),
+sample_ID_col = "Individual ID", fam_ID_col = "Family ID", sex_col = "Gender",
+role_col = "Role")
 }

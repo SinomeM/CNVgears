@@ -38,5 +38,6 @@ present one single time. Similar files are often required or produced by the
 calling algorithm/pipeline, e.g. the PFB file in PennCNV can be used here.
 }
 \examples{
-DT <- read_finalreport_snps(system.file("extdata", "SNP.pfb", package = "CNVgears"),mark_ID_col = "Name", chr_col = "Chr", pos_col = "Position")
+DT <- read_finalreport_snps(system.file("extdata", "SNP.pfb", package = "CNVgears"),
+mark_ID_col = "Name", chr_col = "Chr", pos_col = "Position")
 }

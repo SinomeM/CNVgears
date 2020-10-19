@@ -60,8 +60,8 @@ Input must be one file per sample.
 \examples{
 
 read_finalreport_raw(DT_path = system.file("extdata", package = "CNVgears"),
-                    pref = "Final_report_example", suff = ".txt",
+                    pref = "Final_report_example_", suff = ".txt",
                     rds_path = file.path("tmp_RDS"),
-                    markers = SNP_markers,
-                    sample_list = cohort_examples[fam_ID == "1463", ])
+                    markers = markers_examples,
+                    sample_list = cohort_examples[sample_ID == "NA12878", ])
 }

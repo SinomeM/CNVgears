@@ -27,7 +27,8 @@
 #'
 #' @examples
 #'
-#' DT <- inter_res_merge(res_list = list(penn_22, quanti_22), sample_list= cohort_examples, chr_arms= hg19_chr_arms)
+#' DT <- inter_res_merge(res_list = list(penn_22, quanti_22),
+#' sample_list= cohort_examples, chr_arms= hg19_chr_arms)
 
 # The biggest problem here is the "classic" big CNV detected in method "A"
 # and splitted or only partially called in method "B" and the opposite one

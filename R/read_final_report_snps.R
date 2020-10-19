@@ -22,7 +22,8 @@
 #' @export
 #'
 #' @examples
-#' DT <- read_finalreport_snps(system.file("extdata", "SNP.pfb", package = "CNVgears"),mark_ID_col = "Name", chr_col = "Chr", pos_col = "Position")
+#' DT <- read_finalreport_snps(system.file("extdata", "SNP.pfb", package = "CNVgears"),
+#' mark_ID_col = "Name", chr_col = "Chr", pos_col = "Position")
 
 read_finalreport_snps <- function(DT_path, mark_ID_col = "SNP Name",
                                   chr_col = "Chr", pos_col = "Position") {
