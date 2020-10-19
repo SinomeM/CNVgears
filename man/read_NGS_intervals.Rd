@@ -39,3 +39,6 @@ calling/segmentation on NGS data (WES or WGS) pipelines' results analysis.
 The function should automatically skip any eventual header.
 The parameters default values are for file in GATK interval list like format.
 }
+\examples{
+read_NGS_intervals(DT_path = system.file("extdata", "markers_WES_example.tsv", package = "CNVgears"), chr_col = "chr", start_col = "start", end_col = "end")
+}

@@ -24,7 +24,8 @@ Suggests:
     scales,
     testthat,
     GenomicRanges,
-    cn.mops
+    cn.mops,
+    R.utils
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

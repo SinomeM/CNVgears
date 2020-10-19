@@ -17,14 +17,12 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' library(cn.mops)
 #' data(cn.mops)
 #' resCNMOPS <- cn.mops(XRanges)
 #' resCNMOPS <- calcIntegerCopyNumbers(resCNMOPS)
 #' resCNMOPS_cnvs <- cnvs(resCNMOPS)
-#' cnmops_calls <- cnmops_to_CNVresults(resCNMOPS_cnvs)
-#' }
+#' # cnmops_calls <- cnmops_to_CNVresults(resCNMOPS_cnvs, sample_list, markers)
 
 
 cnmops_to_CNVresults <- function(cnvs, sample_list, markers) {

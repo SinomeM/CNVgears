@@ -24,6 +24,9 @@
 #' @export
 #'
 #' @import data.table
+#'
+#' @examples
+#' read_NGS_intervals(DT_path = system.file("extdata", "markers_WES_example.tsv", package = "CNVgears"), chr_col = "chr", start_col = "start", end_col = "end")
 
 # tested, OK!
 

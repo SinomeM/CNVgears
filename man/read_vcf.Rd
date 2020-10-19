@@ -43,3 +43,7 @@ file containing data for a single sample (e.g. the results of gCNV from
 GATK), but it can process files containing multiple samples if a character
 vector containing the IDs is given to the parameter \code{samples}.
 }
+\examples{
+read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"))
+read_vcf(DT_path = system.file("extdata", "VCF_res_example.vcf", package = "CNVgears"), explore = TRUE)
+}

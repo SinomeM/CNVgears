@@ -30,8 +30,5 @@ the \code{CNVresults} object \code{DT_in} with additional columns:
 Annotate genic load
 }
 \examples{
-\dontrun{
-# biomaRt is not working at the moment
 DT <- genic_load(penn_22)
-}
 }
