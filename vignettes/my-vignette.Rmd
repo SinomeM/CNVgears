@@ -243,7 +243,10 @@ data(cn.mops)
 resCNMOPS <- cn.mops(XRanges)
 resCNMOPS <- calcIntegerCopyNumbers(resCNMOPS)
 resCNMOPS_cnvs <- cnvs(resCNMOPS)
-cnmops_calls <- cnmops_to_CNVresults(resCNMOPS_cnvs)
+
+sample_list <- read_metadt("path/to/PED_like_file")
+intervals <- read_NGS_intervals("path/to/markers/file")
+cnmops_calls <- cnmops_to_CNVresults(resCNMOPS_cnvs, sample_list, intervals)
 ```
 
 
