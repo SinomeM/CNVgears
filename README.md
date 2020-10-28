@@ -15,3 +15,6 @@ analysis, including:
 * Putative de novo calls visual confirmation;
 * Basic CNVs annotation;
 * Precessed data export in standard formats.
+
+To install the latest version from R: 
+`devtools::install_github("sinomem/cnvgears")`
