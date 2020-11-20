@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Initial Note ## 
+# Initial Note # 
 
 The illustrative pipelines shown in this file uses real data from the 1000 
 Genomes project (<https://www.internationalgenome.org/>). The examples are 
@@ -25,7 +25,7 @@ GitHub repository (<https://github.com/SinomeM/CNVgears_data>). The user is kind
 asked to download the repo and give the directory path at the 5.2 in order to 
 being able to perform the examples. 
 
-## Introduction ##
+# Introduction #
 
 The CNVgears package aims to implement an interactive and extensible framework for 
 the analysis of Copy Number Variation calling and/or segmentation results, typically 
@@ -41,7 +41,7 @@ trios and have both SNP array and WGS data available. However at the moment only
 the arrays are used here. CNVs calling was performed using a modified minimal 
 version of EnsembleCNV.
 
-## Main Steps ## 
+# Main Steps # 
   
 CNVgears supports multiple analysis and cohort composition (e.g. family based or not) 
 as it is possible to perform all or only a fraction of these steps. As an example, if the 
@@ -87,9 +87,9 @@ The typical main steps of such analysis using CNVgears are:
    as TSV (not mandatory).
 
 
-## Setup ## 
+# Setup # 
 
-### Install 
+## Install 
 To install the package via GitHub repository
 
 ```{r install git hub, eval = FALSE}
@@ -97,7 +97,7 @@ To install the package via GitHub repository
 devtools::install_github("SinomeM/CNVgears")
 ```
 
-### Load library
+## Load library
 
 To load the package.
 
@@ -105,7 +105,7 @@ To load the package.
 library(CNVgears, quietly = TRUE)
 ```
 
-### Set data.table threads
+## Set data.table threads
 
 All the major functions uses `data.table` package, especially in the more intensive 
 steps. The package uses by default half the CPU threads available, this can be changed 
@@ -124,9 +124,9 @@ data.table::setDTthreads(2)
 Empirically, we found the ideal number of threads being between 4 and 8.   
 See the relative man pages for details on each function used. 
 
-## Data Load ##
+# Data Load #
 
-### Cohort PED and Markers data
+## Cohort PED and Markers data
 
 The first two objects we need to load are the cohort and markers information. The
 first object is loaded from a PED file from with the following columns are extracted:
@@ -159,7 +159,7 @@ SNP_markers <- read_finalreport_snps(system.file("extdata", "SNP.pfb",
 head(SNP_markers)
 ```
 
-### CNV Calling Results and Markers-level raw data
+## CNV Calling Results and Markers-level raw data
 
 Then we load the actual CNV calling results and the marker-level raw data. 
 The results are loaded in the session as R objects, while the raw data are 
@@ -228,7 +228,7 @@ Obviously, if more methods are used this initial step is longer, in particular i
 also WGS and/or high density SNPs array data is used (because of the very high 
 number of markers). More examples will be added in future version of this vignette. 
 
-### `cn.mops` package results loading
+## `cn.mops` package results loading
 
 CNVs calling from NGS data Bioconductor package `cn.mops` uses `GRanges` objects as 
 results. In particular, the actual calls are stored in the `cnvs` slot. These can 
@@ -250,9 +250,9 @@ cnmops_calls <- cnmops_to_CNVresults(resCNMOPS_cnvs, sample_list, intervals)
 ```
 
 
-## Data integration and processing ##
+# Data integration and processing #
 
-### Results exploration and filtering 
+## Results exploration and filtering 
 
 When analyzing CNVs calling or segmentation results, an important step is to filter 
 out undesired and/or noisy/unreliable calls. This package provide the means to do 
@@ -323,7 +323,7 @@ head(hg19telom)
 ```
 
 
-### Inheritance pattern detection 
+## Inheritance pattern detection 
 
 **this could need to be revised**
 
@@ -384,7 +384,7 @@ the same raw data (as in in this vignette, at the moment), it is also possible t
 first combine the results (see next section) an only then perform inheritance 
 detection. 
 
-### Inter-methods merging
+## Inter-methods merging
 
 At this point we can integrate the multiple methods results into a single object.
 As exemplification of a real pipeline we also process the *de-novo* calls.
@@ -409,7 +409,7 @@ Note how the merge perform **reciprocal** overlap comparison in order to merge t
 calls. Candidate events should thus not only overlap but must also be of comparable 
 size. 
 
-### CNV Regions Computation
+## CNV Regions Computation
 
 Copy Number Variable Regions can be defined in several ways, an intuitive way to 
 visualize them is: regions of the human genomes were CNVs (of comparable size) are 
@@ -438,7 +438,7 @@ rare_cvns_chr22 <- cnvrs_chr22[[2]][!cnvr %in% common_cnvrs_chr22$r_ID, ]
 ```
 
 
-### De-novo CNVs visual confirmation 
+## De-novo CNVs visual confirmation 
 
 In the package it is also implemented a function to visually inspect the de-novo 
 candidates. We use as an example the two calls detected by both PennCNV and 
@@ -456,7 +456,7 @@ lrr_trio_plot(cnv = ipq_denovo[3], raw_path =  file.path("tmp_RDS"),
 
 Note that the two calls are quite close. 
 
-## Annotation ##
+# Annotation #
 
 The package include also some annotation functions, for extracting both the CNVs 
 locus and affected genes. At the moment the affected genes are listed using "-" 
@@ -478,14 +478,14 @@ ipq_denovo_genes <- genic_load(DT_in = ipq_filtered, mart = ensembl37)
 rm(ensembl37)
 ```
 
-## Visualization ##
+# Visualization #
 
 All CNVs from an offspring (not only the de novo ones) can be visualized in the raw 
 data using the function `lrr_trio_plot`. A simpler function to visualize one single 
 event without any focus on family relations will be implemented soon. Integration 
 with the package `IGVR` is also planned.
 
-## Data export ##
+# Data export #
 
 All the major object handled by the package are `data.table`. Thus to export outside
 of R an object (as an example the output of the combination of several methods 
@@ -545,7 +545,7 @@ tmp <- penn_inheritance[adj_m_pval < 0.05 & adj_p_pval < 0.05, ]
 ```
 
 
-## Notes on Parallelization ## 
+# Notes on Parallelization # 
 
 As already mentioned, this package use `data.table` whenever is possible to handle 
 the big tables that working with large cohorts produces and `data.table` is internally 
