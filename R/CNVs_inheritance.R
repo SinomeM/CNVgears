@@ -263,7 +263,7 @@ select_cnvs <- function(DT, cohort, samp) {
     # complete family can be missing
     if (length(moth) != 1 | length(fath) != 1) {
       DT[sample_ID == samp & GT != 0, inheritance := "incomplete_trio"]
-      warning(paste0("Complete family is missing for sample, ", samp))
+      warning("Complete family is missing for sample, ", samp)
       return(list(FALSE))
     }
     else

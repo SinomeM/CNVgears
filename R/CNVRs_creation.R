@@ -57,7 +57,7 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
 
   # proceed per chromosomal arms
   for (arm in chr_arms$arm_ID) {
-    cat("\n-- Computing CNVRs in chromosome arm:", arm, "--\n")
+    message("\n-- Computing CNVRs in chromosome arm:", arm, "--\n")
 
     # cnvrs for this arm
     cnvrs_tmp <- data.table("r_ID" = NA_character_, "chr" = NA_character_,
@@ -81,9 +81,9 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
     while (any(is.na(DT$cnvr)) & n_loop < 100) {
 
       # create CNVRs/fill CNVRs
-      cat("Creating/filling CNVRs, loop #", n_loop, "...\n")
+      message("Creating/filling CNVRs, loop #", n_loop, "...\n")
       indexes <- DT[is.na(cnvr), ix]
-      cat(length(indexes), " CNVs to be assigned\n")
+      message(length(indexes), " CNVs to be assigned\n")
 
       tmp <- create_fill_CNVR(cnvrs_tmp, DT, n, prop, indexes, arm, reg_arm)
       DT <- tmp[[2]]
@@ -91,7 +91,7 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
       n <- tmp[[3]]
 
       # Check if some CNVRs can be merged
-      cat("Re-checking CNVRs ...\n")
+      message("Re-checking CNVRs ...\n")
       if (nrow(cnvrs_tmp > 1)) {
         # first run
         tmp <- check_cnvrs(cnvrs_tmp, DT, n, prop)
@@ -107,7 +107,7 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
       }
 
       # Recheck CNVs
-      cat("Re-checking CNVs ...\n")
+      message("Re-checking CNVs ...\n")
 
       # # Move CVNs if a better overlap is found
       # for (i in DT[, ix]) {
@@ -235,7 +235,7 @@ check_cnvrs <- function(cnvrs, DT, n, prop) {
           cnvrs <- cnvrs[!r_ID %in% c(my_reg[[2]], my_reg_m[[2]])]
           DT[cnvr %in% c(my_reg[[2]], my_reg_m[[2]]), cnvr := paste0(arm, "-", n)]
           n <- n + 1
-          cat("CNVR updated \n")
+          message("CNVR updated \n")
           # at this point all the for loops are interrupted
           b <- TRUE
           break
@@ -268,7 +268,7 @@ remove_cnvs <- function(DT, prop) {
       DT$cnvr[i] <- NA_character_
   }
 
-  cat(length(is.na(DT$cnvr)[is.na(DT$cnvr) == TRUE]),
+  message(length(is.na(DT$cnvr)[is.na(DT$cnvr) == TRUE]),
       "CNVs removed from the assigned CNVR\n")
 
   return(DT)

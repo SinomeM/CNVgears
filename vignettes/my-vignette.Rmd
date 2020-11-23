@@ -526,7 +526,7 @@ in the resulting object) are: chr, start, end, sample_ID, GT, meth_ID. The last
 three columns will be placed in the `metadata` field.
 In the near future a more general function to convert all the major object into 
 `GRanges` as well as `GRangesList` (e.g. for integration with `CNVranger` 
-package) will be implemented soon.    
+package) will be implemented.    
 
 ```{r}
 ipq_filtered_GRanges <- CNVresults_to_GRanges(ipq_filtered)
