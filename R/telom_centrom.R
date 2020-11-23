@@ -30,7 +30,7 @@ telom_centrom <- function(DT_in, telom = TRUE, centrom = TRUE,
       stop("input is not in the required format")
   }
   if (telom == FALSE & centrom == FALSE)
-    warning("The function won't do anithing...")
+    warning("'telom' and 'centrom' are both FALSE; the function won't do anithing...")
 
   DT_out <- data.table()
 
