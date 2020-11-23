@@ -90,7 +90,18 @@ The typical main steps of such analysis using CNVgears are:
 # Setup # 
 
 ## Install 
-To install the package via GitHub repository
+CNVgears is part of Bioconductor (<https://bioconductor.org>), to install it 
+using `BiocManager`:
+
+```{r}
+if (!require("BiocManager"))
+    install.packages("BiocManager")
+BiocManager::install("CNVgears")
+```
+
+
+
+To install the latest development version of the package via GitHub repository:
 
 ```{r install git hub, eval = FALSE}
 # not run 
@@ -110,9 +121,9 @@ library(CNVgears, quietly = TRUE)
 All the major functions uses `data.table` package, especially in the more intensive 
 steps. The package uses by default half the CPU threads available, this can be changed 
 with the function `data.table::setDTthreads`. For example to use the 75% of available 
-threads or an integer number of them:
+threads or an integer number (four in the example) of them:
 
-```{undefined, message=TRUE, warning=TRUE}
+```{r, message=TRUE, warning=TRUE}
 data.table::setDTthreads(percent=75)
 data.table::setDTthreads(4)
 ```
@@ -325,8 +336,6 @@ head(hg19telom)
 
 ## Inheritance pattern detection 
 
-**this could need to be revised**
-
 In family-based cohort studies, CNV inheritance detection is possible. However, 
 because the process of CNVs calling tends to be imprecise, both false positive and 
 false negative are present in the results. This is in part solved with the filtering
@@ -356,7 +365,7 @@ are compared using a Wilcox test. Under the null hypothesis that the difference 
 the two means is zero, we test if a difference is statistically significant, i.e. 
 if the resulting p-value is lower than a user-defined alpha (default value is 0.05). 
 If the test has a positive outcome for both parents than the CNV is defined as a 
-good ne-novo candidate. The two p-values from each comparison are stored in the 
+good de-novo candidate. The two p-values from each comparison are stored in the 
 dataset and, when all the individual comparison are done, two additional columns 
 containing the adjusted p-values are computed, leaving to the user the choice of 
 which sets of p-value use.
