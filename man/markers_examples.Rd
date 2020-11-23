@@ -3,7 +3,9 @@
 \docType{data}
 \name{markers_examples}
 \alias{markers_examples}
-\title{Markers file for the runnable examples}
+\title{Markers file for the runnable examples
+It comes from CNV calling on array data from a subset of the 1000 Genomes
+project, see vignettes for more details.}
 \format{
 An object of class \code{data.table} (inherits from \code{data.frame}) with 115377 rows and 5 columns.
 }
@@ -12,5 +14,7 @@ markers_examples
 }
 \description{
 Markers file for the runnable examples
+It comes from CNV calling on array data from a subset of the 1000 Genomes
+project, see vignettes for more details.
 }
 \keyword{datasets}

@@ -4,10 +4,10 @@
 \alias{cnmops_to_CNVresults}
 \title{Convert cn.mops results into \code{CNVgears} format}
 \usage{
-cnmops_to_CNVresults(cnvs, sample_list, markers)
+cnmops_to_CNVresults(cnRes, sample_list, markers)
 }
 \arguments{
-\item{cnvs}{cn.mops results}
+\item{cnRes}{cn.mops results (after integer CN calling)}
 
 \item{sample_list}{minimal cohort metadata, a \code{data.table} produced by the
 function \code{\link{read_metadt}}.}
@@ -17,7 +17,7 @@ function \code{\link{read_metadt}}.}
 or \code{\link{read_NGS_intervals}}.}
 }
 \value{
-the input object \code{cnvs} converted into \code{CNVresults}
+the input object \code{cnRes} converted into \code{CNVresults}
 }
 \description{
 Convert cn.mops results into \code{CNVgears} format

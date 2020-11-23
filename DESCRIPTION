@@ -11,7 +11,7 @@ Description: This package contains a set of functions to perform several type of
     load, and more. The package is best suited for studies in human family-based 
     cohorts.
 Depends: 
-    R (>= 4.0.0), 
+    R (>= 4.1), 
     data.table
 Imports: 
     ggplot2

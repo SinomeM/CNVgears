@@ -3,7 +3,9 @@
 \docType{data}
 \name{cohort_examples}
 \alias{cohort_examples}
-\title{Sample list for the runnable examples}
+\title{Sample list for the runnable examples.
+It comes from CNV calling on array data from a subset of the 1000 Genomes
+project, see vignettes for more details.}
 \format{
 An object of class \code{data.table} (inherits from \code{data.frame}) with 23 rows and 4 columns.
 }
@@ -11,6 +13,8 @@ An object of class \code{data.table} (inherits from \code{data.frame}) with 23 r
 cohort_examples
 }
 \description{
-Sample list for the runnable examples
+Sample list for the runnable examples.
+It comes from CNV calling on array data from a subset of the 1000 Genomes
+project, see vignettes for more details.
 }
 \keyword{datasets}

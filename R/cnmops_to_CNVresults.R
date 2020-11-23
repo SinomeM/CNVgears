@@ -10,7 +10,7 @@
 #'   \code{\link{read_finalreport_snps}} with \code{DT_type} set to "markers"
 #'   or \code{\link{read_NGS_intervals}}.
 #'
-#' @return the input object \code{cnvs} converted into \code{CNVresults}
+#' @return the input object \code{cnRes} converted into \code{CNVresults}
 #'
 #' @import data.table
 #'
