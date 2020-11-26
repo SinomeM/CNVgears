@@ -168,17 +168,23 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
 
 
           ### { MAKE THIS A FUNCTION
-          alt <- ifelse(gt==1, "less", "greater")
-          # test if the mean is less/greater in the offspring, depending on GT
-          mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE,
-                               alternative = alt)$p.value
-          fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE,
-                               alternative = alt)$p.value
+          # check fo missing values, otherwise the test returns ERROR if there
+          # are to many of them
+          if (length(moth_ints_tmp[is.na(moth_ints_tmp)]) < 0.5*length(moth_ints_tmp) &
+              length(fath_ints_tmp[is.na(fath_ints_tmp)]) < 0.5*length(fath_ints_tmp) &
+              length(off_ints_tmp[is.na(off_ints_tmp)]) < 0.5*length(off_ints_tmp)) {
+            alt <- ifelse(gt==1, "less", "greater")
+            # test if the mean is less/greater in the offspring, depending on GT
+            mpval <- wilcox.test(off_ints_tmp, moth_ints_tmp, exact = FALSE,
+                                 alternative = alt)$p.value
+            fpval <- wilcox.test(off_ints_tmp, fath_ints_tmp, exact = FALSE,
+                                 alternative = alt)$p.value
 
-          if (mpval >= alfa) inh <- "p.maternal"
-          if (fpval >= alfa) inh <- "p.paternal"
-          if (mpval >= alfa & fpval >= alfa) inh <- "p.CNP/ancestral/artifact"
-          if (mpval < alfa & fpval < alfa) inh <- "denovo"
+            if (mpval >= alfa) inh <- "p.maternal"
+            if (fpval >= alfa) inh <- "p.paternal"
+            if (mpval >= alfa & fpval >= alfa) inh <- "p.CNP/ancestral/artifact"
+            if (mpval < alfa & fpval < alfa) inh <- "denovo"
+          }
           ### }
         }
 
