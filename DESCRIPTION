@@ -5,8 +5,8 @@ Version: 0.99.10
 Authors@R: person("Simone", "Montalbano", email="simone.montalbano@protonmail.com", role=c("cre", "aut"))
 Description: This package contains a set of functions to perform several type of 
     processing and analysis on CNVs calling pipelines/algorithms results in an 
-    inegrated manner and regardless of the raw data type (SNPs array or NGS). It 
-    provides fucntion to combine multiple CNV calling results into a signle object, 
+    integrated manner and regardless of the raw data type (SNPs array or NGS). It 
+    provides functions to combine multiple CNV calling results into a single object, 
     filter them, compute CNVRs (CNV Resgions) and inheritance patterns, detect genic
     load, and more. The package is best suited for studies in human family-based 
     cohorts.
