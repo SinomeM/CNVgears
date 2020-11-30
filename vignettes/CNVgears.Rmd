@@ -96,10 +96,21 @@ using `BiocManager`:
 ```{r, eval = FALSE}
 if (!require("BiocManager"))
     install.packages("BiocManager")
+
 BiocManager::install("CNVgears")
 ```
 
+Until Biconductor 3.14 it can be found in the devel branch.
 
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+# The following initializes usage of Bioc devel
+BiocManager::install(version='devel')
+
+BiocManager::install("CNVgears")
+```
 
 To install the latest development version of the package via GitHub repository:
 
@@ -473,7 +484,7 @@ separated Ensemble IDs.
 As `immuno_regions`, the function `genic_load` uses `biomaRt` internally, thus a 
 custom mart is needed to work in hg19. 
 
-```{r annotation, echo=c(-2,-4)}
+```{r annotation, echo=c(-2,-4), eval = FALSE}
 # locus 
 ipq_denovo_locus <- genomic_locus(DT_in = ipq_filtered, keep_str_end = FALSE)
 
