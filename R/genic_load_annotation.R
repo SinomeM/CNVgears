@@ -22,7 +22,7 @@
 #' @import data.table
 #'
 #' @examples
-#' DT <- genic_load(penn_22)
+#' # DT <- genic_load(penn_22)
 
 genic_load <- function(DT_in, biotypes = "protein_coding", mart = NULL) {
   if (!is.data.table(DT_in))
