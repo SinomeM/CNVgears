@@ -25,7 +25,7 @@
 #' @import data.table
 #'
 #' @examples
-#' DT <- genomic_locus(penn_22)
+#' # DT <- genomic_locus(penn_22)
 
 genomic_locus <- function(DT_in, remote_cytobands = TRUE, bands, assembly = "hg19",
                           keep_str_end = TRUE) {
