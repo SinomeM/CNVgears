@@ -1,5 +1,8 @@
 # README #
 
+### CNVgears is now part of Biocondutor! ###   
+<https://bioconductor.org/packages/CNVgears/> 
+
 CNVgears is an R package that implement a framework to integrate and analyze 
 CNVs calling/segmentation results from multiple pipeline/algorithms and data
 type (SNPs array and NGS). It is particularly suited for studies of family 
