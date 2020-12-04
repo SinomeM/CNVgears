@@ -27,7 +27,9 @@
 #' @import data.table
 #'
 #' @examples
+#' \dontrun{
 #' DT <- immuno_regions(biotype = c("IG_C_gene", "IG_D_gene"))
+#' }
 
 # returns a list, the first element can be passed to filter_calls.R and both can be
 # written as BED for IGV visualization
