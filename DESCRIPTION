@@ -1,7 +1,7 @@
 Package: CNVgears
 Type: Package
 Title: A Framework of Functions to Combine, Analize and Interpret CNVs Calling Results 
-Version: 0.99.12
+Version: 0.99.13
 Authors@R: person("Simone", "Montalbano", email="simone.montalbano@protonmail.com", role=c("cre", "aut"))
 Description: This package contains a set of functions to perform several type of 
     processing and analysis on CNVs calling pipelines/algorithms results in an 
