@@ -41,5 +41,7 @@ object (as \code{data.table} or \code{data.frame}) can be used via the
 argument \code{bands}.
 }
 \examples{
+\dontrun{
 DT <- genomic_locus(penn_22)
+}
 }

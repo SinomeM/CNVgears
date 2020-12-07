@@ -30,5 +30,7 @@ the \code{CNVresults} object \code{DT_in} with additional columns:
 Annotate genic load
 }
 \examples{
+\dontrun{
 DT <- genic_load(penn_22)
+}
 }

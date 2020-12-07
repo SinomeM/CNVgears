@@ -35,5 +35,7 @@ a list with two element, the first is a \code{data.table} containing
 Retrieve genomic regions of consecutive immunoglobulin genes
 }
 \examples{
+\dontrun{
 DT <- immuno_regions(biotype = c("IG_C_gene", "IG_D_gene"))
+}
 }
