@@ -93,7 +93,7 @@ The typical main steps of such analysis using CNVgears are:
 CNVgears is part of Bioconductor (<https://bioconductor.org>), to install it 
 using `BiocManager`:
 
-```{r, eval = FALSE}
+```{r bioc, eval = FALSE}
 if (!require("BiocManager"))
     install.packages("BiocManager")
 
@@ -102,7 +102,7 @@ BiocManager::install("CNVgears")
 
 Until Biconductor 3.14 it can be found in the devel branch.
 
-```{r}
+```{r bioc dev, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
