@@ -19,11 +19,11 @@ knitr::opts_chunk$set(
 The illustrative pipelines shown in this file uses real data from the 1000 
 Genomes project (<https://www.internationalgenome.org/>). The examples are 
 performed on array data for chromosomes 14 and 22 only and the raw final report
-are provided as raw data is are necessary for some critical steps of the pipeline.
-Because those files are relatively large (> 5Mb) they are provided as a separate 
+files provided as they are necessary for some critical steps of the pipeline.
+Because those files are relatively large (> 5Mb) they are stored as a separate 
 GitHub repository (<https://github.com/SinomeM/CNVgears_data>). The user is kindly
-asked to download the repo and give the directory path at the 5.2 in order to 
-being able to perform the examples. 
+asked to download the repo and give the directory path at the step 5.2 in order to 
+being able to perform all the examples.
 
 # Introduction #
 
