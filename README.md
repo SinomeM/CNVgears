@@ -1,6 +1,9 @@
 # README #
 
 ### CNVgears is now part of Biocondutor! ###   
+
+Head on the Biocondutor website for documentations and install instruction!
+
 <https://bioconductor.org/packages/CNVgears/> 
 
 CNVgears is an R package that implement a framework to integrate and analyze 
