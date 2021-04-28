@@ -37,7 +37,7 @@ cnvrs_create <- function(cnvs, chr_arms, prop = 0.3) {
 
   # data.table "set" and ":=" functions act by reference, I create a copy to
   # avoid modifying the original object (perhaps there is a better option?)
-  cnvs_cp <- cnvs
+  cnvs_cp <- copy(cnvs)
   rm(cnvs)
 
   # check input formats, in particular for chr_arms
