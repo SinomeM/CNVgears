@@ -81,7 +81,7 @@ cnvs_inheritance <- function(sample_list, markers, results, raw_path,
       if (nrow(off_tmp) == 0) next
 
       moth_tmp_chr <- trio[[2]][chr == cc, ]
-      fath_tmp_chr <- trio[[2]][chr == cc, ]
+      fath_tmp_chr <- trio[[3]][chr == cc, ]
 
       for (i in 1:nrow(off_tmp)) {
 
